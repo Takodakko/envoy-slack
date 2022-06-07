@@ -57,9 +57,9 @@ const appHomeOpenedBuilder = function() {
         },
       },
       {
-        "type": "image",
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
-        "alt_text": "inspiration"
+        type: "image",
+        image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
+        alt_text: "inspiration"
       },
     ],
   };

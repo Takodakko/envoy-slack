@@ -22,7 +22,7 @@
   },
   "homepage": "https://https://github.com/Takodakko/envoy-slack#readme",
   "dependencies": {
-    "@envoy/envoy-integrations-sdk": "git+https://github.com/envoy/envoy-integrations-sdk-nodejs.git#enable-public-api",
+    "@envoy/envoy-integrations-sdk": "github:envoy/envoy-integrations-sdk-nodejs#enable-public-api",
     "@slack/bolt": "^3.11.1",
     "axios": "^0.27.2",
     "express": "^4.18.1",
