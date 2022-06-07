@@ -1,5 +1,6 @@
 const moment = require('moment');
 
+/* Use moment to create array of times for time selection dropdown */
 const start = moment().startOf('day');
 const end = start.clone().endOf('day');
 const times = [];

@@ -56,5 +56,8 @@ class Envoy {
         });
     
     }
+    employeeSignIn = async function() {
+        
+    }
 };
 module.exports = Envoy;
