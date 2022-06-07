@@ -1,29 +1,31 @@
 {
-  "name": "envoy-dummy-nodejs",
+  "name": "envoy-slack",
   "version": "1.0.0",
-  "description": "A nodejs client used for testing Envoy's SDK",
+  "description": "A nodejs client used for testing Envoy's Slack Integration",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node slackApp.js"
   },
   "engines": {
     "node": "11.x"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tkla/envoy-dummy-nodejs.git"
+    "url": "git+https://https://github.com/Takodakko/envoy-slack.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tkla/envoy-dummy-nodejs/issues"
+    "url": "https://https://github.com/Takodakko/envoy-slack/issues"
   },
-  "homepage": "https://github.com/tkla/envoy-dummy-nodejs#readme",
+  "homepage": "https://https://github.com/Takodakko/envoy-slack#readme",
   "dependencies": {
     "@envoy/envoy-integrations-sdk": "git+https://github.com/envoy/envoy-integrations-sdk-nodejs.git#enable-public-api",
+    "@slack/bolt": "^3.11.1",
     "axios": "^0.27.2",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "moment": "^2.29.3"
   }
 }

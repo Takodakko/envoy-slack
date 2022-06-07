@@ -1,10 +1,11 @@
 const express = require('express');
 const request = require('request');
 const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
-const PORT = 3000;
+
+
 const app = express();
 let accessToken = '';
-let envoyAPI = '';
+let envoyAPI = {};
 
 // Define scope for token here
 const TOKEN_SCOPE = [
@@ -25,7 +26,7 @@ const TOKEN_SCOPE = [
  * Get an access token generated from ENVOY_CLIENT_ID and ENVOY_CLIENT_SECRET provided from env file. 
  * Or use ENVOY_CLIENT_API_KEY which is currently in beta testing. 
  * Also see scopes here: https://developers.envoy.com/hub/docs/scopes#access-scopes for optional list of permissions for the token.
- * Token will eventually expire and is meant only to be used for testing envoyAPI in the brief time this app is ran. 
+ * Token will eventually expire and is meant only to be used for testing envoyAPI in the brief time this app is run. 
  * 
 */
 async function getAccessToken() {
@@ -47,7 +48,7 @@ async function getAccessToken() {
     request(options, function (error, response) {
         if (error) throw new Error(error);
         accessToken = JSON.parse(response.body).access_token;
-        console.log(accessToken);
+        // console.log(accessToken);
         envoyAPI = new EnvoyAPI(accessToken);
     });
 
@@ -64,10 +65,11 @@ app.use(middleware());
 
 
 /**
- * Default landing page. Place any API calls here to be ran on page load. 
+ * Default landing page. Place any API calls here to be run on page load. 
  * A useful company id for testing is 110090, Test Company 1. LocationId : 143497
  */
 app.get('/', asyncHandler(async (req, res) => {
+    console.log(req, 'req in get /');
     const { envoy } = req;  // "envoy" is the SDK
     let result = {};
     // result.createWorkSchedule = await envoyAPI.workSchedule({
@@ -87,7 +89,8 @@ app.get('/', asyncHandler(async (req, res) => {
   
     res.send(result);
 })); 
-    
+  
+
 app.get('/employee-sign-in', asyncHandler(async (req, res) => { 
     const { envoy } = req;
 
@@ -158,6 +161,6 @@ app.post('/visitor-sign-out', async (req, res) => {
 
 app.use(errorMiddleware());
 
-const listener = app.listen(process.env.PORT || 0, () => {
-    console.log(`Listening on port ${listener.address().port}`);
-});
+// const listener = app.listen(process.env.PORT || 0, () => {
+//     console.log(`Listening on port ${listener.address().port}`);
+// });
