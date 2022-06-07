@@ -4,7 +4,7 @@ require('dotenv').config();
 const eventAppHomeOpened = require('./eventAppHomeOpened');
 const commandCreateInvite = require('./commandCreateInvite');
 const sayHi = require('./sayHi');
-//const slackResponder = require('./slackResponder');
+
 
 const slackApp = new App(
   {
@@ -15,11 +15,10 @@ const slackApp = new App(
   }
 );
 
-//slackApp.use(slackResponder);
-// slackApp.use('/', slackApp.command);
 
-// slackApp.message('hi', sayHi);
-// slackApp.message('invite', commandCreateInvite);
+
+slackApp.message('hi', sayHi);
+
 slackApp.command('/envoy-invite', commandCreateInvite);
 
 slackApp.event('app_home_opened', eventAppHomeOpened);

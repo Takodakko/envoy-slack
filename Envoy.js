@@ -1,4 +1,22 @@
 require('dotenv').config();
+const request = require('request');
+const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
+
+let accessToken = '';
+let envoyAPI = {};
+const TOKEN_SCOPE = [
+    'token.refresh', 
+    'locations.read', 
+    'companies.read',
+    'flows.read',
+    'invites.read',
+    'invites.write',
+    'employees.read',
+    'reservations.read',
+    'reservations.write',
+    'work-schedules.read',
+    'work-schedules.write',
+].join();
 
 class Envoy {
     constructor(accessToken = process.env.ENVOY_API_PRIV_TOKEN, xEnvoyContext = {}) {
@@ -14,7 +32,29 @@ class Envoy {
         baseUrl: process.env.ENVOY_BASE_URL || 'https://app.envoy.com',
       });
     }
-
+     getAccessToken = async function() {
+        const options = {
+            'method': 'POST',
+            'url': 'https://api.envoy.com/oauth2/token',
+            'headers': {
+                'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
+                json: true
+            },
+            formData: {
+                'username': process.env.API_USERNAME,
+                'password': process.env.API_USER_PASSWORD,
+                'scope': TOKEN_SCOPE,
+                'grant_type': 'password',
+            }
+        };
+        
+        request(options, function (error, response) {
+            if (error) throw new Error(error);
+            accessToken = JSON.parse(response.body).access_token;
+            // console.log(accessToken);
+            envoyAPI = new EnvoyAPI(accessToken);
+        });
+    
+    }
 };
-
 module.exports = Envoy;
