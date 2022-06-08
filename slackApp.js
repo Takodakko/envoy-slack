@@ -3,10 +3,14 @@ const { ErrorHandler } = require('@slack/bolt');
 require('dotenv').config();
 const eventAppHomeOpened = require('./eventAppHomeOpened');
 const commandCreateInvite = require('./commandCreateInvite');
+const eventInviteSubmitted = require('./eventInviteSubmitted');
+const shortcutCreateInvite = require('./shortcutCreateInvite');
+const actionCreateInvite = require('./actionCreateInvite');
 const sayHi = require('./sayHi');
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
-const request = require('request');
-//Change to Axios
+const request = require('request');  //Change to Axios
+// const getAccessToken = require('./Envoy');
+
 
 const slackApp = new App(
   {
@@ -19,7 +23,7 @@ const slackApp = new App(
 
 if (!process.env.SLACK_CLIENT_SECRET || !process.env.SLACK_CLIENT_ID) {
   //contactAdminMessage();
-  console.log('add later');
+  console.log('contact your admin');
 }
 const TOKEN_SCOPE = [
   'token.refresh', 
@@ -35,7 +39,7 @@ const TOKEN_SCOPE = [
   'work-schedules.write',
 ].join();
 let accessToken = '';
-let envoyApi;
+let envoyApi = {};
 async function getAccessToken() {
   var options = {
       'method': 'POST',
@@ -60,28 +64,35 @@ async function getAccessToken() {
   });
 
 }
-
 getAccessToken();
 
-
-
+// Test message to interact with app via messages.
 slackApp.message('hi', sayHi);
-
+// Slash command to open invite modal.
 slackApp.command('/envoy-invite', commandCreateInvite);
 
+// Slash command to get the name of the user's location.
+// slackApp.command('/location', commandGetLocation);
 slackApp.command('/location', async ({ack, say}) => {
-  ack()
-  console.log('line 34')
+  ack();
+  // console.log(envoyApi, 'the envoyAPI');
   const body = await envoyApi.location('143497');
-  console.log(body, 'this is envoyApi');
-  await say(body.id);
+  console.log(body, 'body');
+  await say(`You are at ${body.attributes.name} in ${body.attributes.address}`);
 });
-
+// Event to run when app is opened to home tab.
 slackApp.event('app_home_opened', eventAppHomeOpened);
+// Event to run when invite modal is submitted.
+slackApp.view('invite_modal', eventInviteSubmitted);
+// Event to run when invite button on home is clicked.
+slackApp.action('button_invite', actionCreateInvite);
+// Shortcut option to open invite modal.
+slackApp.shortcut('envoy_invite', shortcutCreateInvite);
 
-slackApp.shortcut('envoy_invite', commandCreateInvite);
-
-slackApp.error(ErrorHandler);
+// slackApp.error(ErrorHandler);
+slackApp.error((err) => {
+  console.error(err);
+});
 
 (async () => {
   await slackApp.start(process.env.PORT);

@@ -52,7 +52,7 @@ const createInviteBuilder = function() {
       },
       {
             type: 'input',
-            block_id: 'Host Name',
+            block_id: 'host_name',
             optional: false,
             label: {
                 type: 'plain_text',
@@ -69,7 +69,7 @@ const createInviteBuilder = function() {
       },
       {
         type: 'input',
-        block_id: 'Arrival Date',
+        block_id: 'arrival_date',
         optional: false,
         element: {
           type: 'datepicker',
@@ -82,6 +82,7 @@ const createInviteBuilder = function() {
        },
        {
            type: "input",
+           block_id: 'location',
            label: {
                type: "plain_text",
                text: "Location",
@@ -126,7 +127,7 @@ const createInviteBuilder = function() {
         },
         {
             type: 'input',
-            block_id: 'Arrival Time',
+            block_id: 'arrival_time',
             optional: false,
             element: {
               type: 'static_select',

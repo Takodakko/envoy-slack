@@ -2,7 +2,7 @@ const createInviteBuilder = require('./createInviteBuilder');
 
 const commandCreateInvite = async function({ack, client, payload, event, body}) {
     await ack();
-    // console.log(payload, 'payload');
+    // console.log(body, 'body');
     const userId = payload.user_id;
     let user;
     try {
@@ -20,7 +20,7 @@ const commandCreateInvite = async function({ack, client, payload, event, body}) 
     const response = await client.views.open({
       /* the user who opened the modal */
       user_id: payload.user,
-      /* the event that opened the modal */
+      /* the event that opened the modal is stored on both payload and body for a slash command */
       trigger_id: payload.trigger_id,
       /* the view object that makes the modal */
       view: modal

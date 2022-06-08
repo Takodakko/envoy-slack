@@ -1,7 +1,7 @@
 const appHomeOpenedBuilder = require('./appHomeOpenedBuilder');
 
 const eventAppHomeOpened = async ({client, payload, say}) => {
-    console.log(client, 'client');
+    // console.log(client, 'client');
     try {
       /* view.publish is the method that your app uses to push a view to the Home tab */
       const result = await client.views.publish({
