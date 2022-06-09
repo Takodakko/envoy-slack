@@ -33,10 +33,9 @@ const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI 
 //       });
 //     }
 // };
-let envoyApi = {};
-getAccessToken = async function() {
+const getAccessToken = async function({context, next}) {
     let accessToken = '';
-    let envoyAPI = {};
+    // let envoyAPI = {};
     const TOKEN_SCOPE = [
         'token.refresh', 
         'locations.read', 
@@ -64,20 +63,24 @@ getAccessToken = async function() {
             'grant_type': 'password',
         }
     };
+    try {
+        request(options, async function (error, response) {
+            if (error) throw new Error(error);
+            accessToken = JSON.parse(response.body).access_token;
+            // console.log(accessToken, 'I am an access token!');
+            const envoyApi = new EnvoyAPI(accessToken);
+            context.envoyAPI = envoyApi;
+            console.log(context.envoyAPI, 'context.envoyAPI in Envoy.js');
+        });
+        //context.envoyAPI = new EnvoyAPI(accessToken);
+    }
+    catch(err) {
+        throw err
+    }
     
-    request(options, async function (error, response) {
-        if (error) throw new Error(error);
-        accessToken = JSON.parse(response.body).access_token;
-        console.log(accessToken, 'I am an access token!');
-        await function() {
-            envoyAPI = new EnvoyAPI(accessToken);
-            
-        }
-        
-    });
-  return envoyAPI;
+  await next();
 }
 
-envoyApi = getAccessToken();
-console.log(envoyApi, 'envoyAPI in Envoy.js');
-module.exports = envoyApi;
+// const envoyApi = Promise.resolve(getAccessToken());
+// console.log(envoyApi, 'envoyAPI in Envoy.js');
+module.exports = getAccessToken;

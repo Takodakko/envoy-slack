@@ -1,11 +1,11 @@
-const getAccessToken = require('./Envoy');
+//const getAccessToken = require('./Envoy');
 // const envoyApi = app.envoyApi;
 
-const commandGetLocation = async function({ack, say}) {
+const commandGetLocation = async function({ack, say, context}) {
     ack();
-    let envoyAPI = await getAccessToken();
-    console.log(envoyAPI, 'the envoyAPI');
-    const body = await envoyAPI.location('143497');
+    let envoyApi = context.envoyAPI;
+    console.log(envoyApi, 'the envoyAPI');
+    const body = await envoyApi.location('143497');
     await say(body.id);
 };
 
