@@ -33,6 +33,7 @@ const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI 
 //       });
 //     }
 // };
+let envoyApi = {};
 getAccessToken = async function() {
     let accessToken = '';
     let envoyAPI = {};
@@ -77,6 +78,6 @@ getAccessToken = async function() {
   return envoyAPI;
 }
 
-// getAccessToken();
-// console.log(getAccessToken(), 'envoyAPI in Envoy.js');
-module.exports = getAccessToken;
+envoyApi = getAccessToken();
+console.log(envoyApi, 'envoyAPI in Envoy.js');
+module.exports = envoyApi;
