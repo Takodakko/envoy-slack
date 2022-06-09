@@ -3,12 +3,13 @@ const { ErrorHandler } = require('@slack/bolt');
 require('dotenv').config();
 const eventAppHomeOpened = require('./eventAppHomeOpened');
 const commandCreateInvite = require('./commandCreateInvite');
-const eventInviteSubmitted = require('./eventInviteSubmitted');
+const viewInviteSubmitted = require('./viewInviteSubmitted');
 const shortcutCreateInvite = require('./shortcutCreateInvite');
 const actionCreateInvite = require('./actionCreateInvite');
-const sayHi = require('./sayHi');
+const messageSayHi = require('./messageSayHi');
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 const request = require('request');  //Change to Axios
+const axios = require('axios');
 // const getAccessToken = require('./Envoy');
 
 
@@ -41,33 +42,60 @@ const TOKEN_SCOPE = [
 let accessToken = '';
 let envoyApi = {};
 async function getAccessToken() {
-  var options = {
+  //const url = 'https://api.envoy.com/oauth2/token';
+  const options = {
       'method': 'POST',
       'url': 'https://api.envoy.com/oauth2/token',
       'headers': {
           'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
           json: true
       },
+      // auth: {
+      //   'username': process.env.API_USERNAME,
+      //   'password': process.env.API_USER_PASSWORD,
+      //   'scope': TOKEN_SCOPE,
+      //   'grant_type': 'password',
+      // },
       formData: {
           'username': process.env.API_USERNAME,
           'password': process.env.API_USER_PASSWORD,
           'scope': TOKEN_SCOPE,
           'grant_type': 'password',
-      }
+      },
+    //   data: {
+    //     'username': process.env.API_USERNAME,
+    //     'password': process.env.API_USER_PASSWORD,
+    //     'scope': TOKEN_SCOPE,
+    //     'grant_type': 'password',
+    // }
   };
   
   request(options, function (error, response) {
       if (error) throw new Error(error);
       accessToken = JSON.parse(response.body).access_token;
-      // console.log(accessToken);
+      console.log(accessToken);
       envoyApi = new EnvoyAPI(accessToken);      
   });
+     
+    //  try {
+      //  axios(options)
+      //  .then((response) => {
+      //    console.log(response.data, 'response.data');
+      //    accessToken = response.data.access_token;
+      //  })
+      // .catch(err => {
+      //   console.log(err.response.status, err.message, err.response.data);
+      // })
+    // }
+    //  catch(err) {
+    //    console.log(err?.response?.status, err?.response?.data?.message);
+    //  }
 
 }
 getAccessToken();
 
 // Test message to interact with app via messages.
-slackApp.message('hi', sayHi);
+slackApp.message('hi', messageSayHi);
 // Slash command to open invite modal.
 slackApp.command('/envoy-invite', commandCreateInvite);
 
@@ -83,7 +111,7 @@ slackApp.command('/location', async ({ack, say}) => {
 // Event to run when app is opened to home tab.
 slackApp.event('app_home_opened', eventAppHomeOpened);
 // Event to run when invite modal is submitted.
-slackApp.view('invite_modal', eventInviteSubmitted);
+slackApp.view('invite_modal', viewInviteSubmitted);
 // Event to run when invite button on home is clicked.
 slackApp.action('button_invite', actionCreateInvite);
 // Shortcut option to open invite modal.

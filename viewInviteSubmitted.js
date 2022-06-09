@@ -1,7 +1,7 @@
 const moment = require('moment');
 //const moment = require('moment-timezone');
 
-const eventInviteSubmitted = async function({ack, client, view, payload, body, logger}) {
+const viewInviteSubmitted = async function({ack, client, view, payload, body, logger}) {
   await ack();
 //   console.log(view.state, 'view.state');
   const user = body.user.id;
@@ -36,4 +36,4 @@ const eventInviteSubmitted = async function({ack, client, view, payload, body, l
   
 };
 
-module.exports = eventInviteSubmitted;
+module.exports = viewInviteSubmitted;
