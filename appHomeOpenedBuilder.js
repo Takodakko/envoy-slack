@@ -2,7 +2,8 @@
 /**
  * Creates the JSON blocks for the app home tab.
  */
-const appHomeOpenedBuilder = function() {
+const appHomeOpenedBuilder = function(locations) {
+
   const homeView = {
     type: "home",
     callback_id: 'home_view',
@@ -63,23 +64,6 @@ const appHomeOpenedBuilder = function() {
         image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
         alt_text: "inspiration"
       },
-      // {
-      //   type: "section",
-      //   block_id: "invite_button_section",
-      //   text: {
-      //     type: "plain_text",
-      //     text: "Make an Invitation"
-      //   },
-      //   accessory: {
-      //     type: "button",
-      //     text: {
-      //       type: "plain_text",
-      //       text: "Invite"
-      //     },
-      //     value: "create_invite",
-      //     action_id: "create_invite"
-      //   }
-      // },
       {
         type: "actions",
         elements: [
@@ -97,6 +81,18 @@ const appHomeOpenedBuilder = function() {
       }
     ],
   };
+  locations.forEach((locationObject, ind) => {
+    homeView.blocks.push(
+      {
+        type: 'section',
+        block_id: `location_name_${ind.toString()}`,
+        text: {
+          type: 'mrkdwn',
+          text: `Your company has the following ${locations.length === 1 ? 'location:' : 'locations:'} *${locationObject.attributes.name}*`,
+        },
+      }
+    )
+  })
   return homeView;
 };
 

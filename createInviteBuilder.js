@@ -19,7 +19,18 @@ while (start.isBefore(end)) {
 /**
  * Creates the JSON blocks for the invitation modal.
  */
-const createInviteBuilder = function() {
+const createInviteBuilder = function(locations) {
+  console.log(locations, 'locations in Invite builder');
+  // const locationSelections = locations.map((locationObject, ind) => {
+  //   return ({
+  //     "text": {
+  //       "type": "plain_text",
+  //       "text": locationObject.attributes.name,
+  //       "emoji": true
+  //   },
+  //   "value": `value-${ind}`
+  //   })
+  // });
   const modal = {
     type: 'modal',
     callback_id: 'invite_modal',
@@ -98,7 +109,7 @@ const createInviteBuilder = function() {
               text: 'Location',
               emoji: true,
             },
-        
+            // options: locations,
             options: [
                 {
                     "text": {

@@ -2,7 +2,7 @@ const { App } = require('@slack/bolt');
 const { ErrorHandler } = require('@slack/bolt');
 const { LogLevel } = require("@slack/logger");
 require('dotenv').config();
-const eventAppHomeOpened = require('./eventAppHomeOpened');
+const eventAppHomeOpened = require('./eventAppHomeOpened').default;
 const commandCreateInvite = require('./commandCreateInvite');
 const viewInviteSubmitted = require('./viewInviteSubmitted');
 const shortcutCreateInvite = require('./shortcutCreateInvite');
@@ -129,7 +129,7 @@ slackApp.error((err) => {
 
 (async () => {
   await slackApp.start(process.env.PORT);
-  console.log(`Thunder god, Thor, is hammering on ${process.env.PORT}`);
+  console.log(`Bolting on ${process.env.PORT}`);
 })();
 
 
