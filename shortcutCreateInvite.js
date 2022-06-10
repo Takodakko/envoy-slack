@@ -1,5 +1,7 @@
 const createInviteBuilder = require('./createInviteBuilder');
-
+/**  
+ * Shortcut option to open invite modal.  .shortcut listens for global/message shortcuts (found in the + menu near the message bar). 
+ */
 const shortcutCreateInvite = async function({ack, client, payload, event, body}) {
     await ack();
   const modal = createInviteBuilder();

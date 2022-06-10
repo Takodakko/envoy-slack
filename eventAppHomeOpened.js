@@ -1,7 +1,10 @@
 const appHomeOpenedBuilder = require('./appHomeOpenedBuilder');
+/**  
+ * Event to run when app is opened to home tab.  .event listens for events from the Slack event API. 
+ */
+const eventAppHomeOpened = async ({client, payload, context}) => {
+    //const envoyContent = context.envoyAPI;
 
-const eventAppHomeOpened = async ({client, payload, say}) => {
-    // console.log(client, 'client');
     try {
       /* view.publish is the method that your app uses to push a view to the Home tab */
       const result = await client.views.publish({

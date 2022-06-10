@@ -12,7 +12,8 @@ const messageSayHi = require('./messageSayHi');
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 const request = require('request');  //Change to Axios
 const axios = require('axios');
-const getAccessToken = require('./Envoy');
+// const getAccessToken = require('./Envoy');
+// const {attachEnvoy, getAccessToken} = require('./Envoy');
 // const envoyApi = require('./Envoy');
 
 
@@ -98,23 +99,20 @@ if (!process.env.SLACK_CLIENT_SECRET || !process.env.SLACK_CLIENT_ID) {
 
 // }
 // getAccessToken();
-
+async function attachEnvoy ({context, next}) {
+  const accessToken = process.env.ACCESS_TOKEN;
+  envoyApi = new EnvoyAPI(accessToken);
+  context.envoyAPI = envoyApi;
+  await next();
+};
 /* Global Middleware to attach an envoyAPI object to context. */
-slackApp.use(getAccessToken);
+slackApp.use(attachEnvoy);
 /* Test message to interact with app via messages.  .message listens for specific text entered into the message bar. */
 slackApp.message('hi', messageSayHi);
 /* Slash command to open invite modal.  .command listens for slash commands entered into the message bar. */
 slackApp.command('/envoy-invite', commandCreateInvite);
-
 // Slash command to get the name of the user's location.
 slackApp.command('/location', commandGetLocation);
-// slackApp.command('/location', async ({ack, say, context}) => {
-//   ack();
-//   console.log(context, 'context in /location');
-//   const body = await envoyAPI.location('143497');
-//   console.log(body, 'body');
-//   await say(`You are at ${body.attributes.name} in ${body.attributes.address}`);
-// });
 /* Event to run when app is opened to home tab.  .event listens for events from the Slack event API. */
 slackApp.event('app_home_opened', eventAppHomeOpened);
 /* Event to run when invite modal is submitted.  .view listens for modal view requests. */
@@ -131,8 +129,8 @@ slackApp.error((err) => {
 
 (async () => {
   await slackApp.start(process.env.PORT);
-  console.log(`Thunder god Thor is hammering on ${process.env.PORT}`);
+  console.log(`Thunder god, Thor, is hammering on ${process.env.PORT}`);
 })();
 
 
-module.exports = slackApp;
+//module.exports = slackApp;

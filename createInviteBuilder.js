@@ -16,7 +16,9 @@ while (start.isBefore(end)) {
   });
   start.add(15, 'minutes');
 }
-
+/**
+ * Creates the JSON blocks for the invitation modal.
+ */
 const createInviteBuilder = function() {
   const modal = {
     type: 'modal',

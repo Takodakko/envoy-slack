@@ -1,5 +1,7 @@
 
-
+/**
+ * Creates the JSON blocks for the app home tab.
+ */
 const appHomeOpenedBuilder = function() {
   const homeView = {
     type: "home",

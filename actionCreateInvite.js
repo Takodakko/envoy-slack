@@ -1,5 +1,7 @@
 const createInviteBuilder = require('./createInviteBuilder');
-
+/**  
+ * Event to run when invite button on home is clicked.  .action listens for UI interactions like button clicks. 
+ */
 const actionCreateInvite = async function({ack, payload, client, body}) {
   await ack();
   // console.log(client, 'client');

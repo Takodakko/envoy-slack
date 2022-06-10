@@ -1,5 +1,7 @@
 const createInviteBuilder = require('./createInviteBuilder');
-
+/**  
+ * Slash command to open invite modal.  .command listens for slash commands entered into the message bar. 
+ */
 const commandCreateInvite = async function({ack, client, payload, event, body}) {
     await ack();
     // console.log(body, 'body');
