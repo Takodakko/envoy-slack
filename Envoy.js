@@ -33,6 +33,27 @@ const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI 
 //       });
 //     }
 // };
+
+class PrivateEnvoy {
+    constructor() {
+        this.API = new EnvoyAPI(process.env.ENVOY_BEARER_TOKEN);
+    }
+}
+
+class Envoy {
+    constructor() {
+        throw new Error('Use Envoy.getInstance()');
+    }
+
+    static getInstance () {
+        if (!Envoy.instance){
+            Envoy.instance = new PrivateEnvoy();
+        }
+        return Envoy.instance;
+    }
+}
+
+/*
 getAccessToken = async function() {
     let accessToken = '';
     let envoyAPI = {};
@@ -76,7 +97,7 @@ getAccessToken = async function() {
     });
   return envoyAPI;
 }
+*/
 
-// getAccessToken();
-// console.log(getAccessToken(), 'envoyAPI in Envoy.js');
-module.exports = getAccessToken;
+//module.exports = getAccessToken;
+module.exports = Envoy;
