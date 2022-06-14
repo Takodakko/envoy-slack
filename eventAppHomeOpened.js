@@ -1,6 +1,8 @@
 const appHomeOpenedBuilder = require('./appHomeOpenedBuilder');
 const Envoy = require('./Envoy');
-
+/**  
+ * Event to run when app is opened to home tab.  .action listens for UI interactions like button clicks. 
+ */
 const eventAppHomeOpened = async ({client, payload, say}) => {
     // console.log(client, 'client');
     try {

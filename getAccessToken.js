@@ -1,7 +1,9 @@
 require('dotenv').config();
 const request = require('request');
 const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk')
-
+/**  
+ * Gets access token from Envoy.
+ */
 async function getAccessToken() {
     let accessToken = '';
     const TOKEN_SCOPE = [

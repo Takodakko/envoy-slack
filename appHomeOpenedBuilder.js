@@ -1,5 +1,7 @@
 const Envoy = require('./Envoy');
-
+/**  
+ * Builds JSON block UI for home tab.
+ */
 const appHomeOpenedBuilder = async function() {
   let today = new Date();
   let todayDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();

@@ -2,7 +2,7 @@ const { App } = require('@slack/bolt');
 const { ErrorHandler } = require('@slack/bolt');
 const { LogLevel } = require("@slack/logger");
 require('dotenv').config();
-const eventAppHomeOpened = require('./eventAppHomeOpened').default;
+const eventAppHomeOpened = require('./eventAppHomeOpened');
 const commandCreateInvite = require('./commandCreateInvite');
 const viewInviteSubmitted = require('./viewInviteSubmitted');
 const shortcutCreateInvite = require('./shortcutCreateInvite');
@@ -43,13 +43,13 @@ envoyAPI.locations()
 /**
  * SINGLETON IMPLEMENT
  *
+*/
 const envoy = Envoy.getInstance();
 envoy.API.locations().then(res => {
   console.log(res);
 })
-*/
 
-slackApp.use(envoyApi);
+slackApp.use(envoy);
 // Test message to interact with app via messages.
 slackApp.message('hi', messageSayHi);
 /* Slash command to open invite modal.  .command listens for slash commands entered into the message bar. */
