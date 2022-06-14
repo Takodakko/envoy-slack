@@ -1,9 +1,9 @@
+const Envoy = require('./Envoy');
 
-/**
- * Creates the JSON blocks for the app home tab.
- */
-const appHomeOpenedBuilder = function(locations) {
-
+const appHomeOpenedBuilder = async function() {
+  let today = new Date();
+  let todayDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  
   const homeView = {
     type: "home",
     callback_id: 'home_view',
@@ -27,6 +27,37 @@ const appHomeOpenedBuilder = function(locations) {
           image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
           alt_text: "Envoy Logo"
         },
+      },
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": `Today, ${todayDate}`,
+          "emoji": true
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Location:"
+        },
+        "accessory": {
+          "type": "static_select",
+          "placeholder": {
+            "type": "plain_text",
+            "text": "Select a Location",
+            "emoji": true
+          },
+          "options": [],
+          "action_id": "static_select-action"
+        }
+      },
+      {
+        "type": "divider"
       },
       {
         type: 'section',

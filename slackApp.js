@@ -12,10 +12,7 @@ const messageSayHi = require('./messageSayHi');
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 const request = require('request');  //Change to Axios
 const axios = require('axios');
-// const getAccessToken = require('./Envoy');
-// const {attachEnvoy, getAccessToken} = require('./Envoy');
-// const envoyApi = require('./Envoy');
-
+const Envoy = require('./Envoy');
 
 const slackApp = new App(
   {
@@ -31,83 +28,29 @@ if (!process.env.SLACK_CLIENT_SECRET || !process.env.SLACK_CLIENT_ID) {
   //contactAdminMessage();
   console.log('contact your admin');
 }
-// const TOKEN_SCOPE = [
-//   'token.refresh', 
-//   'locations.read', 
-//   'companies.read',
-//   'flows.read',
-//   'invites.read',
-//   'invites.write',
-//   'employees.read',
-//   'reservations.read',
-//   'reservations.write',
-//   'work-schedules.read',
-//   'work-schedules.write',
-// ].join();
-// let accessToken = '';
-// let envoyApi = {};
-// async function getAccessToken({context, next}) {
-//   //const url = 'https://api.envoy.com/oauth2/token';
-//   const options = {
-//       'method': 'POST',
-//       'url': 'https://api.envoy.com/oauth2/token',
-//       'headers': {
-//           'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
-//           json: true
-//       },
-//       // auth: {
-//       //   'username': process.env.API_USERNAME,
-//       //   'password': process.env.API_USER_PASSWORD,
-//       //   'scope': TOKEN_SCOPE,
-//       //   'grant_type': 'password',
-//       // },
-//       formData: {
-//           'username': process.env.API_USERNAME,
-//           'password': process.env.API_USER_PASSWORD,
-//           'scope': TOKEN_SCOPE,
-//           'grant_type': 'password',
-//       },
-//     //   data: {
-//     //     'username': process.env.API_USERNAME,
-//     //     'password': process.env.API_USER_PASSWORD,
-//     //     'scope': TOKEN_SCOPE,
-//     //     'grant_type': 'password',
-//     // }
-//   };
-  
-//   request(options, function (error, response) {
-//       if (error) throw new Error(error);
-//       accessToken = JSON.parse(response.body).access_token;
-//       // console.log(accessToken);
-//       envoyApi = new EnvoyAPI(accessToken);
-//       context.envoyAPI = envoyApi;      
-//   });
-//      await next();
-//     //  try {
-//       //  axios(options)
-//       //  .then((response) => {
-//       //    console.log(response.data, 'response.data');
-//       //    accessToken = response.data.access_token;
-//       //  })
-//       // .catch(err => {
-//       //   console.log(err.response.status, err.message, err.response.data);
-//       // })
-//     // }
-//     //  catch(err) {
-//     //    console.log(err?.response?.status, err?.response?.data?.message);
-//     //  }
 
-// }
-// getAccessToken();
-async function attachEnvoy ({context, next}) {
-  const accessToken = process.env.ACCESS_TOKEN;
-  envoyApi = new EnvoyAPI(accessToken);
-  context.envoyAPI = envoyApi;
-  await next();
-};
-/* Global Middleware to attach an envoyAPI object to context. */
-slackApp.use(attachEnvoy);
-/* Test message to interact with app via messages.  .message listens for specific text entered into the message bar. */
+/*
+* EXAMPLE USE
+*
+envoyAPI.locations()
+  .then(res => {
+  console.log(res)
+}).catch(err => {
+  console.log(err)
+})
+*/
+
+/**
+ * SINGLETON IMPLEMENT
+ *
+const envoy = Envoy.getInstance();
+envoy.API.locations().then(res => {
+  console.log(res);
+})
+*/
+
+slackApp.use(envoyApi);
+// Test message to interact with app via messages.
 slackApp.message('hi', messageSayHi);
 /* Slash command to open invite modal.  .command listens for slash commands entered into the message bar. */
 slackApp.command('/envoy-invite', commandCreateInvite);

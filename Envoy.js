@@ -33,54 +33,57 @@ const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI 
 //       });
 //     }
 // };
-// const getAccessToken = async function({context, next}) {
-//     let accessToken = '';
-//     // let envoyAPI = {};
-//     const TOKEN_SCOPE = [
-//         'token.refresh', 
-//         'locations.read', 
-//         'companies.read',
-//         'flows.read',
-//         'invites.read',
-//         'invites.write',
-//         'employees.read',
-//         'reservations.read',
-//         'reservations.write',
-//         'work-schedules.read',
-//         'work-schedules.write',
-//     ].join();
-//     const options = {
-//         'method': 'POST',
-//         'url': 'https://api.envoy.com/oauth2/token',
-//         'headers': {
-//             'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
-//             json: true
-//         },
-//         formData: {
-//             'username': process.env.API_USERNAME,
-//             'password': process.env.API_USER_PASSWORD,
-//             'scope': TOKEN_SCOPE,
-//             'grant_type': 'password',
-//         }
-//     };
-//     context.test = 'this is a test';
-//     try {
-//           request(options, async function (error, response) {
-//             if (error) throw new Error(error);
-//             accessToken = JSON.parse(response.body).access_token;
-//             // console.log(accessToken, 'I am an access token!');
-//             // const envoyApi = new EnvoyAPI(accessToken);
-//             // context.envoyAPI = envoyApi;
-//             // console.log(context.envoyAPI, 'context.envoyAPI in Envoy.js');
-//         });
-//         const envoyApi = new EnvoyAPI(Promise.resolve(accessToken));
-//             context.envoyAPI = envoyApi;
-//             console.log(context.envoyAPI, 'context.envoyAPI in Envoy.js');
-//         //context.envoyAPI = new EnvoyAPI(accessToken);
-//     }
-//     catch(err) {
-//         throw err
-//     }
+
+class PrivateEnvoy {
+    constructor() {
+        this.API = new EnvoyAPI(process.env.ENVOY_BEARER_TOKEN);
+    }
+}
+
+class Envoy {
+    constructor() {
+        throw new Error('Use Envoy.getInstance()');
+    }
+
+    static getInstance () {
+        if (!Envoy.instance){
+            Envoy.instance = new PrivateEnvoy();
+        }
+        return Envoy.instance;
+    }
+}
+
+/*
+getAccessToken = async function() {
+    let accessToken = '';
+    let envoyAPI = {};
+    const TOKEN_SCOPE = [
+        'token.refresh', 
+        'locations.read', 
+        'companies.read',
+        'flows.read',
+        'invites.read',
+        'invites.write',
+        'employees.read',
+        'reservations.read',
+        'reservations.write',
+        'work-schedules.read',
+        'work-schedules.write',
+    ].join();
+    const options = {
+        'method': 'POST',
+        'url': 'https://api.envoy.com/oauth2/token',
+        'headers': {
+            'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
+            json: true
+        },
+        formData: {
+            'username': process.env.API_USERNAME,
+            'password': process.env.API_USER_PASSWORD,
+            'scope': TOKEN_SCOPE,
+            'grant_type': 'password',
+        }
+    };
     
 //   await next();
 // }
@@ -141,14 +144,10 @@ const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI 
             throw err
         }
         
-      await next();
-    }
-//}
-async function attachEnvoy({context, next}) {
-    console.log('Global Middleware 2');
-  context.envoyAPI = new EnvoyAPI(context.accessToken);
-  await next();
-};
-// const envoyApi = Promise.resolve(getAccessToken());
-// console.log(envoyApi, 'envoyAPI in Envoy.js');
-module.exports = {attachEnvoy, getAccessToken};
+    });
+  return envoyAPI;
+}
+*/
+
+//module.exports = getAccessToken;
+module.exports = Envoy;
