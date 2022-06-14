@@ -44,10 +44,10 @@ envoyAPI.locations()
  * SINGLETON IMPLEMENT
  *
 */
-const envoy = Envoy.getInstance();
-envoy.API.locations().then(res => {
-  console.log(res);
-})
+const envoy = Envoy.getInstance;
+// envoy.API.locations().then(res => {
+//   console.log(res[0].attributes.name, res[0].attributes.address, '<- This is the place!');
+// })
 
 slackApp.use(envoy);
 // Test message to interact with app via messages.

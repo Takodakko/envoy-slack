@@ -21,16 +21,16 @@ while (start.isBefore(end)) {
  */
 const createInviteBuilder = function(locations) {
   console.log(locations, 'locations in Invite builder');
-  // const locationSelections = locations.map((locationObject, ind) => {
-  //   return ({
-  //     "text": {
-  //       "type": "plain_text",
-  //       "text": locationObject.attributes.name,
-  //       "emoji": true
-  //   },
-  //   "value": `value-${ind}`
-  //   })
-  // });
+  const locationSelections = locations.map((locationObject, ind) => {
+    return ({
+      "text": {
+        "type": "plain_text",
+        "text": locationObject,
+        "emoji": true
+    },
+    "value": `value-${ind}`
+    })
+  });
   const modal = {
     type: 'modal',
     callback_id: 'invite_modal',
@@ -109,33 +109,33 @@ const createInviteBuilder = function(locations) {
               text: 'Location',
               emoji: true,
             },
-            // options: locations,
-            options: [
-                {
-                    "text": {
-                        "type": "plain_text",
-                        "text": "HQ",
-                        "emoji": true
-                    },
-                    "value": "value-0"
-                },
-                {
-                    "text": {
-                        "type": "plain_text",
-                        "text": "Home",
-                        "emoji": true
-                    },
-                    "value": "value-1"
-                },
-                {
-                    "text": {
-                        "type": "plain_text",
-                        "text": "Coffee Shop",
-                        "emoji": true
-                    },
-                    "value": "value-2"
-                }
-            ],
+            options: locationSelections,
+            // options: [
+            //     {
+            //         "text": {
+            //             "type": "plain_text",
+            //             "text": "HQ",
+            //             "emoji": true
+            //         },
+            //         "value": "value-0"
+            //     },
+            //     {
+            //         "text": {
+            //             "type": "plain_text",
+            //             "text": "Home",
+            //             "emoji": true
+            //         },
+            //         "value": "value-1"
+            //     },
+            //     {
+            //         "text": {
+            //             "type": "plain_text",
+            //             "text": "Coffee Shop",
+            //             "emoji": true
+            //         },
+            //         "value": "value-2"
+            //     }
+            // ],
            },   
         },
         {

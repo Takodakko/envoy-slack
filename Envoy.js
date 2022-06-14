@@ -45,11 +45,12 @@ class Envoy {
         throw new Error('Use Envoy.getInstance()');
     }
 
-    static getInstance () {
+    static getInstance ({context, next}) {
         if (!Envoy.instance){
             Envoy.instance = new PrivateEnvoy();
         }
-        return Envoy.instance;
+        context.envoy = Envoy.instance;
+        next();
     }
 }
 

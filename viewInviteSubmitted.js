@@ -5,7 +5,7 @@ const moment = require('moment');
  */
 const viewInviteSubmitted = async function({ack, client, view, payload, body, logger, context}) {
   await ack();
-  const envoyApi = context.envoyAPI;
+  const envoyApi = context.envoy.API;
   const user = body.user.id;
   // console.log(view.state.values, 'view.state.values');
   console.log(view.state.values.arrival_time.time.selected_option.value, 'selected time');
