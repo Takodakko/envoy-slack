@@ -1,10 +1,16 @@
 const createInviteBuilder = require('./createInviteBuilder');
-
-const actionCreateInvite = async function({ack, payload, client, body}) {
+/**  
+ * Event to run when invite button on home is clicked.  .action listens for UI interactions like button clicks. 
+ */
+const actionCreateInvite = async function({ack, payload, client, body, context}) {
   await ack();
   // console.log(client, 'client');
   // console.log(body, 'body');
-  const modal = createInviteBuilder();
+  const locationsMeta = await context.envoy.API.locations();
+  const locations = locationsMeta.map((locationObject) => {
+    return locationObject.attributes.name;
+  })
+  const modal = createInviteBuilder(locations);
   try {
     const response = await client.views.open({
       /* the user who opened the modal */

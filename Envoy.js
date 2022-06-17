@@ -45,11 +45,12 @@ class Envoy {
         throw new Error('Use Envoy.getInstance()');
     }
 
-    static getInstance () {
+    static getInstance ({context, next}) {
         if (!Envoy.instance){
             Envoy.instance = new PrivateEnvoy();
         }
-        return Envoy.instance;
+        context.envoy = Envoy.instance;
+        next();
     }
 }
 
@@ -85,13 +86,63 @@ getAccessToken = async function() {
         }
     };
     
-    request(options, async function (error, response) {
-        if (error) throw new Error(error);
-        accessToken = JSON.parse(response.body).access_token;
-        console.log(accessToken, 'I am an access token!');
-        await function() {
-            envoyAPI = new EnvoyAPI(accessToken);
-            
+//   await next();
+// }
+
+// class Envoy {
+//     constructor(test) {
+//       this.test = test
+//     }
+    const getAccessToken = async function({context, next}) {
+        // let accessToken = '';
+        // let envoyAPI = {};
+        console.log('Global Middleware 1');
+        const TOKEN_SCOPE = [
+            'token.refresh', 
+            'locations.read', 
+            'companies.read',
+            'flows.read',
+            'invites.read',
+            'invites.write',
+            'employees.read',
+            'reservations.read',
+            'reservations.write',
+            'work-schedules.read',
+            'work-schedules.write',
+        ].join();
+        const options = {
+            'method': 'POST',
+            'url': 'https://api.envoy.com/oauth2/token',
+            'headers': {
+                'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
+                json: true
+            },
+            formData: {
+                'username': process.env.API_USERNAME,
+                'password': process.env.API_USER_PASSWORD,
+                'scope': TOKEN_SCOPE,
+                'grant_type': 'password',
+            }
+        };
+        // context.test = 'this is a test';
+        try {
+              request(options, async function (error, response) {
+                if (error) throw new Error(error);
+                let accessToken = await JSON.parse(response.body).access_token;
+                console.log(accessToken, 'I am an access token!');
+                // const envoyApi = new EnvoyAPI(accessToken);
+                // context.envoyAPI = envoyApi;
+                context.accessToken = accessToken;
+                // console.log(context.envoyAPI, 'context.envoyAPI in Envoy.js');
+            });
+            // context.accessToken = accessToken;
+            // const envoyApi = new EnvoyAPI(accessToken);
+                // context.envoyAPI = envoyApi;
+                //console.log(context.envoyAPI, 'context.envoyAPI in Envoy.js');
+            //return envoyApi;
+        }
+        catch(err) {
+            throw err
         }
         
     });

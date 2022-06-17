@@ -1,6 +1,8 @@
 const Envoy = require('./Envoy');
-
-const appHomeOpenedBuilder = async function() {
+/**  
+ * Builds JSON block UI for home tab.
+ */
+const appHomeOpenedBuilder = async function(locations) {
   let today = new Date();
   let todayDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
   
@@ -95,23 +97,6 @@ const appHomeOpenedBuilder = async function() {
         image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
         alt_text: "inspiration"
       },
-      // {
-      //   type: "section",
-      //   block_id: "invite_button_section",
-      //   text: {
-      //     type: "plain_text",
-      //     text: "Make an Invitation"
-      //   },
-      //   accessory: {
-      //     type: "button",
-      //     text: {
-      //       type: "plain_text",
-      //       text: "Invite"
-      //     },
-      //     value: "create_invite",
-      //     action_id: "create_invite"
-      //   }
-      // },
       {
         type: "actions",
         elements: [
@@ -129,6 +114,18 @@ const appHomeOpenedBuilder = async function() {
       }
     ],
   };
+  locations.forEach((locationObject, ind) => {
+    homeView.blocks.push(
+      {
+        type: 'section',
+        block_id: `location_name_${ind.toString()}`,
+        text: {
+          type: 'mrkdwn',
+          text: `Your company has the following ${locations.length === 1 ? 'location:' : 'locations:'} *${locationObject.attributes.name}*`,
+        },
+      }
+    )
+  })
   return homeView;
 };
 
