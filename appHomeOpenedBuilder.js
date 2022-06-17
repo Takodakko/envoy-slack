@@ -31,7 +31,7 @@ const appHomeOpenedBuilder = async function(locations) {
         },
       },
       {
-        "type": "header",
+        "type": "section",
         "text": {
           "type": "plain_text",
           "text": `Today, ${todayDate}`,
@@ -41,26 +41,26 @@ const appHomeOpenedBuilder = async function(locations) {
       {
         "type": "divider"
       },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "Location:"
-        },
-        "accessory": {
-          "type": "static_select",
-          "placeholder": {
-            "type": "plain_text",
-            "text": "Select a Location",
-            "emoji": true
-          },
-          "options": [],
-          "action_id": "static_select-action"
-        }
-      },
-      {
-        "type": "divider"
-      },
+      // {
+      //   "type": "section",
+      //   "text": {
+      //     "type": "mrkdwn",
+      //     "text": "Location:"
+      //   },
+      //   "accessory": {
+      //     "type": "static_select",
+      //     "placeholder": {
+      //       "type": "plain_text",
+      //       "text": "Select a Location",
+      //       "emoji": true
+      //     },
+      //     "options": ['chndsuavoenauo'],
+      //     "action_id": "static_select-action"
+      //   }
+      // },
+      // {
+      //   "type": "divider"
+      // },
       {
         type: 'section',
         block_id: "open_message",
