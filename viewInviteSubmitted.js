@@ -23,14 +23,20 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   const inviteID = payload.id + payload.team_id + now;
   
   const guestName = view.state.values.guest_full_name.guest_full_name.value;
+  const guestEmail = view.state.values.guest_email.guest_email.value;
+  const notes = view.state.values.notes.notes.value;
+  const sendEmail = view.state.values.send_email.send_email.value === '0' ? true : false;
   const envoyInviteObject = {
     invite: {
       inviteId: inviteID,
       expectedArrivalAt: arrivalTime,
       invitee: {
-          name: guestName
+          name: guestName,
+          email: guestEmail
       },
-      locationId: locationSelected
+      locationId: locationSelected,
+      notes: notes,
+      sendEmailToInvitee: sendEmail
     }
   };
   try {
