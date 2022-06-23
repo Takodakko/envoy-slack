@@ -6,6 +6,7 @@ const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk')
  */
 async function getAccessToken() {
     let accessToken = '';
+    let refreshToken = '';
     const TOKEN_SCOPE = [
         'token.refresh', 
         'locations.read', 
@@ -37,7 +38,9 @@ async function getAccessToken() {
     request(options, function (error, response) {
         if (error) throw new Error(error);
         accessToken = JSON.parse(response.body).access_token;
-        console.log(accessToken); 
+        refreshToken = JSON.parse(response.body).refresh_token;
+        console.log('access token: ', accessToken);
+        console.log('refresh token: ', refreshToken); 
     });
 }
 

@@ -1,5 +1,5 @@
-const moment = require('moment');
-//const moment = require('moment-timezone');
+// const moment = require('moment');
+const timeAdjuster = require('./timeAdjuster');
 /**  
  * Event to run when invite modal is submitted.  .view listens for modal view requests. 
  */
@@ -7,12 +7,18 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   await ack();
   const envoyApi = context.envoy.API;
   const user = body.user.id;
-  // console.log(view.state.values, 'view.state.values');
-  console.log(view.state.values.arrival_time.time.selected_option.value, 'selected time');
-  
-  //const timezone = 'T7';
-  const timeSelected = view.state.values.arrival_time.time.selected_option.value.slice(0, -3);
-  const arrivalTime = view.state.values.arrival_date.date.selected_date + "T10:" + timeSelected + "Z";
+  const locationData = await envoyApi.locations();
+  // console.log(locationData, 'locationData');
+  const timeZone = locationData[0].attributes.timezone;
+  // console.log(timeZone, 'the time zone');
+  const rawTime = view.state.values.arrival_time.time.selected_option.value;
+  // console.log(rawTime, 'the raw time value selected');
+  // console.log(rawTime.length, 'length of time value');
+  // const timeSelected = view.state.values.arrival_time.time.selected_option.value.slice(0, -3);
+  const timeSelected = view.state.values.arrival_time.time.selected_option.value;
+  const dateSelected = view.state.values.arrival_date.date.selected_date;
+  //const arrivalTime = view.state.values.arrival_date.date.selected_date + "T" + timeSelected + ":00Z";
+  const arrivalTime = timeAdjuster(dateSelected, timeSelected, timeZone);
   console.log(arrivalTime, 'arrivalTime');
   // const date = new Date();
   const now = Date.now().toString();
