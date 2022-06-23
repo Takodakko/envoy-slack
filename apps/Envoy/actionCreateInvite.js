@@ -1,4 +1,4 @@
-const createInviteBuilder = require('./createInviteBuilder');
+const createInviteBuilder = require('../../used/createInviteBuilder');
 
 const actionCreateInvite = async function({ack, payload, client, body}) {
   await ack();

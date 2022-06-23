@@ -1,4 +1,4 @@
-const createInviteBuilder = require('./createInviteBuilder');
+const createInviteBuilder = require('../../used/createInviteBuilder');
 
 const shortcutCreateInvite = async function({ack, client, payload, event, body}) {
     await ack();

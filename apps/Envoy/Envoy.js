@@ -2,6 +2,27 @@ require('dotenv').config();
 const request = require('request');
 const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 
+class PrivateEnvoy {
+    constructor() {
+        this.API = new EnvoyAPI(process.env.ENVOY_BEARER_TOKEN);
+    }
+}
+
+class Envoy {
+    constructor() {
+        throw new Error('Use Envoy.getInstance()');
+    }
+
+    static getInstance () {
+        if (!Envoy.instance){
+            Envoy.instance = new PrivateEnvoy();
+        }
+        return Envoy.instance;
+    }
+}
+
+module.exports = Envoy;
+
 // let accessToken = '';
 // let envoyAPI = {};
 // const TOKEN_SCOPE = [
@@ -33,25 +54,6 @@ const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI 
 //       });
 //     }
 // };
-
-class PrivateEnvoy {
-    constructor() {
-        this.API = new EnvoyAPI(process.env.ENVOY_BEARER_TOKEN);
-    }
-}
-
-class Envoy {
-    constructor() {
-        throw new Error('Use Envoy.getInstance()');
-    }
-
-    static getInstance () {
-        if (!Envoy.instance){
-            Envoy.instance = new PrivateEnvoy();
-        }
-        return Envoy.instance;
-    }
-}
 
 /*
 getAccessToken = async function() {
@@ -100,4 +102,3 @@ getAccessToken = async function() {
 */
 
 //module.exports = getAccessToken;
-module.exports = Envoy;
