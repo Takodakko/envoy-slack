@@ -4,25 +4,13 @@ const createInviteBuilder = require('./createInviteBuilder');
  */
 const commandCreateInvite = async function({ack, client, payload, context}) {
     await ack();
-    // console.log(body, 'body');
-    const locationMeta = await context.envoyAPI.locations();
+    const locationMeta = await context.envoy.API.locations();
     const locations = locationMeta.map((locationObject) => {
       return {locationName: locationObject.attributes.name, locationId: locationObject.id};
     });
     console.log(locations, 'locations in commandCreateInvite');
     const modal = createInviteBuilder(locations);
-    // const locationSelections = locations.map((locationObject) => {
-    //   const oneLocation = {
-    //     "text": {
-    //       "type": "plain_text",
-    //       "text": locationObject.locationName,
-    //       "emoji": true
-    //   },
-    //   "value": locationObject.locationId
-    //   }
-    //   return oneLocation;
-    // });
-    // console.log(locationSelections, 'locationSelections');
+    
     const userId = payload.user_id;
     let user;
     try {
@@ -30,13 +18,6 @@ const commandCreateInvite = async function({ack, client, payload, context}) {
             user: userId
         })
     
-    // console.log(locations, 'locations in commandCreateInvite');
-  // const modal = createInviteBuilder(locations);
-  // const userEmail = user.user.profile.email;
-//   console.log(user.user.profile.email, 'user');
-  
-    // console.log(locationSelections, 'locationSelections');
-    // const modal = createInviteBuilder(locations);
     const response = await client.views.open({
       /* the user who opened the modal */
       user_id: payload.user,
