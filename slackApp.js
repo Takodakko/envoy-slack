@@ -29,7 +29,7 @@ if (!process.env.SLACK_CLIENT_SECRET || !process.env.SLACK_CLIENT_ID) {
   //contactAdminMessage();
   console.log('contact your admin');
 }
-//getAccessToken();
+// getAccessToken();
 /*
 * EXAMPLE USE
 *
