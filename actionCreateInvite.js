@@ -5,7 +5,7 @@ const createInviteBuilder = require('./createInviteBuilder');
 const actionCreateInvite = async function({ack, payload, client, body, context}) {
   await ack();
   const locationsMeta = await context.envoy.API.locations();
-  console.log(locationsMeta, 'locationsMeta');
+  //console.log(locationsMeta, 'locationsMeta');
   const locations = locationsMeta.map((locationObject) => {
     return {locationName: locationObject.attributes.name, locationId: locationObject.id};
   });
