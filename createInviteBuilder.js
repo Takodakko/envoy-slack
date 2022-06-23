@@ -21,14 +21,14 @@ while (start.isBefore(end)) {
  */
 const createInviteBuilder = function(locations) {
   console.log(locations, 'locations in Invite builder');
-  const locationSelections = locations.map((locationObject, ind) => {
+  const locationSelections = locations.map((locationObject) => {
     return ({
       "text": {
         "type": "plain_text",
-        "text": locationObject,
+        "text": locationObject.locationName,
         "emoji": true
     },
-    "value": `value-${ind}`
+    "value": locationObject.locationId
     })
   });
   const modal = {
@@ -110,32 +110,6 @@ const createInviteBuilder = function(locations) {
               emoji: true,
             },
             options: locationSelections,
-            // options: [
-            //     {
-            //         "text": {
-            //             "type": "plain_text",
-            //             "text": "HQ",
-            //             "emoji": true
-            //         },
-            //         "value": "value-0"
-            //     },
-            //     {
-            //         "text": {
-            //             "type": "plain_text",
-            //             "text": "Home",
-            //             "emoji": true
-            //         },
-            //         "value": "value-1"
-            //     },
-            //     {
-            //         "text": {
-            //             "type": "plain_text",
-            //             "text": "Coffee Shop",
-            //             "emoji": true
-            //         },
-            //         "value": "value-2"
-            //     }
-            // ],
            },   
         },
         {
