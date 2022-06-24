@@ -11,7 +11,7 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   // console.log(rawTime, 'the raw time value selected');
   const timeSelected = view.state.values.arrival_time.time.selected_option.value;
   const dateSelected = view.state.values.arrival_date.date.selected_date;
-  const locationSelected = view.state.values.location.location.selected_option.value;
+  const locationSelected = view.state.values.location_guest_type.location.selected_option.value;
   let timeZone = '';
   locationData.forEach((locationObject) => {
     if (locationObject.id === locationSelected) {

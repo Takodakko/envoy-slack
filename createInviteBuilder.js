@@ -19,24 +19,38 @@ while (start.isBefore(end)) {
 /**
  * Creates the JSON blocks for the invitation modal.
  */
-const createInviteBuilder = function(locations) {
-  console.log(locations, 'locations in Invite builder');
-  const locationSelections = locations.map((locationObject) => {
+const createInviteBuilder = function(locationsAndFlows) {
+  // console.log(locations, 'locations in Invite builder');
+  const locationSelections = locationsAndFlows.map((locationObject) => {
     return ({
-      "text": {
-        "type": "plain_text",
-        "text": locationObject.locationName,
-        "emoji": true
+      text: {
+        type: "plain_text",
+        text: locationObject.locationName,
+        emoji: true
     },
-    "value": locationObject.locationId
+    value: locationObject.locationId
     })
   });
+  const flowsSelection = locationsAndFlows.map((locationObject) => {
+    return (locationObject.flows.map((flow) => {
+      return ({
+        text: {
+          type: "plain_text",
+          text: `${flow.attributes.name}`,
+          emoji: true
+      },
+      value: `${locationObject.locationId}-${flow.id}`
+      })
+    }))
+  });
+  //flowsSelection.flat();
+  console.log(flowsSelection, 'flowsSelection');
   const modal = {
     type: 'modal',
     callback_id: 'invite_modal',
     title: {
       type: 'plain_text',
-      text: 'Make an Invitation'
+      text: 'New Invite'
     },
     blocks: [
       {
@@ -45,6 +59,34 @@ const createInviteBuilder = function(locations) {
           type: 'mrkdwn',
           text: 'Fill in the invite details below:',
               },
+      },
+      {
+        type: 'actions',
+        block_id: 'location_guest_type',
+        elements: [
+          {
+            action_id: 'location',
+            type: 'static_select',
+            action_id: 'location',
+            placeholder: {
+              type: 'plain_text',
+              text: 'Location',
+              emoji: true,
+            },
+            options: locationSelections, 
+         },
+         {
+          action_id: 'visitor_type',
+          type: 'static_select',
+          action_id: 'visitor_type',
+          placeholder: {
+            type: 'plain_text',
+            text: 'Visitor Type',
+            emoji: true,
+          },
+          options: flowsSelection, 
+       },
+        ]
       },
       {
         type: 'input',
@@ -121,17 +163,17 @@ const createInviteBuilder = function(locations) {
       {
             type: 'input',
             block_id: 'host_name',
-            optional: false,
+            optional: true,
             label: {
                 type: 'plain_text',
-                text: 'Host Name'
+                text: `Host Name`
             },
             element: {
                 type: 'plain_text_input',
                 action_id: 'host_name',
             placeholder: {
                 type: 'plain_text',
-                text: 'Enter your name'
+                text: "Enter the host's name"
             }
         }
       },
@@ -148,25 +190,6 @@ const createInviteBuilder = function(locations) {
           text: 'Arrival Date',
              },
        },
-       {
-           type: "input",
-           block_id: 'location',
-           label: {
-               type: "plain_text",
-               text: "Location",
-               emoji: true
-           },
-           element: {
-            type: 'static_select',
-            action_id: 'location',
-            placeholder: {
-              type: 'plain_text',
-              text: 'Location',
-              emoji: true,
-            },
-            options: locationSelections,
-           },   
-        },
         {
             type: 'input',
             block_id: 'arrival_time',
