@@ -21,14 +21,14 @@ while (start.isBefore(end)) {
  */
 const createInviteBuilder = function(locations) {
   console.log(locations, 'locations in Invite builder');
-  const locationSelections = locations.map((locationObject, ind) => {
+  const locationSelections = locations.map((locationObject) => {
     return ({
       "text": {
         "type": "plain_text",
-        "text": locationObject,
+        "text": locationObject.locationName,
         "emoji": true
     },
-    "value": `value-${ind}`
+    "value": locationObject.locationId
     })
   });
   const modal = {
@@ -63,6 +63,61 @@ const createInviteBuilder = function(locations) {
         },
         }
       },
+      {
+        type: 'input',
+        optional: true,
+        block_id: 'guest_email',
+        label: {
+          type: 'plain_text',
+          text: 'Email of guest'
+        },
+        element: {
+          type: 'plain_text_input',
+          action_id: 'guest_email',
+          multiline: false,
+          placeholder: {
+            type: 'plain_text',
+            text: "Enter your guest's email"
+        },
+        }
+      },
+      {
+        type: "input",
+        optional: true,
+        block_id: 'send_email',
+        label: {
+            type: "plain_text",
+            text: "Email guest?",
+            emoji: true
+        },
+        element: {
+         type: 'static_select',
+         action_id: 'send_email',
+         placeholder: {
+           type: 'plain_text',
+           text: 'Email guest?',
+           emoji: true,
+         },
+         options: [
+          {
+						text: {
+							type: "plain_text",
+							text: "yes",
+							emoji: true
+						},
+						value: "0"
+					},
+					{
+						text: {
+							type: "plain_text",
+							text: "no",
+							emoji: true
+						},
+						value: "1"
+					}
+         ],
+        },   
+     },
       {
             type: 'input',
             block_id: 'host_name',
@@ -110,32 +165,6 @@ const createInviteBuilder = function(locations) {
               emoji: true,
             },
             options: locationSelections,
-            // options: [
-            //     {
-            //         "text": {
-            //             "type": "plain_text",
-            //             "text": "HQ",
-            //             "emoji": true
-            //         },
-            //         "value": "value-0"
-            //     },
-            //     {
-            //         "text": {
-            //             "type": "plain_text",
-            //             "text": "Home",
-            //             "emoji": true
-            //         },
-            //         "value": "value-1"
-            //     },
-            //     {
-            //         "text": {
-            //             "type": "plain_text",
-            //             "text": "Coffee Shop",
-            //             "emoji": true
-            //         },
-            //         "value": "value-2"
-            //     }
-            // ],
            },   
         },
         {
@@ -151,6 +180,24 @@ const createInviteBuilder = function(locations) {
               type: 'plain_text',
               text: 'Arrival Time',
             },
+        },
+        {
+          type: 'input',
+          optional: true,
+          block_id: 'notes',
+          label: {
+            type: 'plain_text',
+            text: 'Other notes'
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: 'notes',
+            multiline: true,
+            placeholder: {
+              type: 'plain_text',
+              text: "Enter other notes here"
+          },
+          }
         },
     ],
     submit: {

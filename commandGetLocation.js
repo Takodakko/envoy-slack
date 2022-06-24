@@ -1,15 +1,16 @@
-//const getAccessToken = require('./Envoy');
-// const envoyApi = app.envoyApi;
 /**  
-* Slash command to get the name of the user's location.
+* Slash command to get the names of the user's locations.
 */
 const commandGetLocation = async function({ack, say, context}) {
     ack();
-    let envoyApi = context.envoyAPI;
-    // console.log(envoyApi, 'the envoyAPI');
-    const body = await envoyApi.location('143497');
-    // console.log(body, 'body');
-    await say(`You are in the ${body.attributes.city} ${body.attributes.name} at ${body.attributes.address}`);
+    let envoyApi = context.envoy.API;
+    
+    const body = await envoyApi.locations();
+    
+    const locations = body.map((locationObject) => {
+      return `${locationObject.attributes.name} ${locationObject.attributes.address}`;
+    });
+    await say(`Your company has the following locations: ${locations}`);
 };
 
 module.exports = commandGetLocation;

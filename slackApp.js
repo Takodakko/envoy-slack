@@ -13,6 +13,7 @@ const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError 
 const request = require('request');  //Change to Axios
 const axios = require('axios');
 const Envoy = require('./Envoy');
+const getAccessToken = require('./getAccessToken');
 
 const slackApp = new App(
   {
@@ -28,7 +29,7 @@ if (!process.env.SLACK_CLIENT_SECRET || !process.env.SLACK_CLIENT_ID) {
   //contactAdminMessage();
   console.log('contact your admin');
 }
-
+// getAccessToken();
 /*
 * EXAMPLE USE
 *

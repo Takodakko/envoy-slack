@@ -31,35 +31,15 @@ const appHomeOpenedBuilder = async function(locations) {
         },
       },
       {
-        "type": "header",
-        "text": {
-          "type": "plain_text",
-          "text": `Today, ${todayDate}`,
-          "emoji": true
+        type: "section",
+        text: {
+          type: "plain_text",
+          text: `Today, ${todayDate}`,
+          emoji: true
         }
       },
       {
-        "type": "divider"
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "Location:"
-        },
-        "accessory": {
-          "type": "static_select",
-          "placeholder": {
-            "type": "plain_text",
-            "text": "Select a Location",
-            "emoji": true
-          },
-          "options": [],
-          "action_id": "static_select-action"
-        }
-      },
-      {
-        "type": "divider"
+        type: "divider"
       },
       {
         type: 'section',
@@ -114,18 +94,22 @@ const appHomeOpenedBuilder = async function(locations) {
       }
     ],
   };
-  locations.forEach((locationObject, ind) => {
+  let locationNames = '';
+  locations.forEach((locationObject) => {
+    locationNames = locationNames + locationObject.attributes.name + ', ';
+  });
+  locationNames = locationNames.slice(0, -2);
     homeView.blocks.push(
       {
         type: 'section',
-        block_id: `location_name_${ind.toString()}`,
+        block_id: `location_names`,
         text: {
           type: 'mrkdwn',
-          text: `Your company has the following ${locations.length === 1 ? 'location:' : 'locations:'} *${locationObject.attributes.name}*`,
+          text: `Your company has the following ${locations.length === 1 ? 'location:' : 'locations:'} *${locationNames}*`,
         },
       }
     )
-  })
+  
   return homeView;
 };
 
