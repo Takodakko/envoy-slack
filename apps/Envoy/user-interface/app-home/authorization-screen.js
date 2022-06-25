@@ -42,7 +42,7 @@ const authorizationScreen = (authUrl) => {
                         },
                         "value": "authorize-with-envoy",
                         "action_id": "authorize-with-envoy",
-                        "url": "www.envoy.com"
+                        "url": authUrl
                     }
                 ]
             }

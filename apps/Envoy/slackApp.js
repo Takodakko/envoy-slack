@@ -1,4 +1,11 @@
-const { App } = require('@slack/bolt');
+const express = require('express');
+const session = require('express-session');
+const { App, ExpressReceiver, LogLevel } = require('@slack/bolt');
+const { registerListeners } = require('./listeners');
+const { registerCustomRoutes } = require('./routes');
+
+
+//const { App } = require('@slack/bolt');
 const { ErrorHandler } = require('@slack/bolt');
 const { LogLevel } = require("@slack/logger");
 require('dotenv').config();
@@ -13,22 +20,85 @@ const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError 
 const request = require('request');  //Change to Axios
 const axios = require('axios');
 const Envoy = require('./Envoy');
-const { registerListeners } = require('./listeners');
 
-const slackApp = new App(
-  {
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-    token: process.env.SLACK_BOT_TOKEN,
-    clientId: process.env.SLACK_CLIENT_ID,
-    clientSecret: process.env.SLACK_CLIENT_SECRET,
-    logLevel: LogLevel.DEBUG,
-  }
+let logLevel;
+switch (process.env.LOG_LEVEL) {
+    case 'debug':
+        logLevel = LogLevel.DEBUG;
+        break;
+    case 'info':
+        logLevel = LogLevel.INFO;
+        break;
+    case 'warn':
+        logLevel = LogLevel.WARN;
+        break;
+    case 'error':
+        logLevel = LogLevel.ERROR;
+        break;
+    default:
+        logLevel = LogLevel.INFO;
+}
+
+// Create custom express app to be able to use express-session middleware
+const app = express();
+app.use(
+    session({
+        secret: config.hmacKey,
+        resave: true,
+        saveUninitialized: true
+    })
 );
 
-if (!process.env.SLACK_CLIENT_SECRET || !process.env.SLACK_CLIENT_ID) {
-  //contactAdminMessage();
-  console.log('contact your admin');
-}
+// Use custom ExpressReceiver to be able to use express-session middleware
+const receiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+  app
+});
+
+// Initializes your app with your bot token and signing secret
+const slackApp = new App({
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+  token: process.env.SLACK_BOT_TOKEN,
+  clientId: process.env.SLACK_CLIENT_ID,
+  clientSecret: process.env.SLACK_CLIENT_SECRET,
+  logLevel,
+  receiver
+});
+
+// const slackApp = new App(
+//   {
+//     signingSecret: process.env.SLACK_SIGNING_SECRET,
+//     token: process.env.SLACK_BOT_TOKEN,
+//     clientId: process.env.SLACK_CLIENT_ID,
+//     clientSecret: process.env.SLACK_CLIENT_SECRET,
+//     logLevel: LogLevel.DEBUG,
+//   }
+// );
+
+// Defining ExpressReceiver custom routes
+receiver.router.use(express.json());
+registerCustomRoutes().forEach((route) => {
+    const method = route.method[0].toLowerCase();
+    receiver.router[method](route.path, route.handler);
+});
+
+// Register Listeners
+registerListeners(slackApp);
+
+// Assign Slack WebClient
+persistedClient.client = boltApp.client;
+
+/**
+ * @TODO
+ * Repurpose to use Envoy SDK as middleware as intended
+ */
+// Use global middleware to fetch Salesforce Authentication details
+//slackApp.use(authWithSalesforce);
+
+// if (!process.env.SLACK_CLIENT_SECRET || !process.env.SLACK_CLIENT_ID) {
+//   //contactAdminMessage();
+//   console.log('contact your admin');
+// }
 
 /*
 * EXAMPLE USE
@@ -45,15 +115,12 @@ envoyAPI.locations()
  * SINGLETON IMPLEMENT
  *
 */
-const envoy = Envoy.getInstance;
+//const envoy = Envoy.getInstance;
 // envoy.API.locations().then(res => {
 //   console.log(res[0].attributes.name, res[0].attributes.address, '<- This is the place!');
 // })
+//slackApp.use(envoy);
 
-// Register Listeners
-registerListeners(slackApp);
-
-slackApp.use(envoy);
 // Test message to interact with app via messages.
 slackApp.message('hi', messageSayHi);
 /* Slash command to open invite modal.  .command listens for slash commands entered into the message bar. */
@@ -80,5 +147,16 @@ slackApp.error((err) => {
   console.log(`Bolting on ${process.env.PORT}`);
 })();
 
-
-//module.exports = slackApp;
+// Asynchronous function to start the app
+(async () => {
+  try {
+      // Start your app
+      await boltApp.start(process.env.PORT || 3000);
+      console.log(
+          `⚡️ Bolt app is running on port ${process.env.PORT || 3000}!`
+      );
+  } catch (error) {
+      console.error('Unable to start App', error);
+      process.exit(1);
+  }
+})();

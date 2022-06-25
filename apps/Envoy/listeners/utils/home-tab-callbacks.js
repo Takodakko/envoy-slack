@@ -57,13 +57,7 @@ const _publishAuthScreen = async (client, slackUserId) => {
     await client.views.publish({
         user_id: slackUserId,
         view: authorizationScreen(
-            /**
-             * @TODO
-             * Replace this string with Envoy prompt link with client id and redirerct url
-             * 
-             * https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id={YOUR_CLIENT_ID}&redirect_uri={YOUR_REDIRECT_URL}&scope=locations.read+token.refresh
-             */
-            `${process.env.HEROKU_URL}/oauthstart/${slackUserId}`
+            `${process.env.NGROK_URL}/oauthstart/${slackUserId}`
         )
     });
 };
