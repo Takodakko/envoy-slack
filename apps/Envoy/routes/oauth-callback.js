@@ -57,14 +57,14 @@ const fetchOAuthToken = async (req, res) => {
         } else {
             res.writeHead(500);
             res.end(
-                'Missing Slack User Id in session. Failed to connect to Salesforce',
+                'Missing Slack User Id in session. Failed to connect to Envoy',
                 'utf-8'
             );
         }
     } catch (e) {
         console.error(e);
         res.writeHead(500);
-        res.end('Failed to connect to Salesforce', 'utf-8');
+        res.end('Failed to connect to Envoy', 'utf-8');
     }
 };
 
