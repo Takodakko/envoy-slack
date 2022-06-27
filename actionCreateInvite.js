@@ -15,8 +15,8 @@ const actionCreateInvite = async function({ack, payload, client, body, context})
     flowsMeta.push(...locationFlows)
     locationsAndFlows[i].flows = flowsMeta;
   }
-  console.log(locationsAndFlows, 'locations');
-  console.log(locationsAndFlows[0].flows, 'flows array');
+  // console.log(locationsAndFlows, 'locations');
+  // console.log(locationsAndFlows[0].flows, 'flows array');
   // const flows = flowsMeta.map((flowObject) => {
   //   return flowObject.attributes.name;
   // });
@@ -32,6 +32,7 @@ const actionCreateInvite = async function({ack, payload, client, body, context})
       view: modal
     });
     console.log(response);
+
   }
   catch (error) {
     console.error(error);

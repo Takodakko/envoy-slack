@@ -19,32 +19,72 @@ while (start.isBefore(end)) {
 /**
  * Creates the JSON blocks for the invitation modal.
  */
-const createInviteBuilder = function(locationsAndFlows) {
+const createInviteBuilder = function(locations, flows = []) {
   // console.log(locations, 'locations in Invite builder');
-  const locationSelections = locationsAndFlows.map((locationObject) => {
-    return ({
-      text: {
-        type: "plain_text",
-        text: locationObject.locationName,
-        emoji: true
-    },
-    value: locationObject.locationId
-    })
-  });
-  const flowsSelection = locationsAndFlows.map((locationObject) => {
-    return (locationObject.flows.map((flow) => {
+  let locationSelections;
+  if (Array.isArray(locations)) {
+    locationSelections = locations.map((locationObject) => {
       return ({
         text: {
           type: "plain_text",
-          text: `${flow.attributes.name}`,
+          text: locationObject.locationName,
           emoji: true
       },
-      value: `${locationObject.locationId}-${flow.id}`
+      value: locationObject.locationId
       })
-    }))
-  });
-  //flowsSelection.flat();
-  console.log(flowsSelection, 'flowsSelection');
+    });
+    // console.log(locationSelections, 'locationSelections');
+  } else {
+    locationSelections = [{
+      text: {
+        type: "plain_text",
+        text: locations.attributes.name,
+        emoji: true
+    },
+    value: locations.id
+    }]
+  }
+  
+  // let flowsSelection = locationsAndFlows.map((locationObject) => {
+  //   return (locationObject.flows.map((flow) => {
+  //     return ({
+  //       text: {
+  //         type: "plain_text",
+  //         text: `${flow.attributes.name}`,
+  //         emoji: true
+  //     },
+  //     value: `${locationObject.locationId}-${flow.id}`
+  //     })
+  //   }))
+  // });
+  // flowsSelection = flowsSelection.flat();
+  let flowsSelection = [];
+  if (flows.length === 0) {
+    flowsSelection = [{
+      text: {
+        type: 'plain_text',
+        text: 'choose a location first',
+        emoji: true,
+      },
+      value: 'unchosen'
+    }]
+  } else {
+    // console.log(flows, 'flows in invite builder');
+    flowsSelection = flows.map((flowsObject) => {
+          return ({
+            text: {
+              type: "plain_text",
+              text: `${flowsObject.text.text}`,
+              emoji: true
+          },
+          value: `${flowsObject.value}`
+          })
+        
+      });
+      flowsSelection = flowsSelection.flat();
+  }
+  
+  // console.log(flowsSelection, 'flowsSelection');
   const modal = {
     type: 'modal',
     callback_id: 'invite_modal',
@@ -67,7 +107,7 @@ const createInviteBuilder = function(locationsAndFlows) {
           {
             action_id: 'location',
             type: 'static_select',
-            action_id: 'location',
+            // action_id: 'location',
             placeholder: {
               type: 'plain_text',
               text: 'Location',
@@ -78,7 +118,7 @@ const createInviteBuilder = function(locationsAndFlows) {
          {
           action_id: 'visitor_type',
           type: 'static_select',
-          action_id: 'visitor_type',
+          // action_id: 'visitor_type',
           placeholder: {
             type: 'plain_text',
             text: 'Visitor Type',
