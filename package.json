@@ -26,7 +26,8 @@
     "@slack/bolt": "^3.11.1",
     "axios": "^0.27.2",
     "express": "^4.18.1",
-    "moment": "^2.29.3"
+    "moment": "^2.29.3",
+    "moment-timezone": "^0.5.34"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"

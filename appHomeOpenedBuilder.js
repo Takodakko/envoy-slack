@@ -1,6 +1,8 @@
 const Envoy = require('./Envoy');
-
-const appHomeOpenedBuilder = async function() {
+/**  
+ * Builds JSON block UI for home tab.
+ */
+const appHomeOpenedBuilder = async function(locations) {
   let today = new Date();
   let todayDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
   
@@ -29,35 +31,15 @@ const appHomeOpenedBuilder = async function() {
         },
       },
       {
-        "type": "header",
-        "text": {
-          "type": "plain_text",
-          "text": `Today, ${todayDate}`,
-          "emoji": true
+        type: "section",
+        text: {
+          type: "plain_text",
+          text: `Today, ${todayDate}`,
+          emoji: true
         }
       },
       {
-        "type": "divider"
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "Location:"
-        },
-        "accessory": {
-          "type": "static_select",
-          "placeholder": {
-            "type": "plain_text",
-            "text": "Select a Location",
-            "emoji": true
-          },
-          "options": [],
-          "action_id": "static_select-action"
-        }
-      },
-      {
-        "type": "divider"
+        type: "divider"
       },
       {
         type: 'section',
@@ -95,23 +77,6 @@ const appHomeOpenedBuilder = async function() {
         image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
         alt_text: "inspiration"
       },
-      // {
-      //   type: "section",
-      //   block_id: "invite_button_section",
-      //   text: {
-      //     type: "plain_text",
-      //     text: "Make an Invitation"
-      //   },
-      //   accessory: {
-      //     type: "button",
-      //     text: {
-      //       type: "plain_text",
-      //       text: "Invite"
-      //     },
-      //     value: "create_invite",
-      //     action_id: "create_invite"
-      //   }
-      // },
       {
         type: "actions",
         elements: [
@@ -129,6 +94,22 @@ const appHomeOpenedBuilder = async function() {
       }
     ],
   };
+  let locationNames = '';
+  locations.forEach((locationObject) => {
+    locationNames = locationNames + locationObject.attributes.name + ', ';
+  });
+  locationNames = locationNames.slice(0, -2);
+    homeView.blocks.push(
+      {
+        type: 'section',
+        block_id: `location_names`,
+        text: {
+          type: 'mrkdwn',
+          text: `Your company has the following ${locations.length === 1 ? 'location:' : 'locations:'} *${locationNames}*`,
+        },
+      }
+    )
+  
   return homeView;
 };
 
