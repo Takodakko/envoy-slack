@@ -81,3 +81,6 @@ slackApp.error((err) => {
 
 
 module.exports = slackApp;
+
+//https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id=34396186-e7a7-11ec-bb27-233d2fd743dd&redirect_uri=https://miguel-envoy.ngrok.io/envoy/auth&scope=locations.read+token.refresh
+//https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id=34396186-e7a7-11ec-bb27-233d2fd743dd&redirect_uri=https://app.slack.com/client/TUTTNA7A5/D03KDHXFJPK/app&scope=locations.read+token.refresh
