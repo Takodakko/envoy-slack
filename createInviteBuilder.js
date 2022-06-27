@@ -103,11 +103,12 @@ const createInviteBuilder = function(locations, flows = []) {
       {
         type: 'actions',
         block_id: 'location_guest_type',
+        // optional: false,
         elements: [
           {
             action_id: 'location',
             type: 'static_select',
-            // action_id: 'location',
+            // optional: false,
             placeholder: {
               type: 'plain_text',
               text: 'Location',
@@ -169,7 +170,7 @@ const createInviteBuilder = function(locations, flows = []) {
         block_id: 'send_email',
         label: {
             type: "plain_text",
-            text: "Email guest?",
+            text: "Send guest an email?",
             emoji: true
         },
         element: {

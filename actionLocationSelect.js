@@ -1,6 +1,6 @@
 const createInviteBuilder = require('./createInviteBuilder');
 /**
- * responds to user clicking on location dropdown in invitations modal
+ * populates visitor type dropdown based on user clicking on location dropdown in invitations modal
  */
 
 const actionLocationSelect = async function({ack, body, context, client}) {
@@ -26,10 +26,15 @@ const actionLocationSelect = async function({ack, body, context, client}) {
       })
   });
   const modal = createInviteBuilder(locations, locationFlows);
-  await client.views.update({
-    view_id: viewId,
-    view: modal
-  })
+  try {
+    await client.views.update({
+        view_id: viewId,
+        view: modal
+      })
+  }
+  catch(error) {
+    console.log(error);
+  }
 //   console.log(body, 'body when location button clicked');
 //   console.log(body.view.state.values.location_guest_type.location.selected_option.text.text, 'name of location in body');
 //   console.log(locationFlows, 'location flows based on location chosen');
