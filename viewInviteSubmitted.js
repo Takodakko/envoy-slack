@@ -11,8 +11,8 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   // console.log(rawTime, 'the raw time value selected');
   const timeSelected = view.state.values.arrival_time.time.selected_option.value;
   const dateSelected = view.state.values.arrival_date.date.selected_date;
-  const locationSelected = view.state.values.location_guest_type.location.selected_option.value;
-  const flowSelected = view.state.values.location_guest_type.visitor_type.selected_option.value;
+  const locationSelected = view.state.values.location_guest_type.location.selected_option ? view.state.values.location_guest_type.location.selected_option.value : null;
+  const flowSelected = view.state.values.location_guest_type.visitor_type.selected_option ? view.state.values.location_guest_type.visitor_type.selected_option.value : null;
   console.log(flowSelected, 'the flow selected for submission');
   let timeZone = '';
   locationData.forEach((locationObject) => {
@@ -52,6 +52,10 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   });
   }
   catch(err) {
+    await client.chat.postMessage({
+      text: 'There was a problem submitting your invitation. Make sure to choose a location, a visitor type, and to fill in all fields NOT marked "optional"',
+      channel: user
+    })
     console.log(err);
   }
   

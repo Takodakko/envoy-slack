@@ -6,6 +6,8 @@ const createInviteBuilder = require('./createInviteBuilder');
 const actionLocationSelect = async function({ack, body, context, client}) {
   await ack();
   const viewId = body.view.id;
+  const viewHash = body.view.hash;
+  console.log(body.view, 'body.view');
 //   console.log(viewId, 'viewId');
   const locationsMeta = await context.envoy.API.locations();
   const locations = locationsMeta.map((locationObject) => {
@@ -29,7 +31,20 @@ const actionLocationSelect = async function({ack, body, context, client}) {
   try {
     await client.views.update({
         view_id: viewId,
-        view: modal
+        hash: viewHash,
+        view: modal,
+        // values: {
+        //     location_guest_type: {
+        //         visitor_type: {
+        //             type: 'static_select',
+        //           placeholder: {
+        //             type: 'plain_text',
+        //             text: 'Visitor Type'
+        //           },
+        //           value: null
+        //         }
+        //     }
+        // }
       })
   }
   catch(error) {
