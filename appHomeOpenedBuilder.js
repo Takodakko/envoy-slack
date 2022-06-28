@@ -11,6 +11,30 @@ const appHomeOpenedBuilder = async function(locations) {
     callback_id: 'home_view',
     blocks: [
       {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "Authorize with Envoy",
+          "emoji": true
+        }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Authorize",
+              "emoji": true
+            },
+            "url": "google.com",
+            "value": "authorize-btn",
+            "action_id": "authorize-btn"
+          }
+        ]
+      },
+      {
         type: "header",
         text: {
           type: "plain_text",
