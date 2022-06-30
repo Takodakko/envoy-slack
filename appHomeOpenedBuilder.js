@@ -28,9 +28,9 @@ const appHomeOpenedBuilder = async function(locations) {
               "text": "Authorize",
               "emoji": true
             },
-            "url": "google.com",
             "value": "authorize-btn",
-            "action_id": "authorize-btn"
+            "action_id": "authorize-btn",
+            "url": "https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id=34396186-e7a7-11ec-bb27-233d2fd743dd&redirect_uri=https://miguel-envoy.ngrok.io/auth&scope=locations.read+token.refresh"
           }
         ]
       },
@@ -58,7 +58,7 @@ const appHomeOpenedBuilder = async function(locations) {
         type: "section",
         text: {
           type: "plain_text",
-          text: `Today, ${todayDate}`,
+          text: `Today`,
           emoji: true
         }
       },
@@ -116,7 +116,7 @@ const appHomeOpenedBuilder = async function(locations) {
           }
         ]
       }
-    ],
+    ]
   };
   let locationNames = '';
   locations.forEach((locationObject) => {
@@ -133,7 +133,7 @@ const appHomeOpenedBuilder = async function(locations) {
         },
       }
     )
-  
+    
   return homeView;
 };
 
