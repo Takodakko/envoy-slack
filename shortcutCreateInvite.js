@@ -1,8 +1,14 @@
 const createInviteBuilder = require('./createInviteBuilder');
-
-const shortcutCreateInvite = async function({ack, client, payload, event, body}) {
+/**  
+ * Shortcut option to open invite modal.  .shortcut listens for global/message shortcuts (found in the + menu near the message bar). 
+ */
+const shortcutCreateInvite = async function({ack, client, payload, context}) {
     await ack();
-  const modal = createInviteBuilder();
+    const locationsMeta = await context.envoy.API.locations();
+    const locations = locationsMeta.map((locationObject) => {
+      return {locationName: locationObject.attributes.name, locationId: locationObject.id};
+    });
+  const modal = createInviteBuilder(locations);
   try {
     const response = await client.views.open({
       /* the user who opened the modal */

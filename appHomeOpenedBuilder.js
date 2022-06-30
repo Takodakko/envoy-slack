@@ -1,6 +1,11 @@
-
-
-const appHomeOpenedBuilder = function() {
+const Envoy = require('./Envoy');
+/**  
+ * Builds JSON block UI for home tab.
+ */
+const appHomeOpenedBuilder = async function(locations) {
+  let today = new Date();
+  let todayDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  
   const homeView = {
     type: "home",
     callback_id: 'home_view',
@@ -24,6 +29,17 @@ const appHomeOpenedBuilder = function() {
           image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
           alt_text: "Envoy Logo"
         },
+      },
+      {
+        type: "section",
+        text: {
+          type: "plain_text",
+          text: `Today, ${todayDate}`,
+          emoji: true
+        }
+      },
+      {
+        type: "divider"
       },
       {
         type: 'section',
@@ -61,23 +77,6 @@ const appHomeOpenedBuilder = function() {
         image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
         alt_text: "inspiration"
       },
-      // {
-      //   type: "section",
-      //   block_id: "invite_button_section",
-      //   text: {
-      //     type: "plain_text",
-      //     text: "Make an Invitation"
-      //   },
-      //   accessory: {
-      //     type: "button",
-      //     text: {
-      //       type: "plain_text",
-      //       text: "Invite"
-      //     },
-      //     value: "create_invite",
-      //     action_id: "create_invite"
-      //   }
-      // },
       {
         type: "actions",
         elements: [
@@ -95,6 +94,22 @@ const appHomeOpenedBuilder = function() {
       }
     ],
   };
+  let locationNames = '';
+  locations.forEach((locationObject) => {
+    locationNames = locationNames + locationObject.attributes.name + ', ';
+  });
+  locationNames = locationNames.slice(0, -2);
+    homeView.blocks.push(
+      {
+        type: 'section',
+        block_id: `location_names`,
+        text: {
+          type: 'mrkdwn',
+          text: `Your company has the following ${locations.length === 1 ? 'location:' : 'locations:'} *${locationNames}*`,
+        },
+      }
+    )
+  
   return homeView;
 };
 

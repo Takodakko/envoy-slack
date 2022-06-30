@@ -48,7 +48,7 @@ async function getAccessToken() {
     request(options, function (error, response) {
         if (error) throw new Error(error);
         accessToken = JSON.parse(response.body).access_token;
-        // console.log(accessToken);
+        console.log(accessToken);
         envoyAPI = new EnvoyAPI(accessToken);
     });
 
@@ -61,106 +61,106 @@ getAccessToken();
  * that also verifies the Envoy signature in addition to
  * parsing the request body as JSON.
  */  
-app.use(middleware());
+// app.use(middleware());
 
 
-/**
- * Default landing page. Place any API calls here to be run on page load. 
- * A useful company id for testing is 110090, Test Company 1. LocationId : 143497
- */
-app.get('/', asyncHandler(async (req, res) => {
-    console.log(req, 'req in get /');
-    const { envoy } = req;  // "envoy" is the SDK
-    let result = {};
-    // result.createWorkSchedule = await envoyAPI.workSchedule({
-        //     'locationId': '143497', 
-        //     'email': 'fakefakefake@fakeMail.com', 
-        //     'expectedArrivalAt': '2022-06-03T08:00:00.000Z'
-        // })
-        // result.workSchedules = await envoyAPI.workSchedules({locationId: 143497});   
+// /**
+//  * Default landing page. Place any API calls here to be run on page load. 
+//  * A useful company id for testing is 110090, Test Company 1. LocationId : 143497
+//  */
+// app.get('/', asyncHandler(async (req, res) => {
+//     console.log(req, 'req in get /');
+//     const { envoy } = req;  // "envoy" is the SDK
+//     let result = {};
+//     // result.createWorkSchedule = await envoyAPI.workSchedule({
+//         //     'locationId': '143497', 
+//         //     'email': 'fakefakefake@fakeMail.com', 
+//         //     'expectedArrivalAt': '2022-06-03T08:00:00.000Z'
+//         // })
+//         // result.workSchedules = await envoyAPI.workSchedules({locationId: 143497});   
         
 
-    // Test cases
-    // result.locations = await envoyAPI.location('143497');
-    // result.workSchedules = await envoyAPI.workSchedules();  
-    // result.company = await envoyAPI.companies(); 
-    // result.employeeRecords = await envoyAPI.importEmployeeRecords('asdf', '4d0e94e558795d6a31ec14dde63d6235');
-    result.entry = await envoyAPI.entry(108010371);
+//     // Test cases
+//     // result.locations = await envoyAPI.location('143497');
+//     // result.workSchedules = await envoyAPI.workSchedules();  
+//     // result.company = await envoyAPI.companies(); 
+//     // result.employeeRecords = await envoyAPI.importEmployeeRecords('asdf', '4d0e94e558795d6a31ec14dde63d6235');
+//     result.entry = await envoyAPI.entry(108010371);
   
-    res.send(result);
-})); 
+//     res.send(result);
+// })); 
   
 
-app.get('/employee-sign-in', asyncHandler(async (req, res) => { 
-    const { envoy } = req;
+// app.get('/employee-sign-in', asyncHandler(async (req, res) => { 
+//     const { envoy } = req;
 
-    res.send('Sign In Hook Test'); 
-}));
+//     res.send('Sign In Hook Test'); 
+// }));
  
-app.post('/hello-options', (req, res) => {
-    res.send([
-        {
-            label: 'Hello',
-            value: 'Hello',
-        },
-        {
-            label: 'Hola',
-            value: 'Hola',
-        },
-        {
-            label: 'Aloha',
-            value: 'Aloha',
-        },
-    ]);
-});
-
-
-app.post('/goodbye-options', (req, res) => {
-    res.send([
-        {
-            label: 'Goodbye',
-            value: 'Goodbye',
-        },
-        {
-            label: 'Adios',
-            value: 'Adios',
-        },
-        {
-            label: 'Aloha',
-            value: 'Aloha',
-        },
-    ]);
-});
-
-
-app.post('/visitor-sign-in', async (req, res) => {
-    const envoy = req.envoy; // our middleware adds an "envoy" object to req.
-    const job = envoy.job;
-    const hello = envoy.meta.config.HELLO;
-    const visitor = envoy.payload;
-    const visitorName = visitor.attributes['full-name'];
-
-    const message = `${hello} ${visitorName}!`; // our custom greeting
-    await job.attach({ label: 'Hello', value: message }); // show in the Envoy dashboard.
-
-    res.send({ hello });
-});
-
-app.post('/visitor-sign-out', async (req, res) => {
-    const envoy = req.envoy; // our middleware adds an "envoy" object to req.
-    const job = envoy.job;
-    const goodbye = envoy.meta.config.GOODBYE;
-    const visitor = envoy.payload;
-    const visitorName = visitor.attributes['full-name'];
-
-    const message = `${goodbye} ${visitorName}!`;
-    await job.attach({ label: 'Goodbye', value: message });
-
-    res.send({ goodbye });
-});
-
-app.use(errorMiddleware());
-
-// const listener = app.listen(process.env.PORT || 0, () => {
-//     console.log(`Listening on port ${listener.address().port}`);
+// app.post('/hello-options', (req, res) => {
+//     res.send([
+//         {
+//             label: 'Hello',
+//             value: 'Hello',
+//         },
+//         {
+//             label: 'Hola',
+//             value: 'Hola',
+//         },
+//         {
+//             label: 'Aloha',
+//             value: 'Aloha',
+//         },
+//     ]);
 // });
+
+
+// app.post('/goodbye-options', (req, res) => {
+//     res.send([
+//         {
+//             label: 'Goodbye',
+//             value: 'Goodbye',
+//         },
+//         {
+//             label: 'Adios',
+//             value: 'Adios',
+//         },
+//         {
+//             label: 'Aloha',
+//             value: 'Aloha',
+//         },
+//     ]);
+// });
+
+
+// app.post('/visitor-sign-in', async (req, res) => {
+//     const envoy = req.envoy; // our middleware adds an "envoy" object to req.
+//     const job = envoy.job;
+//     const hello = envoy.meta.config.HELLO;
+//     const visitor = envoy.payload;
+//     const visitorName = visitor.attributes['full-name'];
+
+//     const message = `${hello} ${visitorName}!`; // our custom greeting
+//     await job.attach({ label: 'Hello', value: message }); // show in the Envoy dashboard.
+
+//     res.send({ hello });
+// });
+
+// app.post('/visitor-sign-out', async (req, res) => {
+//     const envoy = req.envoy; // our middleware adds an "envoy" object to req.
+//     const job = envoy.job;
+//     const goodbye = envoy.meta.config.GOODBYE;
+//     const visitor = envoy.payload;
+//     const visitorName = visitor.attributes['full-name'];
+
+//     const message = `${goodbye} ${visitorName}!`;
+//     await job.attach({ label: 'Goodbye', value: message });
+
+//     res.send({ goodbye });
+// });
+
+// app.use(errorMiddleware());
+
+// // const listener = app.listen(process.env.PORT || 0, () => {
+// //     console.log(`Listening on port ${listener.address().port}`);
+// // });

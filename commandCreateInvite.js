@@ -1,22 +1,22 @@
 const createInviteBuilder = require('./createInviteBuilder');
-
-const commandCreateInvite = async function({ack, client, payload, event, body}) {
+/**  
+ * Slash command to open invite modal.  .command listens for slash commands entered into the message bar. 
+ */
+const commandCreateInvite = async function({ack, client, payload, context}) {
     await ack();
-    // console.log(body, 'body');
+    const locationMeta = await context.envoy.API.locations();
+    const locations = locationMeta.map((locationObject) => {
+      return {locationName: locationObject.attributes.name, locationId: locationObject.id};
+    });
+    const modal = createInviteBuilder(locations);
+    
     const userId = payload.user_id;
     let user;
     try {
         user = await client.users.info({
             user: userId
         })
-    }
-    catch(err) {
-        console.log(err);
-    }
-  const modal = createInviteBuilder();
-  const userEmail = user.user.profile.email;
-//   console.log(user.user.profile.email, 'user');
-  try {
+    
     const response = await client.views.open({
       /* the user who opened the modal */
       user_id: payload.user,
