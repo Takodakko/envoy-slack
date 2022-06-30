@@ -8,17 +8,7 @@ const commandCreateInvite = async function({ack, client, payload, context}) {
     const locations = locationMeta.map((locationObject) => {
       return {locationName: locationObject.attributes.name, locationId: locationObject.id};
     });
-    const flowsMeta = [];
-    for (let i = 0; i < locations.length; i++) {
-      const locationFlows = await context.envoy.API.flows(locations[i].locationId);
-      flowsMeta.push(...locationFlows)
-    }
-    
-    const flows = flowsMeta.map((flowObject) => {
-      return flowObject.attributes.name;
-    });
-    // console.log(locations, 'locations in commandCreateInvite');
-    const modal = createInviteBuilder(locations, flows);
+    const modal = createInviteBuilder(locations);
     
     const userId = payload.user_id;
     let user;
@@ -33,7 +23,6 @@ const commandCreateInvite = async function({ack, client, payload, context}) {
       /* the event that opened the modal is stored on both payload and body for a slash command */
       trigger_id: payload.trigger_id,
       /* the view object that makes the modal */
-      // view: createInviteBuilder(locations)
       view: modal
     });
     console.log(response);

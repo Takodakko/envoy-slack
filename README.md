@@ -1,2 +1,2 @@
 # envoy-slack-nodejs
-A nodejs client used for testing Envoy's SDK with Slack integration
+A nodejs client used for integrating Envoy's services with Slack
