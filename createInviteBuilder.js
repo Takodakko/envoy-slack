@@ -20,7 +20,6 @@ while (start.isBefore(end)) {
  * Creates the JSON blocks for the invitation modal.
  */
 const createInviteBuilder = function(locations, flows = []) {
-  // console.log(locations, 'locations in Invite builder');
   let locationSelections;
   if (Array.isArray(locations)) {
     locationSelections = locations.map((locationObject) => {
@@ -33,7 +32,6 @@ const createInviteBuilder = function(locations, flows = []) {
       value: locationObject.locationId
       })
     });
-    // console.log(locationSelections, 'locationSelections');
   } else {
     locationSelections = [{
       text: {
@@ -45,19 +43,6 @@ const createInviteBuilder = function(locations, flows = []) {
     }]
   }
   
-  // let flowsSelection = locationsAndFlows.map((locationObject) => {
-  //   return (locationObject.flows.map((flow) => {
-  //     return ({
-  //       text: {
-  //         type: "plain_text",
-  //         text: `${flow.attributes.name}`,
-  //         emoji: true
-  //     },
-  //     value: `${locationObject.locationId}-${flow.id}`
-  //     })
-  //   }))
-  // });
-  // flowsSelection = flowsSelection.flat();
   let flowsSelection = [];
   if (flows.length === 0) {
     flowsSelection = [{
@@ -69,7 +54,6 @@ const createInviteBuilder = function(locations, flows = []) {
       value: 'unchosen'
     }]
   } else {
-    // console.log(flows, 'flows in invite builder');
     flowsSelection = flows.map((flowsObject) => {
           return ({
             text: {
@@ -84,7 +68,6 @@ const createInviteBuilder = function(locations, flows = []) {
       flowsSelection = flowsSelection.flat();
   }
   
-  // console.log(flowsSelection, 'flowsSelection');
   const modal = {
     type: 'modal',
     callback_id: 'invite_modal',
@@ -102,13 +85,11 @@ const createInviteBuilder = function(locations, flows = []) {
       },
       {
         type: 'actions',
-        block_id: 'location_guest_type',
-        // optional: false,
+        block_id: 'location',
         elements: [
           {
-            action_id: 'location',
+            action_id: 'location_selected',
             type: 'static_select',
-            // optional: false,
             placeholder: {
               type: 'plain_text',
               text: 'Location',
@@ -116,18 +97,54 @@ const createInviteBuilder = function(locations, flows = []) {
             },
             options: locationSelections, 
          },
-         {
-          action_id: 'visitor_type',
+      //    {
+      //     action_id: 'visitor_type',
+      //     type: 'static_select',
+      //     // action_id: 'visitor_type',
+      //     placeholder: {
+      //       type: 'plain_text',
+      //       text: 'Visitor Type',
+      //       emoji: true,
+      //     },
+      //     options: flowsSelection, 
+      //  },
+        ]
+      },
+      // {
+      //   type: 'input',
+      //   block_id: 'location',
+      //   label: {
+      //     type: 'plain_text',
+      //     text: 'Choose a location'
+      //   },
+      //   element: {
+      //     type: 'static_select',
+      //     placeholder: {
+      //       type: 'plain_text',
+      //       text: 'Location',
+      //       emoji: true
+      //     },
+      //     options: locationSelections,
+      //     action_id: 'location_selected'
+      //   }
+      // },
+      {
+        type: 'input',
+        block_id: 'guest_type',
+        label: {
+          type: 'plain_text',
+          text: 'Choose a visitor type'
+        },
+        element: {
           type: 'static_select',
-          // action_id: 'visitor_type',
           placeholder: {
             type: 'plain_text',
             text: 'Visitor Type',
-            emoji: true,
+            emoji: true
           },
-          options: flowsSelection, 
-       },
-        ]
+          options: flowsSelection,
+          action_id: 'visitor_type'
+        }
       },
       {
         type: 'input',

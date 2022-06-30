@@ -68,7 +68,7 @@ slackApp.action('button_invite', actionCreateInvite);
 slackApp.shortcut('envoy_invite', shortcutCreateInvite);
 
 /* actions to respond to dropdown clicks on the location and visitor type buttons on the invitation modal */
-slackApp.action('location', actionLocationSelect);
+slackApp.action('location_selected', actionLocationSelect);
 slackApp.action('visitor_type', async ({ack, body}) => {
   await ack();
   console.log(body.view.state.values.location_guest_type.visitor_type.selected_option.value, 'flow id when visitor button clicked');

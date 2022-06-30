@@ -11,9 +11,8 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   // console.log(rawTime, 'the raw time value selected');
   const timeSelected = view.state.values.arrival_time.time.selected_option.value;
   const dateSelected = view.state.values.arrival_date.date.selected_date;
-  const locationSelected = view.state.values.location_guest_type.location.selected_option ? view.state.values.location_guest_type.location.selected_option.value : null;
-  const flowSelected = view.state.values.location_guest_type.visitor_type.selected_option ? view.state.values.location_guest_type.visitor_type.selected_option.value : null;
-  console.log(flowSelected, 'the flow selected for submission');
+  const locationSelected = view.state.values.location.location_selected.selected_option ? view.state.values.location.location_selected.selected_option.value : null;
+  const flowSelected = view.state.values.guest_type.visitor_type.selected_option ? view.state.values.guest_type.visitor_type.selected_option.value : null;
   let timeZone = '';
   locationData.forEach((locationObject) => {
     if (locationObject.id === locationSelected) {
@@ -44,7 +43,6 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   };
   try {
     const invitation = await envoyApi.createInviteV1(envoyInviteObject);
-    // console.log(invitation, invitation.id, 'the invitation');
     const inviteID = invitation.id;
     await client.chat.postMessage({
       text: `Your invitation for ${invitation.invitee.name} at ${rawTime} has been submitted as invitation # ${inviteID}!`,
