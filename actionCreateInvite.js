@@ -5,10 +5,22 @@ const createInviteBuilder = require('./createInviteBuilder');
 const actionCreateInvite = async function({ack, payload, client, body, context}) {
   await ack();
   const locationsMeta = await context.envoy.API.locations();
-  //console.log(locationsMeta, 'locationsMeta');
+  // const flowsMeta = [];
   const locations = locationsMeta.map((locationObject) => {
     return {locationName: locationObject.attributes.name, locationId: locationObject.id};
   });
+  // for (let i = 0; i < locationsAndFlows.length; i++) {
+  //   const flowsMeta = [];
+  //   const locationFlows = await context.envoy.API.flows(locationsAndFlows[i].locationId);
+  //   flowsMeta.push(...locationFlows)
+  //   locationsAndFlows[i].flows = flowsMeta;
+  // }
+  // console.log(locationsAndFlows, 'locations');
+  // console.log(locationsAndFlows[0].flows, 'flows array');
+  // const flows = flowsMeta.map((flowObject) => {
+  //   return flowObject.attributes.name;
+  // });
+  // console.log(flows, 'flows');
   const modal = createInviteBuilder(locations);
   try {
     const response = await client.views.open({
@@ -20,6 +32,7 @@ const actionCreateInvite = async function({ack, payload, client, body, context})
       view: modal
     });
     console.log(response);
+
   }
   catch (error) {
     console.error(error);

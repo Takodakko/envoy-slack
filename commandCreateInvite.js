@@ -8,7 +8,6 @@ const commandCreateInvite = async function({ack, client, payload, context}) {
     const locations = locationMeta.map((locationObject) => {
       return {locationName: locationObject.attributes.name, locationId: locationObject.id};
     });
-    console.log(locations, 'locations in commandCreateInvite');
     const modal = createInviteBuilder(locations);
     
     const userId = payload.user_id;
@@ -24,7 +23,6 @@ const commandCreateInvite = async function({ack, client, payload, context}) {
       /* the event that opened the modal is stored on both payload and body for a slash command */
       trigger_id: payload.trigger_id,
       /* the view object that makes the modal */
-      // view: createInviteBuilder(locations)
       view: modal
     });
     console.log(response);
