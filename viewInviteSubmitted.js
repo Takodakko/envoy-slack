@@ -11,7 +11,8 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   // console.log(rawTime, 'the raw time value selected');
   const timeSelected = view.state.values.arrival_time.time.selected_option.value;
   const dateSelected = view.state.values.arrival_date.date.selected_date;
-  const locationSelected = view.state.values.location.location.selected_option.value;
+  const locationSelected = view.state.values.location.location_selected.selected_option ? view.state.values.location.location_selected.selected_option.value : null;
+  const flowSelected = view.state.values.guest_type.visitor_type.selected_option ? view.state.values.guest_type.visitor_type.selected_option.value : null;
   let timeZone = '';
   locationData.forEach((locationObject) => {
     if (locationObject.id === locationSelected) {
@@ -35,13 +36,13 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
           email: guestEmail
       },
       locationId: locationSelected,
+      flowId: flowSelected,
       notes: notes,
       sendEmailToInvitee: sendEmail
     }
   };
   try {
     const invitation = await envoyApi.createInviteV1(envoyInviteObject);
-    console.log(invitation, invitation.id, 'the invitation???');
     const inviteID = invitation.id;
     await client.chat.postMessage({
       text: `Your invitation for ${invitation.invitee.name} at ${rawTime} has been submitted as invitation # ${inviteID}!`,
@@ -49,6 +50,10 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   });
   }
   catch(err) {
+    await client.chat.postMessage({
+      text: 'There was a problem submitting your invitation. Make sure to choose a location, a visitor type, and to fill in all fields NOT marked "optional"',
+      channel: user
+    })
     console.log(err);
   }
   

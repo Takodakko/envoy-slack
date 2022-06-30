@@ -8,8 +8,17 @@ const commandCreateInvite = async function({ack, client, payload, context}) {
     const locations = locationMeta.map((locationObject) => {
       return {locationName: locationObject.attributes.name, locationId: locationObject.id};
     });
-    console.log(locations, 'locations in commandCreateInvite');
-    const modal = createInviteBuilder(locations);
+    const flowsMeta = [];
+    for (let i = 0; i < locations.length; i++) {
+      const locationFlows = await context.envoy.API.flows(locations[i].locationId);
+      flowsMeta.push(...locationFlows)
+    }
+    
+    const flows = flowsMeta.map((flowObject) => {
+      return flowObject.attributes.name;
+    });
+    // console.log(locations, 'locations in commandCreateInvite');
+    const modal = createInviteBuilder(locations, flows);
     
     const userId = payload.user_id;
     let user;

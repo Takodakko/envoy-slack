@@ -7,6 +7,7 @@ const commandCreateInvite = require('./commandCreateInvite');
 const viewInviteSubmitted = require('./viewInviteSubmitted');
 const shortcutCreateInvite = require('./shortcutCreateInvite');
 const actionCreateInvite = require('./actionCreateInvite');
+const actionLocationSelect = require('./actionLocationSelect');
 const commandGetLocation = require('./commandGetLocation');
 const messageSayHi = require('./messageSayHi');
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
@@ -65,6 +66,13 @@ slackApp.view('invite_modal', viewInviteSubmitted);
 slackApp.action('button_invite', actionCreateInvite);
 /* Shortcut option to open invite modal.  .shortcut listens for global/message shortcuts (found in the + menu near the message bar). */
 slackApp.shortcut('envoy_invite', shortcutCreateInvite);
+
+/* actions to respond to dropdown clicks on the location and visitor type buttons on the invitation modal */
+slackApp.action('location_selected', actionLocationSelect);
+slackApp.action('visitor_type', async ({ack, body}) => {
+  await ack();
+  console.log(body.view.state.values.location_guest_type.visitor_type.selected_option.value, 'flow id when visitor button clicked');
+});
 
 /* Global ErrorHandler */ 
 slackApp.error((err) => {

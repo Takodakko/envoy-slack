@@ -8,7 +8,16 @@ const shortcutCreateInvite = async function({ack, client, payload, context}) {
     const locations = locationsMeta.map((locationObject) => {
       return {locationName: locationObject.attributes.name, locationId: locationObject.id};
     });
-  const modal = createInviteBuilder(locations);
+    const flowsMeta = [];
+    for (let i = 0; i < locations.length; i++) {
+      const locationFlows = await context.envoy.API.flows(locations[i].locationId);
+      flowsMeta.push(...locationFlows)
+    }
+    
+    const flows = flowsMeta.map((flowObject) => {
+      return flowObject.attributes.name;
+    });
+  const modal = createInviteBuilder(locations, flows);
   try {
     const response = await client.views.open({
       /* the user who opened the modal */
