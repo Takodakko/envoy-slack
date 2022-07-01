@@ -3,6 +3,7 @@ const appHomeOpenedBuilder = require('./appHomeOpenedBuilder');
  * Event to run when app is opened to home tab.  .action listens for UI interactions like button clicks. 
  */
 const eventAppHomeOpened = async ({client, payload, context}) => {    
+  console.log(context)
     try {
     const locations = await context.envoy.API.locations();
       /* view.publish is the method that your app uses to push a view to the Home tab */

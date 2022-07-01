@@ -1,7 +1,9 @@
-const { App } = require('@slack/bolt');
-const { ErrorHandler } = require('@slack/bolt');
-const { LogLevel } = require("@slack/logger");
+const express = require('express')
+const session = require('express-session')
+const { App, ExpressReceiver, LogLevel } = require('@slack/bolt');
+const { authWithEnvoy } = require('./apps/envoy/middleware/envoy-auth');
 require('dotenv').config();
+
 const eventAppHomeOpened = require('./eventAppHomeOpened');
 const commandCreateInvite = require('./commandCreateInvite');
 const viewInviteSubmitted = require('./viewInviteSubmitted');
@@ -10,15 +12,31 @@ const actionCreateInvite = require('./actionCreateInvite');
 const actionLocationSelect = require('./actionLocationSelect');
 const commandGetLocation = require('./commandGetLocation');
 const messageSayHi = require('./messageSayHi');
+
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 const request = require('request');  //Change to Axios
 const axios = require('axios');
 const Envoy = require('./Envoy');
 const getAccessToken = require('./getAccessToken');
-const express = require('express');
+//const envoy-auth = require('./apps/Envoy/middleware/envoy-auth')
 
+// Create custom express app to be able to use express-session middleware
 const app = express();
+app.use(
+    session({
+        secret: process.env.SLACK_SIGNING_SECRET,
+        resave: true,
+        saveUninitialized: true
+    })
+);
 
+// Use custom ExpressReceiver to be able to use express-session middleware
+const receiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+  app
+});
+
+// Initializes your app with your bot token and signing secret
 const slackApp = new App(
   {
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -26,24 +44,19 @@ const slackApp = new App(
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     logLevel: LogLevel.DEBUG,
+    receiver
   }
 );
 
-if (!process.env.SLACK_CLIENT_SECRET || !process.env.SLACK_CLIENT_ID) {
-  //contactAdminMessage();
-  console.log('contact your admin');
-}
-// getAccessToken();
-/*
-* EXAMPLE USE
-*
-envoyAPI.locations()
-  .then(res => {
-  console.log(res)
-}).catch(err => {
-  console.log(err)
-})
-*/
+// Defining ExpressReceiver custom routes
+receiver.router.use(express.json());
+registerCustomRoutes().forEach((route) => {
+    const method = route.method[0].toLowerCase();
+    receiver.router[method](route.path, route.handler);
+});
+
+// Use global middleware to fetch Salesforce Authentication details
+slackApp.use(authWithEnvoy);
 
 /**
  * SINGLETON IMPLEMENT
@@ -53,6 +66,8 @@ const envoy = Envoy.getInstance;
 // envoy.API.locations().then(res => {
 //   console.log(res[0].attributes.name, res[0].attributes.address, '<- This is the place!');
 // })
+
+slackApp.use(envoy-auth)
 
 slackApp.use(envoy);
 // Test message to interact with app via messages.
@@ -77,19 +92,16 @@ slackApp.action('visitor_type', async ({ack, body}) => {
   console.log(body.view.state.values.location_guest_type.visitor_type.selected_option.value, 'flow id when visitor button clicked');
 });
 
-/* Global ErrorHandler */ 
-slackApp.error((err) => {
-  console.error(err);
-});
-
+// Asynchronous function to start the app
 (async () => {
-  await slackApp.start(process.env.PORT);
-  console.log(`Bolting on ${process.env.PORT}`);
+  try {
+      // Start your app
+      await slackApp.start(process.env.PORT || 3000);
+      console.log(
+          `⚡️ Bolt app is running on port ${process.env.PORT || 3000}!`
+      );
+  } catch (error) {
+      console.error('Unable to start App', error);
+      process.exit(1);
+  }
 })();
-
-
-module.exports = slackApp;
-
-//https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id=34396186-e7a7-11ec-bb27-233d2fd743dd&redirect_uri=https://miguel-envoy.ngrok.io/envoy/auth&scope=locations.read+token.refresh
-//https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id=34396186-e7a7-11ec-bb27-233d2fd743dd&redirect_uri=https://app.slack.com/client/TUTTNA7A5/D03KDHXFJPK/app&scope=locations.read+token.refresh
-//module.exports = slackApp;
