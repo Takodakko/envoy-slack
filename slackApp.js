@@ -32,6 +32,23 @@ app.use(
         cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
     })
 );
+// app.use((req, res, next) => {
+//   let ackCalled = false;
+//   const ack = async () => {
+//     if (ackCalled) {
+//       return;
+//     }
+//     if (res.statusCode.toString()[0] !== '2') {
+//       res.status(500).send();
+//     } 
+//     else {
+//       res.sendStatus(res.statusCode);
+//       ackCalled = true;
+//     }
+//   }
+//   context.ack = ack;
+//   next();
+// })
 
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
@@ -63,22 +80,39 @@ registerCustomRoutes().forEach((route) => {
 
 // Register Listeners
 registerListeners(slackApp);
-
+// console.log(slackApp.listeners);
 // Assign Slack WebClient
 persistedClient.client = slackApp.client;
 
+// slackApp.use(({context, next}) => {
+//   let ackCalled = false;
+//   const ack = async () => {
+//     if (ackCalled) {
+//       return;
+//     }
+//     if (res.statusCode.toString()[0] !== '2') {
+//       res.status(500).send();
+//     } 
+//     else {
+//       res.sendStatus(res.statusCode);
+//       ackCalled = true;
+//     }
+//   }
+//   context.ack = ack;
+//   next();
+// })
 // Test message to interact with app via messages.
-slackApp.message('hi', messageSayHi);
+// slackApp.message('hi', messageSayHi);
 /* Slash command to open invite modal.  .command listens for slash commands entered into the message bar. */
 slackApp.command('/envoy-invite', commandCreateInvite);
 // Slash command to get the name of the user's location.
-slackApp.command('/location', commandGetLocation);
+// slackApp.command('/location', commandGetLocation);
 /* Event to run when app is opened to home tab.  .event listens for events from the Slack event API. */
 //slackApp.event('app_home_opened', eventAppHomeOpened);
 /* Event to run when invite modal is submitted.  .view listens for modal view requests. */
 slackApp.view('invite_modal', viewInviteSubmitted);
 /* Event to run when invite button on home is clicked.  .action listens for UI interactions like button clicks. */
-slackApp.action('button_invite', actionCreateInvite);
+// slackApp.action('button_invite', actionCreateInvite);
 /* Shortcut option to open invite modal.  .shortcut listens for global/message shortcuts (found in the + menu near the message bar). */
 slackApp.shortcut('envoy_invite', shortcutCreateInvite);
 
