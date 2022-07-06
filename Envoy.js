@@ -69,8 +69,8 @@ async function getAccessToken() {
         if (error) throw new Error(error);
         accessToken = JSON.parse(response.body).access_token;
         refreshToken = JSON.parse(response.body).refresh_token;
-        console.log('access token: ', accessToken);
-        console.log('refresh token: ', refreshToken); 
+        //console.log('access token: ', accessToken);
+        //console.log('refresh token: ', refreshToken); 
     });
 }
 getAccessToken();

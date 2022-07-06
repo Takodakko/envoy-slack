@@ -1,8 +1,8 @@
-const Envoy = require('./Envoy');
+const Envoy = require('../../../../Envoy');
 /**  
  * Builds JSON block UI for home tab.
  */
-const appHomeOpenedBuilder = async function(locations) {
+const appHomeScreen = async function(locations, slackUserId) {
   let today = new Date();
   let todayDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
   
@@ -30,7 +30,7 @@ const appHomeOpenedBuilder = async function(locations) {
             },
             "value": "authorize-btn",
             "action_id": "authorize-btn",
-            "url": "https://app.envoy.com/a/auth/v0/authorize?response_type=code&client_id=34396186-e7a7-11ec-bb27-233d2fd743dd&redirect_uri=https://miguel-envoy.ngrok.io/auth&scope=locations.read+token.refresh"
+            "url": `https://miguel-envoy.ngrok.io/oauthstart/${slackUserId}`
           }
         ]
       },
@@ -137,4 +137,4 @@ const appHomeOpenedBuilder = async function(locations) {
   return homeView;
 };
 
-module.exports = appHomeOpenedBuilder;
+module.exports = { appHomeScreen };

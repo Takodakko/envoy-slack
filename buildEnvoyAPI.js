@@ -45,7 +45,7 @@ function buildEnvoyAPI() {
     request(options, function (error, response) {
         if (error) throw new Error(error);
         accessToken = JSON.parse(response.body).access_token;
-        console.log(accessToken)
+        //console.log(accessToken)
         envoyAPI = new EnvoyAPI(accessToken)
         return envoyAPI
     });

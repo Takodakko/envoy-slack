@@ -1,4 +1,4 @@
-const createInviteBuilder = require('./apps/Envoy/createInviteBuilder');
+const createInviteBuilder = require('./createInviteBuilder');
 /**  
  * Shortcut option to open invite modal.  .shortcut listens for global/message shortcuts (found in the + menu near the message bar). 
  */
