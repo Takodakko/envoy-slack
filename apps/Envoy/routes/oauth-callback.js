@@ -4,6 +4,7 @@ const path = require('path');
 const persistedClient = require('../store/bolt-web-client.js');
 const request = require("request");
 require('dotenv').config();
+const { authWithEnvoy } = require('../middleware/envoy-auth');
 
 /*
 const { upsert } = require('../salesforce/dml/slack-authentication');
@@ -41,20 +42,25 @@ const fetchOAuthToken = async (req, res) => {
             );
             */
             
-            /*
+            
             // Force execution of auth middleware so that user to user auth
             // flow is executed and we obtain the user context
-            const context = await authWithSalesforce({
-                slackUserId: slackUserId
+
+
+            // Do this?  Use session object?
+            const context = await authWithEnvoy({
+                slackUserId: slackUserId,
+                authInfo: authInfo
             });
+            console.log(context, 'context in oauth-callback');
 
             // Show travel requests in app home
-            await myTravelRequestsCallback(
-                context,
-                persistedClient.client,
-                slackUserId
-            );
-            */
+            // await myTravelRequestsCallback(
+            //     context,
+            //     persistedClient.client,
+            //     slackUserId
+            // );
+            
 
             console.log(req.session)
 

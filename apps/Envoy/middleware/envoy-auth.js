@@ -28,6 +28,7 @@ const authWithEnvoy = async ({
     }
     
     console.log("User ID: " + slackUserId)
+    context.userId = slackUserId;
     /*
     try {
         let authInfo = {};

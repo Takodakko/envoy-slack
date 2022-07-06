@@ -58,8 +58,8 @@ registerCustomRoutes().forEach((route) => {
     receiver.router[method](route.path, route.handler);
 });
 
-// Use global middleware to fetch Salesforce Authentication details
-//slackApp.use(authWithEnvoy);
+// Use global middleware to fetch Envoy Authentication details
+// slackApp.use(authWithEnvoy);
 
 // Register Listeners
 registerListeners(slackApp);
