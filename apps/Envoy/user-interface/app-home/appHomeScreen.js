@@ -30,7 +30,7 @@ const appHomeScreen = async function(locations, slackUserId) {
             },
             "value": "authorize-btn",
             "action_id": "authorize-btn",
-            "url": `https://dev-slack.ngrok.io/oauthstart/${slackUserId}`
+            "url": `${process.env.APP_URL}/oauthstart/${slackUserId}`
           }
         ]
       },
