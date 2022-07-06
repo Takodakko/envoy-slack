@@ -5,7 +5,9 @@ const Envoy = require('../../../../Envoy');
  */
 const appHomeOpenedCallback = async ({ client, event, body, context, payload }) => {    
   //console.log(context, event, body, payload)
-  const locations = Envoy.api.locations();
+  const envoy = Envoy.getInstance();
+  const locations = await envoy.API.locations();
+  console.log(locations);
   try {
     //console.log(payload.user)
     // const locations = [{ attributes: { name: "HQ"}},{ attributes: { name: "NYC"}}] //await context.envoy.API.locations();

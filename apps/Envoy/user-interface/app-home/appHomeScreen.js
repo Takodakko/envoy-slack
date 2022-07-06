@@ -1,4 +1,4 @@
-const Envoy = require('../../../../Envoy');
+// const Envoy = require('../../../../Envoy');
 /**  
  * Builds JSON block UI for home tab.
  */
