@@ -97,37 +97,8 @@ const createInviteBuilder = function(locations, flows = []) {
             },
             options: locationSelections, 
          },
-      //    {
-      //     action_id: 'visitor_type',
-      //     type: 'static_select',
-      //     // action_id: 'visitor_type',
-      //     placeholder: {
-      //       type: 'plain_text',
-      //       text: 'Visitor Type',
-      //       emoji: true,
-      //     },
-      //     options: flowsSelection, 
-      //  },
         ]
       },
-      // {
-      //   type: 'input',
-      //   block_id: 'location',
-      //   label: {
-      //     type: 'plain_text',
-      //     text: 'Choose a location'
-      //   },
-      //   element: {
-      //     type: 'static_select',
-      //     placeholder: {
-      //       type: 'plain_text',
-      //       text: 'Location',
-      //       emoji: true
-      //     },
-      //     options: locationSelections,
-      //     action_id: 'location_selected'
-      //   }
-      // },
       {
         type: 'input',
         block_id: 'guest_type',

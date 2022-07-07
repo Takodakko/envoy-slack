@@ -1,5 +1,7 @@
 const { getLocation } = require('./get-location');
+const { createInvite } = require('./create-invite');
 
 module.exports.register = (app) => {
-    app.event('/location', getLocation);
+    app.command('/location', getLocation);
+    app.command('/envoy-invite', createInvite);
 };

@@ -104,24 +104,24 @@ persistedClient.client = slackApp.client;
 // Test message to interact with app via messages.
 // slackApp.message('hi', messageSayHi);
 /* Slash command to open invite modal.  .command listens for slash commands entered into the message bar. */
-slackApp.command('/envoy-invite', commandCreateInvite);
+// slackApp.command('/envoy-invite', commandCreateInvite);
 // Slash command to get the name of the user's location.
 // slackApp.command('/location', commandGetLocation);
 /* Event to run when app is opened to home tab.  .event listens for events from the Slack event API. */
 //slackApp.event('app_home_opened', eventAppHomeOpened);
 /* Event to run when invite modal is submitted.  .view listens for modal view requests. */
-slackApp.view('invite_modal', viewInviteSubmitted);
+// slackApp.view('invite_modal', viewInviteSubmitted);
 /* Event to run when invite button on home is clicked.  .action listens for UI interactions like button clicks. */
 // slackApp.action('button_invite', actionCreateInvite);
 /* Shortcut option to open invite modal.  .shortcut listens for global/message shortcuts (found in the + menu near the message bar). */
-slackApp.shortcut('envoy_invite', shortcutCreateInvite);
+// slackApp.shortcut('envoy_invite', shortcutCreateInvite);
 
 /* actions to respond to dropdown clicks on the location and visitor type buttons on the invitation modal */
-slackApp.action('location_selected', actionLocationSelect);
-slackApp.action('visitor_type', async ({ack, body}) => {
-  await ack();
-  console.log(body.view.state.values.location_guest_type.visitor_type.selected_option.value, 'flow id when visitor button clicked');
-});
+// slackApp.action('location_selected', actionLocationSelect);
+// slackApp.action('visitor_type', async ({ack, body}) => {
+//   await ack();
+//   console.log(body.view.state.values.location_guest_type.visitor_type.selected_option.value, 'flow id when visitor button clicked');
+// });
 
 // Asynchronous function to start the app
 (async () => {

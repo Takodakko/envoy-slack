@@ -4,8 +4,7 @@ const Envoy = require('../../../../Envoy');
 * Slash command to get the names of the user's locations.
 */
 
-const getLocation = async function({ack, say, context}) {
-    console.log(context, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+const getLocation = async function({ack, say}) {
     try {
         ack();
         const envoy = Envoy.getInstance();    
