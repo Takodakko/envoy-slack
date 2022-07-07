@@ -1,12 +1,13 @@
 const { createInviteBuilder } = require('../../user-interface/modals/createInviteBuilder');
-const Envoy = require('../../../../Envoy');
+// const Envoy = require('../../../../Envoy');
 /**  
  * Slash command to open invite modal.  .command listens for slash commands entered into the message bar. 
  */
  const createInvite = async function({ack, client, payload, context}) {
     await ack();
-    const envoy = Envoy.getInstance();
-    const locationMeta = await envoy.API.locations();
+    // const envoy = Envoy.getInstance();
+    // const locationMeta = await envoy.API.locations();
+    const locationMeta = context.locations;
     const locations = locationMeta.map((locationObject) => {
       return {locationName: locationObject.attributes.name, locationId: locationObject.id};
     });

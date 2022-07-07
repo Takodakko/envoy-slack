@@ -1,13 +1,13 @@
 const { createInviteBuilder } = require('../../user-interface/modals/createInviteBuilder');
-const Envoy = require('../../../../Envoy');
+// const Envoy = require('../../../../Envoy');
 /**  
  * Event to run when invite button on home is clicked.  .action listens for UI interactions like button clicks. 
  */
-const createInvite = async function({ack, payload, client, body}) {
+const createInvite = async function({ack, payload, client, body, context}) {
   await ack();
-  const envoy = Envoy.getInstance();
-  const locationsMeta = await envoy.API.locations();
-  // const flowsMeta = [];
+//   const envoy = Envoy.getInstance();
+//   const locationsMeta = await envoy.API.locations();
+  const locationsMeta = context.locations;
   const locations = locationsMeta.map((locationObject) => {
     return {locationName: locationObject.attributes.name, locationId: locationObject.id};
   });

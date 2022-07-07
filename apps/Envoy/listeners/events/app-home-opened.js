@@ -1,12 +1,13 @@
 const { appHomeScreen } = require('../../user-interface/app-home/appHomeScreen');
-const Envoy = require('../../../../Envoy');
+// const Envoy = require('../../../../Envoy');
 /**  
  * Event to run when app is opened to home tab.  .action listens for UI interactions like button clicks. 
  */
 const appHomeOpenedCallback = async ({ client, event, body, context, payload }) => {    
-  //console.log(context, event, body, payload)
-  const envoy = Envoy.getInstance();
-  const locations = await envoy.API.locations();
+  // console.log(context, 'context in app home opened');
+  // const envoy = Envoy.getInstance();
+  // const locations = await envoy.API.locations();
+  const locations = context.locations;
   // console.log(locations);
   try {
     //console.log(payload.user)

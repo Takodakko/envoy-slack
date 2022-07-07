@@ -6,14 +6,14 @@ require('dotenv').config();
 const { registerListeners } = require('./apps/envoy/listeners');
 const { registerCustomRoutes } = require('./apps/envoy/routes');
 const persistedClient = require('./apps/envoy/store/bolt-web-client');
-
-const commandCreateInvite = require('./commandCreateInvite');
-const viewInviteSubmitted = require('./viewInviteSubmitted');
-const shortcutCreateInvite = require('./shortcutCreateInvite');
-const actionCreateInvite = require('./actionCreateInvite');
-const actionLocationSelect = require('./actionLocationSelect');
-const commandGetLocation = require('./commandGetLocation');
-const messageSayHi = require('./messageSayHi');
+const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
+// const commandCreateInvite = require('./commandCreateInvite');
+// const viewInviteSubmitted = require('./viewInviteSubmitted');
+// const shortcutCreateInvite = require('./shortcutCreateInvite');
+// const actionCreateInvite = require('./actionCreateInvite');
+// const actionLocationSelect = require('./actionLocationSelect');
+// const commandGetLocation = require('./commandGetLocation');
+// const messageSayHi = require('./messageSayHi');
 
 // const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 // const request = require('request');  //Change to Axios
@@ -83,7 +83,10 @@ registerListeners(slackApp);
 // console.log(slackApp.listeners);
 // Assign Slack WebClient
 persistedClient.client = slackApp.client;
-
+// const envoy = Envoy.getInstance();
+const envoyInfoMiddleware = attachEnvoyInfoOuter();
+slackApp.use(envoyInfoMiddleware);
+// console.log('im a slack app');
 // slackApp.use(({context, next}) => {
 //   let ackCalled = false;
 //   const ack = async () => {
