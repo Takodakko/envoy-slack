@@ -24,14 +24,14 @@ const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError 
 
 // Create custom express app to be able to use express-session middleware
 const app = express();
-app.use(
-    session({
-        secret: process.env.ENVOY_CLIENT_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
-    })
-);
+// app.use(
+//     session({
+//         secret: process.env.ENVOY_CLIENT_SECRET,
+//         resave: false,
+//         saveUninitialized: false,
+//         cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
+//     })
+// );
 // app.use(express.json());
 // app.use(middleware());
 // app.post('/employee-sign-in', (req, res) => {
@@ -82,11 +82,11 @@ const slackApp = new App(
 receiver.router.use(express.json());
 receiver.router.use(middleware());
 receiver.router.post('/employee-sign-in', (req, res) => {
-  console.log(req.body, 'hi');
+  console.log(req.body, 'entry');
   res.status(200).send('received')
 });
 receiver.router.post('/employee-sign-out', (req, res) => {
-  console.log(req.body, 'bye');
+  console.log(req.body, 'exit');
   res.status(200).send('got')
 });
 registerCustomRoutes().forEach((route) => {

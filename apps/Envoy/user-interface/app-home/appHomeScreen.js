@@ -55,14 +55,6 @@ const appHomeScreen = async function(locations, slackUserId) {
         },
       },
       {
-        type: "section",
-        text: {
-          type: "plain_text",
-          text: `Today`,
-          emoji: true
-        }
-      },
-      {
         type: "divider"
       },
       {

@@ -1,7 +1,7 @@
 const Envoy = require('./Envoy');
 
 const attachEnvoyInfoOuter = function() {
-    console.log('outer!');
+    // console.log('outer!');
     const locations = [];
     const flowsAndLocations = [];
     const attachEnvoyInfoInner = async function({context, next}) {
