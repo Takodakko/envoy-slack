@@ -7,64 +7,30 @@ const { registerListeners } = require('./apps/envoy/listeners');
 const { registerCustomRoutes } = require('./apps/envoy/routes');
 const persistedClient = require('./apps/envoy/store/bolt-web-client');
 const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
-// const commandCreateInvite = require('./commandCreateInvite');
-// const viewInviteSubmitted = require('./viewInviteSubmitted');
-// const shortcutCreateInvite = require('./shortcutCreateInvite');
-// const actionCreateInvite = require('./actionCreateInvite');
-// const actionLocationSelect = require('./actionLocationSelect');
-// const commandGetLocation = require('./commandGetLocation');
-// const messageSayHi = require('./messageSayHi');
+const { createServer } = require('http');
+
 
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
-// const request = require('request');  //Change to Axios
-// const axios = require('axios');
-// const Envoy = require('./Envoy');
-// const getAccessToken = require('./getAccessToken');
-// //const envoy-auth = require('./apps/Envoy/middleware/envoy-auth')
+
 
 // Create custom express app to be able to use express-session middleware
 const app = express();
-// app.use(
-//     session({
-//         secret: process.env.ENVOY_CLIENT_SECRET,
-//         resave: false,
-//         saveUninitialized: false,
-//         cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
-//     })
-// );
-// app.use(express.json());
-// app.use(middleware());
-// app.post('/employee-sign-in', (req, res) => {
-//   console.log(req.body, 'hi');
-//   res.status(200).send('received')
-// })
-// app.post('/employee-sign-out', (req, res) => {
-//   console.log(req.body, 'bye');
-//   res.status(200).send('got')
-// })
-// app.use((req, res, next) => {
-//   let ackCalled = false;
-//   const ack = async () => {
-//     if (ackCalled) {
-//       return;
-//     }
-//     if (res.statusCode.toString()[0] !== '2') {
-//       res.status(500).send();
-//     } 
-//     else {
-//       res.sendStatus(res.statusCode);
-//       ackCalled = true;
-//     }
-//   }
-//   context.ack = ack;
-//   next();
-// })
+app.use(
+  session({
+      secret: process.env.ENVOY_CLIENT_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
+  })
+);
 
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   app
 });
+
+
 
 // Initializes your app with your bot token and signing secret
 const slackApp = new App(
@@ -81,14 +47,8 @@ const slackApp = new App(
 // Defining ExpressReceiver custom routes
 receiver.router.use(express.json());
 receiver.router.use(middleware());
-receiver.router.post('/employee-sign-in', (req, res) => {
-  console.log(req.body, 'entry');
-  res.status(200).send('received')
-});
-receiver.router.post('/employee-sign-out', (req, res) => {
-  console.log(req.body, 'exit');
-  res.status(200).send('got')
-});
+
+
 registerCustomRoutes().forEach((route) => {
     const method = route.method[0].toLowerCase();
     receiver.router[method](route.path, route.handler);
@@ -105,45 +65,8 @@ persistedClient.client = slackApp.client;
 // const envoy = Envoy.getInstance();
 const envoyInfoMiddleware = attachEnvoyInfoOuter();
 slackApp.use(envoyInfoMiddleware);
-// console.log('im a slack app');
-// slackApp.use(({context, next}) => {
-//   let ackCalled = false;
-//   const ack = async () => {
-//     if (ackCalled) {
-//       return;
-//     }
-//     if (res.statusCode.toString()[0] !== '2') {
-//       res.status(500).send();
-//     } 
-//     else {
-//       res.sendStatus(res.statusCode);
-//       ackCalled = true;
-//     }
-//   }
-//   context.ack = ack;
-//   next();
-// })
-// Test message to interact with app via messages.
-// slackApp.message('hi', messageSayHi);
-/* Slash command to open invite modal.  .command listens for slash commands entered into the message bar. */
-// slackApp.command('/envoy-invite', commandCreateInvite);
-// Slash command to get the name of the user's location.
-// slackApp.command('/location', commandGetLocation);
-/* Event to run when app is opened to home tab.  .event listens for events from the Slack event API. */
-//slackApp.event('app_home_opened', eventAppHomeOpened);
-/* Event to run when invite modal is submitted.  .view listens for modal view requests. */
-// slackApp.view('invite_modal', viewInviteSubmitted);
-/* Event to run when invite button on home is clicked.  .action listens for UI interactions like button clicks. */
-// slackApp.action('button_invite', actionCreateInvite);
-/* Shortcut option to open invite modal.  .shortcut listens for global/message shortcuts (found in the + menu near the message bar). */
-// slackApp.shortcut('envoy_invite', shortcutCreateInvite);
 
-/* actions to respond to dropdown clicks on the location and visitor type buttons on the invitation modal */
-// slackApp.action('location_selected', actionLocationSelect);
-// slackApp.action('visitor_type', async ({ack, body}) => {
-//   await ack();
-//   console.log(body.view.state.values.location_guest_type.visitor_type.selected_option.value, 'flow id when visitor button clicked');
-// });
+
 
 // Asynchronous function to start the app
 (async () => {
