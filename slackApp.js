@@ -1,13 +1,14 @@
 const express = require('express')
 const session = require('express-session')
 const { App, ExpressReceiver, LogLevel } = require('@slack/bolt');
-const { authWithEnvoy } = require('./apps/envoy/middleware/envoy-auth');
+// const { authWithEnvoy } = require('./apps/envoy/middleware/envoy-auth');
 require('dotenv').config();
 const { registerListeners } = require('./apps/envoy/listeners');
 const { registerCustomRoutes } = require('./apps/envoy/routes');
 const persistedClient = require('./apps/envoy/store/bolt-web-client');
 const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
-const { createServer } = require('http');
+// const { createServer } = require('http');
+const { boltHandler } = require('./SlackHelper');
 
 
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
@@ -23,7 +24,7 @@ app.use(
       cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
   })
 );
-
+app.use(middleware());
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -46,8 +47,8 @@ const slackApp = new App(
 
 // Defining ExpressReceiver custom routes
 receiver.router.use(express.json());
-receiver.router.use(middleware());
-
+// receiver.router.use(middleware());
+// receiver.router.post('/slack/events', boltHandler);
 
 registerCustomRoutes().forEach((route) => {
     const method = route.method[0].toLowerCase();
@@ -61,7 +62,7 @@ registerCustomRoutes().forEach((route) => {
 registerListeners(slackApp);
 // console.log(slackApp.listeners);
 // Assign Slack WebClient
-persistedClient.client = slackApp.client;
+// persistedClient.client = slackApp.client;
 // const envoy = Envoy.getInstance();
 const envoyInfoMiddleware = attachEnvoyInfoOuter();
 slackApp.use(envoyInfoMiddleware);
@@ -81,3 +82,16 @@ slackApp.use(envoyInfoMiddleware);
       process.exit(1);
   }
 })();
+
+// (() => {
+//   try {
+//       // Start your app
+//       app.listen(process.env.PORT || 3000);
+//       console.log(
+//           `⚡️ App is running on port ${process.env.PORT || 3000}!`
+//       );
+//   } catch (error) {
+//       console.error('Unable to start App', error);
+//       process.exit(1);
+//   }
+// })();
