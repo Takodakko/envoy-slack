@@ -15,7 +15,7 @@ const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
 // const commandGetLocation = require('./commandGetLocation');
 // const messageSayHi = require('./messageSayHi');
 
-// const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
+const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 // const request = require('request');  //Change to Axios
 // const axios = require('axios');
 // const Envoy = require('./Envoy');
@@ -32,6 +32,16 @@ app.use(
         cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
     })
 );
+// app.use(express.json());
+// app.use(middleware());
+// app.post('/employee-sign-in', (req, res) => {
+//   console.log(req.body, 'hi');
+//   res.status(200).send('received')
+// })
+// app.post('/employee-sign-out', (req, res) => {
+//   console.log(req.body, 'bye');
+//   res.status(200).send('got')
+// })
 // app.use((req, res, next) => {
 //   let ackCalled = false;
 //   const ack = async () => {
@@ -70,6 +80,15 @@ const slackApp = new App(
 
 // Defining ExpressReceiver custom routes
 receiver.router.use(express.json());
+receiver.router.use(middleware());
+receiver.router.post('/employee-sign-in', (req, res) => {
+  console.log(req.body, 'hi');
+  res.status(200).send('received')
+});
+receiver.router.post('/employee-sign-out', (req, res) => {
+  console.log(req.body, 'bye');
+  res.status(200).send('got')
+});
 registerCustomRoutes().forEach((route) => {
     const method = route.method[0].toLowerCase();
     receiver.router[method](route.path, route.handler);
