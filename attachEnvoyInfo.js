@@ -1,5 +1,6 @@
 const Envoy = require('./Envoy');
 
+/** Creates middleware that gets location and flow data from Envoy and attaches it to context object. */
 const attachEnvoyInfoOuter = function() {
     const locations = [];
     const flowsAndLocations = [];
@@ -20,7 +21,7 @@ const attachEnvoyInfoOuter = function() {
         }
         flowsAndLocations.push(...flowsAndLocationsInner);
         }
-        // console.log(flowsAndLocations[0].flows, 'flows and locations in SLack Middleware');
+        // console.log(flowsAndLocations[0].flows, 'flows and locations in Slack Middleware');
         console.log('inner! after if');
         context.locations = locations;  // array of object -> { id: **id for location**, attributes: {name: **name of location**} }
         context.flows = flowsAndLocations; // array of objects -> { locationId: **id of location**, locationName: **name of location**, flows: [{id: **id of flow**, attributes: {name: **name of flow**}}]}
