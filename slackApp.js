@@ -8,7 +8,7 @@ const { registerCustomRoutes } = require('./apps/envoy/routes');
 const persistedClient = require('./apps/envoy/store/bolt-web-client');
 const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
 // const { createServer } = require('http');
-const { boltHandler } = require('./SlackHelper');
+const { webClient } = require('./SlackHelper');
 
 
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
@@ -24,7 +24,8 @@ app.use(
       cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
   })
 );
-app.use(middleware());
+// app.use(middleware());
+// app.use(express.json());
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -45,11 +46,17 @@ const slackApp = new App(
   }
 );
 
-// Defining ExpressReceiver custom routes
-receiver.router.use(express.json());
-// receiver.router.use(middleware());
-// receiver.router.post('/slack/events', boltHandler);
 
+// Attach Envoy object to req
+receiver.router.use(middleware());
+receiver.router.use((req, res, next) => {
+  req.webClient = webClient;
+  next();
+})
+// receiver.router.use(express.json());
+// // receiver.router.post('/slack/events', boltHandler);
+
+// Defining ExpressReceiver custom routes
 registerCustomRoutes().forEach((route) => {
     const method = route.method[0].toLowerCase();
     receiver.router[method](route.path, route.handler);

@@ -3,7 +3,7 @@ const { oauthCallback } = require('./oauth-callback');
 //const { envoy-message-callback } = require('./envoy-message-callback');
 const { employeeSignIn } = require('./employee-sign-in');
 const { employeeSignOut } = require('./employee-sign-out');
-
+/** Registers routes for express router for incoming data from Envoy */
 const registerCustomRoutes = () => {
     const routes = [];
     routes.push(oauthStart);

@@ -1,13 +1,41 @@
-// const { boltHandler } = require('../../../SlackHelper');
-// Defining this route as a ExpressReceiver route as we need a param passed in
-const employeeSignInFunction = async (req, res) => {
+
+/** Change user status on Slack to in-office when they sign in on Envoy */
+const employeeSignInHandler = async (req, res) => {
     try {
-        console.log(req.body, req.envoy, 'meta');
-        console.log(req.envoy.installStorage, 'install storage');
-        // const event = {
-        //     body: req.body
-        // };
+        // console.log(req.webClient, 'req.webClient');
+        // console.log(req.envoy, 'req.envoy');
+        // console.log(req.envoy.body.meta.location, 'req.envoy.body.meta.location');
+        // console.log(webClient, 'the web client');
+        // console.log(req.envoy.installStorage, 'install storage');
+        const webClient = req.webClient;
+        let userEmail = req.body.payload.attributes.email;
+        const location = req.envoy.body.meta.location.attributes.name;
+        const now = Date.now();
+        console.log(now, 'now');
+        const expiration = now + 60000;
+        console.log(expiration, 'expiration');
+        // console.log(location.data.id);
+        if (userEmail.includes('+sdk')) {
+            const start = userEmail.indexOf('+');
+            userEmail = userEmail.slice(0, start) + userEmail.slice(start + 4);
+            // console.log(userEmail, 'userEmail if if');
+        }
+        const userObject = await webClient.users.lookupByEmail({
+            token: webClient.token,
+            email: userEmail
+        });
+        const userId = userObject.user.id;
+        // console.log(userObject, 'userObject');
         // boltHandler(event);
+        // webClient.users.profile.get()
+        webClient.users.profile.set({
+            user: userId,
+            profile: {
+                status_text: `@ ${location} via Envoy`,
+                status_emoji: ':office:',
+                status_expiration: 0
+            }
+        })
         res.status(200).send('Status updated');
         
 
@@ -22,7 +50,7 @@ const employeeSignInFunction = async (req, res) => {
 const employeeSignIn = {
     path: `/employee-sign-in`,
     method: ['POST'],
-    handler: employeeSignInFunction
+    handler: employeeSignInHandler
 };
 
 module.exports = { employeeSignIn };
