@@ -4,7 +4,7 @@ const employeeSignOutHandler = async (req, res) => {
     try {
         let userEmail = req.body.payload.attributes.email;
         console.log('exit');
-        const webClient = req.webClient;
+        const webClient = req.webClientUser;
         if (userEmail.includes('+sdk')) {
             const start = userEmail.indexOf('+');
             userEmail = userEmail.slice(0, start) + userEmail.slice(start + 4);

@@ -8,7 +8,7 @@ const { registerCustomRoutes } = require('./apps/envoy/routes');
 const persistedClient = require('./apps/envoy/store/bolt-web-client');
 const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
 // const { createServer } = require('http');
-const { webClient } = require('./SlackHelper');
+const { webClientUser, webClientBot } = require('./SlackHelper');
 
 
 const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
@@ -49,8 +49,10 @@ const slackApp = new App(
 
 // Attach Envoy object to req
 receiver.router.use(middleware());
+// Attach Slack WebClient instance to req for use in handling Envoy events that don't go through Slack listeners
 receiver.router.use((req, res, next) => {
-  req.webClient = webClient;
+  req.webClientUser = webClientUser;
+  req.webClientBot = webClientBot;
   next();
 })
 // receiver.router.use(express.json());

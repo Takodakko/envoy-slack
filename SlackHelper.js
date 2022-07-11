@@ -48,6 +48,7 @@ const { WebClient } = require('@slack/web-api');
 //   await slackApp.processEvent(event);
 //   await next();
 // }
-const webClient = new WebClient(process.env.SLACK_USER_TOKEN);
+const webClientUser = new WebClient(process.env.SLACK_USER_TOKEN);
+const webClientBot = new WebClient(process.env.SLACK_BOT_TOKEN);
 // module.exports = { boltHandler };
-module.exports = { webClient };
+module.exports = { webClientUser, webClientBot };
