@@ -1,7 +1,6 @@
 const express = require('express')
 const session = require('express-session')
 const { App, ExpressReceiver, LogLevel } = require('@slack/bolt');
-const { middleware, errorMiddleware } = require('@envoy/envoy-integrations-sdk');
 require('dotenv').config();
 const { registerListeners } = require('./apps/envoy/listeners');
 const { registerCustomRoutes } = require('./apps/envoy/routes');
@@ -21,9 +20,8 @@ const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError 
 // const getAccessToken = require('./getAccessToken');
 // //const envoy-auth = require('./apps/Envoy/middleware/envoy-auth')
 
-//const RedisStore = require('connect-redis')(session);
-//const { createClient } = require('redis')
-//const redisClient = require('./apps/Envoy/util/redisClient')
+const RedisStore = require('connect-redis')(session);
+const redisClient = require('./apps/Envoy/util/redisClient')
 
 /*
 const redisClient = createClient({ 
@@ -42,7 +40,7 @@ redisClient.connect().then(() => {
 const app = express();
 app.use(
     session({
-        //store: new RedisStore({ client: redisClient }),
+        store: new RedisStore({ client: redisClient }),
         secret: process.env.ENVOY_CLIENT_SECRET,
         resave: false,
         saveUninitialized: false,
