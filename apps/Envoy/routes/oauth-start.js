@@ -20,7 +20,7 @@ const startOAuthProcess = async (req, res) => {
 const _buildOAuthURL = () => {
     let auth_url = `${process.env.ENVOY_LOGIN_URL}/a/auth/v0/authorize`;
     auth_url += `?response_type=code&client_id=${process.env.ENVOY_CLIENT_ID}`;
-    auth_url += `&redirect_uri=https://miguel-envoy.ngrok.io/oauthcallback&scope=locations.read+token.refresh`;
+    auth_url += `&redirect_uri=${process.env.APP_URL}/oauthcallback&scope=locations.read+token.refresh`;
     return auth_url;
 };
 
