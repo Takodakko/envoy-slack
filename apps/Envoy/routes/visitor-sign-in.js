@@ -7,7 +7,9 @@ const visitorSignInHandler = async (req, res) => {
         console.log(req.body, 'req.body');
         console.log(req.envoy, 'req.envoy');
         // console.log(req.envoy.body.meta.location, 'req.envoy.body.meta.location');
-        webClient.chat.postMessage()
+        // webClient.chat.postMessage({
+
+        // })
         res.status(200).send('visitor arrival notification made');
     } catch (e) {
         console.error(e);
