@@ -1,4 +1,6 @@
 const Envoy = require('../../../../Envoy');
+require('dotenv').config();
+
 /**  
  * Builds JSON block UI for home tab.
  */
@@ -30,7 +32,7 @@ const appHomeScreen = async function(locations, slackUserId) {
             },
             "value": "authorize-btn",
             "action_id": "authorize-btn",
-            "url": `https://miguel-envoy.ngrok.io/oauthstart/${slackUserId}`
+            "url": `${process.env.NGROK_URL}/oauthstart/${slackUserId}`
           }
         ]
       },

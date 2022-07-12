@@ -1,7 +1,7 @@
 const express = require('express')
 const session = require('express-session')
 const { App, ExpressReceiver, LogLevel } = require('@slack/bolt');
-const { authWithEnvoy } = require('./apps/envoy/middleware/envoy-auth');
+const { middleware, errorMiddleware } = require('@envoy/envoy-integrations-sdk');
 require('dotenv').config();
 const { registerListeners } = require('./apps/envoy/listeners');
 const { registerCustomRoutes } = require('./apps/envoy/routes');
@@ -15,6 +15,7 @@ const actionLocationSelect = require('./actionLocationSelect');
 const commandGetLocation = require('./commandGetLocation');
 const messageSayHi = require('./messageSayHi');
 
+//const { authWithEnvoy } = require('./apps/envoy/middleware/envoy-auth');
 // const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 // const request = require('request');  //Change to Axios
 // const axios = require('axios');
@@ -22,16 +23,36 @@ const messageSayHi = require('./messageSayHi');
 // const getAccessToken = require('./getAccessToken');
 // //const envoy-auth = require('./apps/Envoy/middleware/envoy-auth')
 
+//const RedisStore = require('connect-redis')(session);
+//const { createClient } = require('redis')
+//const redisClient = require('./apps/Envoy/util/redisClient')
+
+/*
+const redisClient = createClient({ 
+  legacyMode: true,
+  host: 'localhost',
+  port: 6379
+ })
+redisClient.connect().then(() => {
+  console.log("Successfully connected to Redis")
+}).catch((err) => {
+  console.log("Failed to connect to Redis\n" + err)
+})
+*/
+
 // Create custom express app to be able to use express-session middleware
 const app = express();
 app.use(
     session({
+        //store: new RedisStore({ client: redisClient }),
         secret: process.env.ENVOY_CLIENT_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
     })
 );
+
+app.use(middleware(), errorMiddleware());
 
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
@@ -53,6 +74,7 @@ const slackApp = new App(
 
 // Defining ExpressReceiver custom routes
 receiver.router.use(express.json());
+//attach middleware here
 registerCustomRoutes().forEach((route) => {
     const method = route.method[0].toLowerCase();
     receiver.router[method](route.path, route.handler);
