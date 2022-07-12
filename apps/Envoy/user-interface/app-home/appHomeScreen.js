@@ -1,8 +1,10 @@
-const Envoy = require('./Envoy');
+const Envoy = require('../../../../Envoy');
+require('dotenv').config();
+
 /**  
  * Builds JSON block UI for home tab.
  */
-const appHomeOpenedBuilder = async function(locations) {
+const appHomeScreen = async function(locations, slackUserId) {
   let today = new Date();
   let todayDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
   
@@ -10,6 +12,30 @@ const appHomeOpenedBuilder = async function(locations) {
     type: "home",
     callback_id: 'home_view',
     blocks: [
+      {
+        "type": "header",
+        "text": {
+          "type": "plain_text",
+          "text": "Authorize with Envoy",
+          "emoji": true
+        }
+      },
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Authorize",
+              "emoji": true
+            },
+            "value": "authorize-btn",
+            "action_id": "authorize-btn",
+            "url": `${process.env.NGROK_URL}/oauthstart/${slackUserId}`
+          }
+        ]
+      },
       {
         type: "header",
         text: {
@@ -29,14 +55,6 @@ const appHomeOpenedBuilder = async function(locations) {
           image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
           alt_text: "Envoy Logo"
         },
-      },
-      {
-        type: "section",
-        text: {
-          type: "plain_text",
-          text: `Today, ${todayDate}`,
-          emoji: true
-        }
       },
       {
         type: "divider"
@@ -92,7 +110,7 @@ const appHomeOpenedBuilder = async function(locations) {
           }
         ]
       }
-    ],
+    ]
   };
   let locationNames = '';
   locations.forEach((locationObject) => {
@@ -109,8 +127,8 @@ const appHomeOpenedBuilder = async function(locations) {
         },
       }
     )
-  
+    
   return homeView;
 };
 
-module.exports = appHomeOpenedBuilder;
+module.exports = { appHomeScreen };

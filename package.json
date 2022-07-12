@@ -25,11 +25,17 @@
     "@envoy/envoy-integrations-sdk": "github:envoy/envoy-integrations-sdk-nodejs#enable-public-api",
     "@slack/bolt": "^3.11.1",
     "axios": "^0.27.2",
+    "connect-redis": "^6.1.3",
     "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "ioredis": "^5.1.0",
     "moment": "^2.29.3",
-    "moment-timezone": "^0.5.34"
+    "moment-timezone": "^0.5.34",
+    "node-cache": "^5.1.2",
+    "redis": "^4.2.0",
+    "request": "^2.88.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.19"
   }
 }
