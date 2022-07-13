@@ -3,10 +3,7 @@
 const startOAuthProcess = async (req, res) => {
     try {
         // Store slackUserId in session
-        req.session.slackUserId = req.params.slackUserId;
-        if(req.session){
-            
-        }
+        req.session.slackEmail = req.params.slackUserId;
 
         // Send success message
         console.log('redirecting to: ' + _buildOAuthURL());
@@ -14,7 +11,7 @@ const startOAuthProcess = async (req, res) => {
         res.end('OAuth flow correctly started');
     } catch (e) {
         console.error(e);
-        res.writeHead(500);
+        // res.writeHead(500);
         res.end('Failed to start OAuth flow', 'utf-8');
     }
 };
