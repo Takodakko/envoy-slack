@@ -86,12 +86,13 @@ class Envoy {
         throw new Error('Use Envoy.getInstance()');
     }
 
-    static getInstance ({context, next}) {
+    static getInstance () {
         if (!Envoy.instance){
             Envoy.instance = new PrivateEnvoy();
         }
-        context.envoy = Envoy.instance;
-        next();
+        // context.envoy = Envoy.instance;
+        // next();
+        return Envoy.instance;
     }
 }
 
