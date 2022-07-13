@@ -4,7 +4,7 @@ const visitorSignInHandler = async (req, res) => {
     try {
         // console.log(req.webClient, 'req.webClient');
         const webClientBot = req.webClientBot;
-        const webClientUser = req.webClientUser;
+        // const webClientUser = req.webClientUser;
         // console.log(webClientBot, 'bot client');
         // console.log(webClientUser, 'user client');
         // console.log(req.body.payload, 'payload');
