@@ -6,7 +6,8 @@ const { createInviteBuilder } = require('../../user-interface/modals/createInvit
 const createInvite = async function({ack, payload, client, body, context}) {
   await ack();
 //   const envoy = Envoy.getInstance();
-//   const locationsMeta = await envoy.API.locations();
+  // console.log(payload, 'payload');
+  const triggerId = body.trigger_id;
   const locationsMeta = context.locations;
   const locations = locationsMeta.map((locationObject) => {
     return {locationName: locationObject.attributes.name, locationId: locationObject.id};
@@ -18,7 +19,7 @@ const createInvite = async function({ack, payload, client, body, context}) {
       /* the user who opened the modal */
       user_id: payload.user,
       /* the event that opened the modal is stored on body for an action */
-      trigger_id: body.trigger_id,
+      trigger_id: triggerId,
       /* the view object that makes the modal */
       view: modal
     });

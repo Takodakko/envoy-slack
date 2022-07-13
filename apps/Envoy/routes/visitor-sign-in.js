@@ -1,15 +1,25 @@
-// const moment = require('moment');
+const { visitorEntryBuilder } = require('../user-interface/block-messages/visitorEntryBuilder');
 /** Notify user on Slack of visitor arrival via Envoy check in */
 const visitorSignInHandler = async (req, res) => {
     try {
         // console.log(req.webClient, 'req.webClient');
-        const webClient = req.webClientBot;
-        console.log(req.body, 'req.body');
-        console.log(req.envoy, 'req.envoy');
-        // console.log(req.envoy.body.meta.location, 'req.envoy.body.meta.location');
-        // webClient.chat.postMessage({
-
-        // })
+        const webClientBot = req.webClientBot;
+        // const webClientUser = req.webClientUser;
+        // console.log(webClientBot, 'bot client');
+        // console.log(webClientUser, 'user client');
+        // console.log(req.body.payload, 'payload');
+        // console.log(req.body.meta, 'meta');
+        const payload = req.body.payload;
+        const visitorName = payload.attributes['full-name'];
+        // console.log(visitorName, 'visitor name in listener');
+        const userData = payload.attributes['user-data'];
+        // console.log(userData, 'userData in listener');
+        const visitorEntryBlocks = visitorEntryBuilder(visitorName, userData);
+        webClientBot.chat.postMessage({
+            channel: 'D03EFA58J9M',
+          text: `${visitorName} has arrived.`,
+          blocks: visitorEntryBlocks
+        })
         res.status(200).send('visitor arrival notification made');
     } catch (e) {
         console.error(e);
