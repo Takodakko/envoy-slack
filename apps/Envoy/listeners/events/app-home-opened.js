@@ -1,4 +1,5 @@
 const { appHomeScreen } = require('../../user-interface/app-home/appHomeScreen');
+const { encrypt } = require('../../util/encrypt')
 // const Envoy = require('../../../../Envoy');
 /**  
  * Event to run when app is opened to home tab.  .action listens for UI interactions like button clicks. 
@@ -6,7 +7,7 @@ const { appHomeScreen } = require('../../user-interface/app-home/appHomeScreen')
 const appHomeOpenedCallback = async ({ client, event, body, context, payload }) => {    
   // console.log(client, 'client');
   // const channels = await client.users.conversations({team_id: 'TUTTNA7A5'});
-  const channels = await client.users.conversations({user: 'U039M82UYPR'});
+  const channels = await client.users.conversations({user: payload.user});
   console.log(channels, 'channels');
   // const envoy = Envoy.getInstance();
   // const locations = await envoy.API.locations();
@@ -20,6 +21,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload }) 
         user: payload.user
       });
 
+      let encryptedEmail = encrypt(userInfo.user.profile.email);
       const result = await client.views.publish({
         /* the user that opened your app's app home */
         user_id: payload.user,

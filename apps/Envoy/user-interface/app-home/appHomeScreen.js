@@ -1,14 +1,13 @@
 const Envoy = require('../../../../Envoy');
 const { redisClient } = require('../../util/redisClient');
 require('dotenv').config();
-
+const { encrypt } = require('../../util/encrypt');
 /**  
  * Builds JSON block UI for home tab.
  */
 const appHomeScreen = async function (locations, slackEmail) {
   let today = new Date();
   let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-
   const homeView = {
     type: "home",
     callback_id: 'home_view',
@@ -33,7 +32,7 @@ const appHomeScreen = async function (locations, slackEmail) {
             },
             "value": "authorize-btn",
             "action_id": "authorize-btn",
-            "url": `${process.env.NGROK_URL}/oauthstart/${slackEmail}`
+            "url": `${process.env.NGROK_URL}/oauthstart/${encrypt(slackEmail)}`
           }
         ]
       },
@@ -129,7 +128,11 @@ const appHomeScreen = async function (locations, slackEmail) {
     }
   )
   
-  // Note hexists returns 1 for field found, and 0 otherwise. 
+  /* 
+    Note hexists returns 1 for field found, and 0 otherwise. 
+    In non-legacy mode for Redis, the functions are promise based. However we can only use legacy mode with Redis-Connect which instead uses callbacks.
+    The workaround is to wrap this in a promise in order to use await.
+  */
   function hExistsPromise() {
     return new Promise((resolve, reject) => {
       redisClient.HEXISTS(slackEmail, 'refreshToken', (err, res) => {

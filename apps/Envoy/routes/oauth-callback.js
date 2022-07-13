@@ -6,7 +6,7 @@ const request = require('request');
 require('dotenv').config();
 const { authWithEnvoy } = require('../middleware/envoy-auth');
 const { redisClient } = require('../util/redisClient')
-const { encryptToken, decrypToken } = require('../util/encrypt');
+const { encrypt } = require('../util/encrypt');
 /*
 const { upsert } = require('../salesforce/dml/slack-authentication');
 const { authWithSalesforce } = require('../middleware/salesforce-auth');
@@ -36,8 +36,8 @@ const fetchOAuthToken = async (req, res) => {
             //store to db and expires at refresh token expire time.
             console.log("storing tokens to db")
             redisClient.hSet(slackEmail,
-                'accessToken', encryptToken(authInfo.accessToken),
-                'refreshToken', encryptToken(authInfo.refreshToken),
+                'accessToken', encrypt(authInfo.accessToken),
+                'refreshToken', encrypt(authInfo.refreshToken),
                 'refreshTokenExp', authInfo.expirationTime,
             )
             redisClient.expireAt(slackEmail, authInfo.expirationTime);
