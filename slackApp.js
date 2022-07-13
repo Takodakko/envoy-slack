@@ -10,7 +10,7 @@ const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
 const { webClientUser, webClientBot } = require('./SlackHelper');
 
 
-// const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
+const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 
 //const { authWithEnvoy } = require('./apps/envoy/middleware/envoy-auth');
 // const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
