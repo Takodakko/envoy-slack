@@ -1,6 +1,8 @@
 /**Build json blocks for visitor entry message */
 
-const visitorEntryBuilder = function(visitorName = '', visitorEmail = '', hostName = '', purpose = '', userData = []) {
+const visitorEntryBuilder = function(visitorName, userData) {
+  // console.log(visitorName, 'visitorName in builder');
+  // console.log(userData, 'userData in builder');
   const entryBlocks = [
     {
         type: 'section',
@@ -15,40 +17,13 @@ const visitorEntryBuilder = function(visitorName = '', visitorEmail = '', hostNa
     type: 'section',
     fields: []
   }
-    if (hostName.length !== 0) {
-        const hostBlock = {
-            type: 'section',
-            text: {
-                type: 'mrkdwn',
-                text: `*Host:* ${hostName}`
-            }
-        };
-        fieldsBlock.fields.push(hostBlock);
-    }
-    
-    if (visitorName.length !== 0) {
-        const visitorNameBlock = {
-                type: 'mrkdwn',
-                text: `*Guest's full name:* ${visitorName}`
-        };
-        fieldsBlock.fields.push(visitorNameBlock);
-    }
-
-    if (visitorEmail.length !== 0) {
-      const visitorEmailBlock = {
-        type: 'mrkdwn',
-        text: `*Guest's email:* ${visitorEmail}`
-      };
-      fieldsBlock.fields.push(visitorEmailBlock);
-    }
-    if (purpose.length !== 0) {
-        const purposeBlock = {
-            type: 'mrkdwn',
-            text: `*Purpose of visit:* ${purpose}`
-        };
-        fieldsBlock.fields.push(purposeBlock);
-    }
-    
+  userData.forEach((field) => {
+    const aField = {
+      type: 'mrkdwn',
+      text: `*${field.field}* \n ${field.value}`
+    };
+    fieldsBlock.fields.push(aField);
+  })
   entryBlocks.push(fieldsBlock);
   return entryBlocks;
 };
