@@ -1,13 +1,14 @@
 const Envoy = require('../../../../Envoy');
+const { redisClient } = require('../../util/redisClient');
 require('dotenv').config();
 
 /**  
  * Builds JSON block UI for home tab.
  */
-const appHomeScreen = async function(locations, slackUserId) {
+const appHomeScreen = async function (locations, slackEmail) {
   let today = new Date();
-  let todayDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-  
+  let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
   const homeView = {
     type: "home",
     callback_id: 'home_view',
@@ -32,7 +33,7 @@ const appHomeScreen = async function(locations, slackUserId) {
             },
             "value": "authorize-btn",
             "action_id": "authorize-btn",
-            "url": `${process.env.NGROK_URL}/oauthstart/${slackUserId}`
+            "url": `${process.env.NGROK_URL}/oauthstart/${slackEmail}`
           }
         ]
       },
@@ -117,17 +118,17 @@ const appHomeScreen = async function(locations, slackUserId) {
     locationNames = locationNames + locationObject.attributes.name + ', ';
   });
   locationNames = locationNames.slice(0, -2);
-    homeView.blocks.push(
-      {
-        type: 'section',
-        block_id: `location_names`,
-        text: {
-          type: 'mrkdwn',
-          text: `Your company has the following ${locations.length === 1 ? 'location:' : 'locations:'} *${locationNames}*`,
-        },
-      }
-    )
-    
+  homeView.blocks.push(
+    {
+      type: 'section',
+      block_id: `location_names`,
+      text: {
+        type: 'mrkdwn',
+        text: `Your company has the following ${locations.length === 1 ? 'location:' : 'locations:'} *${locationNames}*`,
+      },
+    }
+  )
+
   return homeView;
 };
 

@@ -19,22 +19,21 @@ const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError 
 // const Envoy = require('./Envoy');
 // const getAccessToken = require('./getAccessToken');
 // //const envoy-auth = require('./apps/Envoy/middleware/envoy-auth')
-
 const RedisStore = require('connect-redis')(session);
-const redisClient = require('./apps/Envoy/util/redisClient')
+let { redisClient } = require('./apps/Envoy/util/redisClient')
 
-/*
-const redisClient = createClient({ 
-  legacyMode: true,
-  host: 'localhost',
-  port: 6379
- })
-redisClient.connect().then(() => {
-  console.log("Successfully connected to Redis")
-}).catch((err) => {
-  console.log("Failed to connect to Redis\n" + err)
-})
-*/
+
+
+// const redisClient = createClient({ 
+//   legacyMode: true,
+//   host: 'localhost',
+//   port: 6379
+//  })
+// redisClient.connect().then(() => {
+//   console.log("Successfully connected to Dick")
+// }).catch((err) => {
+//   console.log("Failed to connect to Redis\n" + err)
+// })
 
 // Create custom express app to be able to use express-session middleware
 const app = express();
@@ -48,7 +47,7 @@ app.use(
     })
 );
 
-app.use(middleware(), errorMiddleware());
+// app.use(middleware(), errorMiddleware());
 
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
