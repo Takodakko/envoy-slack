@@ -8,7 +8,9 @@ const { installOnWorkspace } = require('./install-on-workspace');
 /** Registers routes for express router for incoming data from Envoy */
 const { validate } = require('./validate')
 const { authorize } = require('./authorize')
-const { token } = require('./token')
+const { token } = require('./token');
+const { selectOptionsEmojis } = require('./select-options-emojis');
+const { selectOptionsHours } = require('./select-options-hours');
 
 const registerCustomRoutes = () => {
     const routes = [];
@@ -21,6 +23,8 @@ const registerCustomRoutes = () => {
     routes.push(validate)
     routes.push(authorize)
     routes.push(token)
+    routes.push(selectOptionsEmojis)
+    routes.push(selectOptionsHours)
     return routes;
 };
 

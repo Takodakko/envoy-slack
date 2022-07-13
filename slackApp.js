@@ -47,8 +47,8 @@ app.use(
     })
 );
 
-// app.use(middleware(), errorMiddleware());
-
+app.use(middleware(), errorMiddleware());
+ 
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
