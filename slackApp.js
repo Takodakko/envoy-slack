@@ -60,10 +60,10 @@ const receiver = new ExpressReceiver({
 // Initializes your app with your bot token and signing secret
 const slackApp = new App(
   {
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
+    // signingSecret: process.env.SLACK_SIGNING_SECRET,
     token: process.env.SLACK_BOT_TOKEN,
-    clientId: process.env.SLACK_CLIENT_ID,
-    clientSecret: process.env.SLACK_CLIENT_SECRET,
+    // clientId: process.env.SLACK_CLIENT_ID,
+    // clientSecret: process.env.SLACK_CLIENT_SECRET,
     logLevel: LogLevel.DEBUG,
     receiver
   }

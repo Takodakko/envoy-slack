@@ -4,6 +4,7 @@ const { oauthCallback } = require('./oauth-callback');
 const { employeeSignIn } = require('./employee-sign-in');
 const { employeeSignOut } = require('./employee-sign-out');
 const { visitorSignIn } = require('./visitor-sign-in');
+const { installOnWorkspace } = require('./install-on-workspace');
 /** Registers routes for express router for incoming data from Envoy */
 const { validate } = require('./validate')
 const { authorize } = require('./authorize')
@@ -16,8 +17,12 @@ const registerCustomRoutes = () => {
     routes.push(employeeSignIn);
     routes.push(employeeSignOut);
     routes.push(visitorSignIn);
+<<<<<<< HEAD
+    // routes.push(installOnWorkspace);
+=======
     routes.push(validate)
     routes.push(authorize)
+>>>>>>> dev
     return routes;
 };
 
