@@ -128,7 +128,19 @@ const appHomeScreen = async function (locations, slackEmail) {
       },
     }
   )
-
+  
+  // Note hexists returns 1 for field found, and 0 otherwise. 
+  function hExistsPromise() {
+    return new Promise((resolve, reject) => {
+      redisClient.HEXISTS(slackEmail, 'refreshToken', (err, res) => {
+        if (err) reject(err);
+        else resolve(res);
+      });
+    });
+  }
+  
+  let sessionExists = await hExistsPromise(); 
+  if (sessionExists) homeView.blocks = homeView.blocks.slice(2);
   return homeView;
 };
 
