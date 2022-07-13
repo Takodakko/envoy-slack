@@ -6,7 +6,7 @@ const request = require('request');
 require('dotenv').config();
 const { authWithEnvoy } = require('../middleware/envoy-auth');
 const { redisClient } = require('../util/redisClient')
-
+const { encryptToken, decrypToken } = require('../util/encrypt');
 /*
 const { upsert } = require('../salesforce/dml/slack-authentication');
 const { authWithSalesforce } = require('../middleware/salesforce-auth');
@@ -17,12 +17,12 @@ const {
 
 const fetchOAuthToken = async (req, res) => {
     console.log('Executing user to user OAuth callback');
-
+    console.log(req.session);
     try {
-        // Retrieve slackuserId from session
-        const slackUserId = req.session.slackUserId;
+        // Retrieve slackEmail from session
+        const slackEmail = req.session.slackEmail;
 
-        if (slackUserId) {
+        if (slackEmail) {
             // Parse Authorization Code
             let code = url.parse(req.url, true).query.code;
 
@@ -33,16 +33,21 @@ const fetchOAuthToken = async (req, res) => {
 
             req.session.authInfo = authInfo
 
-            //store to db
+            //store to db and expires at refresh token expire time.
             console.log("storing tokens to db")
-            //redisClient.set(slackUserId, authInfo)
+            redisClient.hSet(slackEmail,
+                'accessToken', encryptToken(authInfo.accessToken),
+                'refreshToken', encryptToken(authInfo.refreshToken),
+                'refreshTokenExp', authInfo.expirationTime,
+            )
+            redisClient.expireAt(slackEmail, authInfo.expirationTime);
 
             // Upsert record in Salesforce
             console.log('Correctly authorized, Storying tokens in Envoy');
             /*
             await upsert(
                 authInfo.connection,
-                slackUserId,
+                slackEmail,
                 authInfo.salesforceUserId
             );
             */
@@ -54,7 +59,7 @@ const fetchOAuthToken = async (req, res) => {
 
             // Do this?  Use session object?
             const context = await authWithEnvoy({
-                slackUserId: slackUserId,
+                slackEmail: slackEmail,
                 authInfo: authInfo
             });
             console.log(context, 'context in oauth-callback');
@@ -63,7 +68,7 @@ const fetchOAuthToken = async (req, res) => {
             // await myTravelRequestsCallback(
             //     context,
             //     persistedClient.client,
-            //     slackUserId
+            //     slackEmail
             // );
             
 

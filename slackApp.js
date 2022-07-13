@@ -1,7 +1,6 @@
 const express = require('express')
 const session = require('express-session')
 const { App, ExpressReceiver, LogLevel } = require('@slack/bolt');
-const { middleware, errorMiddleware } = require('@envoy/envoy-integrations-sdk');
 require('dotenv').config();
 const { registerListeners } = require('./apps/envoy/listeners');
 const { registerCustomRoutes } = require('./apps/envoy/routes');
@@ -20,29 +19,27 @@ const { webClientUser, webClientBot } = require('./SlackHelper');
 // const Envoy = require('./Envoy');
 // const getAccessToken = require('./getAccessToken');
 // //const envoy-auth = require('./apps/Envoy/middleware/envoy-auth')
+const RedisStore = require('connect-redis')(session);
+let { redisClient } = require('./apps/Envoy/util/redisClient')
 
-//const RedisStore = require('connect-redis')(session);
-//const { createClient } = require('redis')
-//const redisClient = require('./apps/Envoy/util/redisClient')
 
-/*
-const redisClient = createClient({ 
-  legacyMode: true,
-  host: 'localhost',
-  port: 6379
- })
-redisClient.connect().then(() => {
-  console.log("Successfully connected to Redis")
-}).catch((err) => {
-  console.log("Failed to connect to Redis\n" + err)
-})
-*/
+
+// const redisClient = createClient({ 
+//   legacyMode: true,
+//   host: 'localhost',
+//   port: 6379
+//  })
+// redisClient.connect().then(() => {
+//   console.log("Successfully connected to Dick")
+// }).catch((err) => {
+//   console.log("Failed to connect to Redis\n" + err)
+// })
 
 // Create custom express app to be able to use express-session middleware
 const app = express();
 app.use(
     session({
-        //store: new RedisStore({ client: redisClient }),
+        store: new RedisStore({ client: redisClient }),
         secret: process.env.ENVOY_CLIENT_SECRET,
         resave: false,
         saveUninitialized: false,
@@ -50,7 +47,7 @@ app.use(
     })
 );
 
-//app.use(middleware(), errorMiddleware());
+// app.use(middleware(), errorMiddleware());
 
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
