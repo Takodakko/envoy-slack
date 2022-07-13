@@ -2,9 +2,10 @@ const url = require('url');
 const fs = require('fs');
 const path = require('path');
 const persistedClient = require('../store/bolt-web-client.js');
-const request = require("request");
+const request = require('request');
 require('dotenv').config();
 const { authWithEnvoy } = require('../middleware/envoy-auth');
+const { redisClient } = require('../util/redisClient')
 
 /*
 const { upsert } = require('../salesforce/dml/slack-authentication');
@@ -27,10 +28,14 @@ const fetchOAuthToken = async (req, res) => {
 
             // Request Access and Refresh tokens
             const authInfo = await _requestAccessAndRefreshTokens(code);
-            console.log("AUTH INFO: " + authInfo)
+            console.log("AUTH INFO: ")
+            console.log(authInfo)
 
             req.session.authInfo = authInfo
+
             //store to db
+            console.log("storing tokens to db")
+            //redisClient.set(slackUserId, authInfo)
 
             // Upsert record in Salesforce
             console.log('Correctly authorized, Storying tokens in Envoy');
@@ -99,7 +104,7 @@ const _requestAccessAndRefreshTokens = async (code) => {
 	});
 
 	let options = {
-		url: "https://app.envoy.com/a/auth/v0/token",
+		url: `${process.env.ENVOY_LOGIN_URL}/a/auth/v0/token`,
 		method: "POST",
 		headers: headers,
 		body: dataString,
