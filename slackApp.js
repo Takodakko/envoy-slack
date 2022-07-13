@@ -11,7 +11,7 @@ const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
 const { webClientUser, webClientBot } = require('./SlackHelper');
 
 
-const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
+// const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 
 //const { authWithEnvoy } = require('./apps/envoy/middleware/envoy-auth');
 // const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
@@ -50,7 +50,7 @@ app.use(
     })
 );
 
-app.use(middleware(), errorMiddleware());
+//app.use(middleware(), errorMiddleware());
 
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
@@ -74,7 +74,7 @@ const slackApp = new App(
 
 
 // Attach Envoy object to req
-//receiver.router.use(middleware());
+receiver.router.use(middleware(), errorMiddleware());
 
 // Attach Slack WebClient instance to req for use in handling Envoy events that don't go through Slack listeners
 receiver.router.use((req, res, next) => {

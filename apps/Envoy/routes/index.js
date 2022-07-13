@@ -17,12 +17,8 @@ const registerCustomRoutes = () => {
     routes.push(employeeSignIn);
     routes.push(employeeSignOut);
     routes.push(visitorSignIn);
-<<<<<<< HEAD
-    // routes.push(installOnWorkspace);
-=======
     routes.push(validate)
     routes.push(authorize)
->>>>>>> dev
     return routes;
 };
 

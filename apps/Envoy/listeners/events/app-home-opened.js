@@ -6,8 +6,8 @@ const { appHomeScreen } = require('../../user-interface/app-home/appHomeScreen')
 const appHomeOpenedCallback = async ({ client, event, body, context, payload }) => {    
   // console.log(client, 'client');
   // const channels = await client.users.conversations({team_id: 'TUTTNA7A5'});
-  const channels = await client.users.conversations({user: 'U039M82UYPR'});
-  console.log(channels, 'channels');
+  // const channels = await client.users.conversations({user: 'U039M82UYPR'});
+  // console.log(channels, 'channels');
   // const envoy = Envoy.getInstance();
   // const locations = await envoy.API.locations();
   const locations = context.locations;
