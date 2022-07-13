@@ -1,9 +1,10 @@
 
 const validateOut = async (req, res) => {
-    console.log(req.envoy)
+    
+    res.status(200).send({})
 }
 
-const validate = {
+const validate = {  
     path: '/validate',
     method: ['POST'],
     handler: validateOut

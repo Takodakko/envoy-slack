@@ -52,7 +52,7 @@ app.use(
     })
 );
 
-app.use(middleware(), errorMiddleware());
+//app.use(middleware());
 
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
@@ -74,7 +74,6 @@ const slackApp = new App(
 
 // Defining ExpressReceiver custom routes
 receiver.router.use(express.json());
-//attach middleware here
 registerCustomRoutes().forEach((route) => {
     const method = route.method[0].toLowerCase();
     receiver.router[method](route.path, route.handler);

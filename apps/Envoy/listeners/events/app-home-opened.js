@@ -3,7 +3,7 @@ const { appHomeScreen } = require('../../user-interface/app-home/appHomeScreen')
 /**  
  * Event to run when app is opened to home tab.  .action listens for UI interactions like button clicks. 
  */
-const appHomeOpenedCallback = async ({ client, event, body, context, payload }) => {    
+const appHomeOpenedCallback = async ({ client, event, body, context, payload }) => {
     //console.log(context, event, body, payload)
     try {
       //console.log(payload.user)

@@ -3,6 +3,7 @@ const { oauthCallback } = require('./oauth-callback');
 //const { envoy-message-callback } = require('./envoy-message-callback');
 const { validate } = require('./validate')
 const { authorize } = require('./authorize')
+const { token } = require('./token')
 
 const registerCustomRoutes = () => {
     const routes = [];
@@ -11,6 +12,7 @@ const registerCustomRoutes = () => {
     //routes.push(envoy-message-callback);
     routes.push(validate)
     routes.push(authorize)
+    routes.push(token)
     return routes;
 };
 
