@@ -46,16 +46,12 @@ app.use(
         cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
     })
 );
-
-app.use(middleware(), errorMiddleware());
  
 // Use custom ExpressReceiver to be able to use express-session middleware
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   app
 });
-
-
 
 // Initializes your app with your bot token and signing secret
 const slackApp = new App(
