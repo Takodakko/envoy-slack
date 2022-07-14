@@ -9,16 +9,17 @@ const employeeSignInHandler = async (req, res) => {
         // console.log(req.envoy.installStorage, 'install storage');
         const webClient = req.webClientUser;
         let userEmail = req.body.payload.attributes.email;
+        // let userEmail = 'tkla@envoy.com';
         const location = req.envoy.body.meta.location.attributes.name;
         const statusUpdateExpirationInHours = 8;
         const expiration = statusUpdateExpirationInHours ? moment().add(statusUpdateExpirationInHours, 'hours').unix() : 0;
         // console.log(expiration, 'expiration');
         // console.log(location.data.id);
-        if (userEmail.includes('+sdk')) {
-            const start = userEmail.indexOf('+');
-            userEmail = userEmail.slice(0, start) + userEmail.slice(start + 4);
-            // console.log(userEmail, 'userEmail if if');
-        }
+        // if (userEmail.includes('+sdk')) {
+        //     const start = userEmail.indexOf('+');
+        //     userEmail = userEmail.slice(0, start) + userEmail.slice(start + 4);
+        //     // console.log(userEmail, 'userEmail if if');
+        // }
         const userObject = await webClient.users.lookupByEmail({
             token: webClient.token,
             email: userEmail

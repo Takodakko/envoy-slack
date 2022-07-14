@@ -5,5 +5,5 @@ const { checkinout } = require('./checkinout');
 module.exports.register = (app) => {
     app.command('/location', getLocation);
     app.command('/envoy-invite', createInvite);
-    app.command('/envoy-checkinout', checkinout);
+    // app.command('/envoy-checkinout', checkinout);
 };

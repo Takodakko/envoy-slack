@@ -12,8 +12,19 @@ const checkinout = async function({ack, say, context, payload, client}) {
         const userId = payload.user_id;
         const user = await client.users.profile.get({user: userId});
         const userEmail = user.profile.email;
+        // const userEmail = 'grahamp+sdk@envoy.com';
         console.log(userEmail, 'users email');
-        const envoywhat = envoy.API.checkInWork();
+        const envoywhat = await envoy.API.workSchedules({userEmails: [userEmail]});
+        const workToday = envoywhat.filter((work) => {
+            if (work.status === 'APPROVED' && work.expectedArrivalAt.includes('2022-07-14')) {
+                return work;
+            }
+        })
+        if (workToday.length > 0) {
+            const envoythat = await envoy.API.checkInWork({id: workToday[0].id});
+            console.log(envoythat, 'checkin api Envoy results')
+        }
+        
         // const locationsMeta = context.locations;
         // const locations = locationsMeta.map((locationObject) => {
         //   return `${locationObject.attributes.name} ${locationObject.attributes.address}`;

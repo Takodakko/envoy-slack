@@ -3,12 +3,13 @@
 const employeeSignOutHandler = async (req, res) => {
     try {
         let userEmail = req.body.payload.attributes.email;
-        console.log('exit');
+        // let userEmail = 'tkla@envoy.com';
+        // console.log('exit');
         const webClient = req.webClientUser;
-        if (userEmail.includes('+sdk')) {
-            const start = userEmail.indexOf('+');
-            userEmail = userEmail.slice(0, start) + userEmail.slice(start + 4);
-        }
+        // if (userEmail.includes('+sdk')) {
+        //     const start = userEmail.indexOf('+');
+        //     userEmail = userEmail.slice(0, start) + userEmail.slice(start + 4);
+        // }
         const userObject = await webClient.users.lookupByEmail({
             token: webClient.token,
             email: userEmail
