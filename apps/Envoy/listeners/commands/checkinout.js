@@ -3,17 +3,14 @@ const Envoy = require('../../../../Envoy');
 /**  
 * Slash command to get check in and out of the office.
 */
-
+// Not functioning yet. Work in progress
 const checkinout = async function({ack, say, context, payload, client}) {
     try {
         ack();
         const envoy = Envoy.getInstance();
-        console.log(payload, 'payload in command checkinout');
         const userId = payload.user_id;
         const user = await client.users.profile.get({user: userId});
         const userEmail = user.profile.email;
-        // const userEmail = 'grahamp+sdk@envoy.com';
-        console.log(userEmail, 'users email');
         const envoywhat = await envoy.API.workSchedules({userEmails: [userEmail]});
         const workToday = envoywhat.filter((work) => {
             if (work.status === 'APPROVED' && work.expectedArrivalAt.includes('2022-07-14')) {
