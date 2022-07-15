@@ -8,6 +8,7 @@ const { visitorSignIn } = require('./visitor-sign-in');
 const { validate } = require('./validate');
 const { authorize } = require('./authorize');
 const { verifyUrlForSlack } = require('./verify-url-for-slack');
+const { redirect } = require('./redirect');
 
 /** Registers routes for express router for incoming data from Envoy */
 const registerCustomRoutes = () => {
@@ -21,6 +22,7 @@ const registerCustomRoutes = () => {
     routes.push(validate);
     routes.push(authorize);
     routes.push(verifyUrlForSlack);
+    routes.push(redirect);
     return routes;
 };
 

@@ -2,6 +2,9 @@ const moment = require('moment');
 /** Change user status on Slack to in-office when they sign in on Envoy */
 const employeeSignInHandler = async (req, res) => {
     try {
+        // const webClientBot = req.webClientBot;
+        // const channels = await webClientBot.users.conversations();
+        // console.log(channels, 'channels');
         // console.log(req.webClient, 'req.webClient');
         // console.log(req.envoy, 'req.envoy');
         // console.log(req.envoy.body.meta.location, 'req.envoy.body.meta.location');

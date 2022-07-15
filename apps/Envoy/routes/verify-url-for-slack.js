@@ -12,7 +12,7 @@ const verifyUrlForSlackHandler = function(req, res) {
 };
 
 const verifyUrlForSlack = {
-    path: '/',
+    path: '/slack/events',
     method: ['POST'],
     handler: verifyUrlForSlackHandler
 };
