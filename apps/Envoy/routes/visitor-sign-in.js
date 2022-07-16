@@ -5,7 +5,19 @@ const visitorSignInHandler = async (req, res) => {
         const webClientBot = req.webClientBot;
         const webClientUser = req.webClientUser;
         let userEmail = req.body.payload.attributes['host-email'];
-        console.log(req.body, 'req.body');
+        const locationName = req.body.meta.location.attributes.name;
+        const largePhoto = req.body.payload.attributes.thumbnails.large;
+        const originalPhoto = req.body.payload.attributes.thumbnails.original;
+        const smallPhoto = req.body.payload.attributes.thumbnails.small;
+        let photoToUse = null;
+        if (largePhoto !== null) {
+            photoToUse = largePhoto;
+        } else if(originalPhoto !== null) {
+            photoToUse = originalPhoto;
+        } else {
+            photoToUse = smallPhoto;
+        }
+
         // userChannel is the id of the host, based on the email address in the data from Envoy. This will post in the Envoy app channel for this particular user. 
         // If there is no email in the data from Envoy, then this step will be skipped and notifications will only appear in channels the bot has been invited to.
         let userChannel = null;
@@ -22,7 +34,7 @@ const visitorSignInHandler = async (req, res) => {
         const payload = req.body.payload;
         const visitorName = payload.attributes['full-name'];
         const userData = payload.attributes['user-data'];
-        const visitorEntryBlocks = visitorEntryBuilder(visitorName, userData);
+        const visitorEntryBlocks = visitorEntryBuilder(visitorName, userData, photoToUse, locationName);
         if (userChannel !== null) {
             webClientBot.chat.postMessage({
             channel: userChannel,
