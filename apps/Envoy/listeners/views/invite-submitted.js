@@ -1,14 +1,16 @@
-const timeAdjuster = require('./timeAdjuster');
+const timeAdjuster = require('../../../../timeAdjuster');
+const Envoy = require('../../../../Envoy');
 /**  
  * Event to run when invite modal is submitted.  .view listens for modal view requests. 
  */
-const viewInviteSubmitted = async function({ack, client, view, payload, body, logger, context}) {
+const inviteSubmitted = async function({ack, client, view, payload, body, logger, context}) {
   await ack();
-  const envoyApi = context.envoy.API;
+  const envoy = Envoy.getInstance();
   const user = body.user.id;
-  const locationData = await envoyApi.locations();
+
+const locationData = context.locations;
   const rawTime = view.state.values.arrival_time.time.selected_option.value;
-  // console.log(rawTime, 'the raw time value selected');
+  
   const timeSelected = view.state.values.arrival_time.time.selected_option.value;
   const dateSelected = view.state.values.arrival_date.date.selected_date;
   const locationSelected = view.state.values.location.location_selected.selected_option ? view.state.values.location.location_selected.selected_option.value : null;
@@ -42,7 +44,7 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
     }
   };
   try {
-    const invitation = await envoyApi.createInviteV1(envoyInviteObject);
+    const invitation = await envoy.API.createInviteV1(envoyInviteObject);
     const inviteID = invitation.id;
     await client.chat.postMessage({
       text: `Your invitation for ${invitation.invitee.name} at ${rawTime} has been submitted as invitation # ${inviteID}!`,
@@ -59,4 +61,4 @@ const viewInviteSubmitted = async function({ack, client, view, payload, body, lo
   
 };
 
-module.exports = viewInviteSubmitted;
+module.exports = { inviteSubmitted };
