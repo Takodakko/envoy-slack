@@ -42,7 +42,7 @@ const fetchOAuthToken = async (req, res) => {
             )
             redisClient.expireAt(slackEmail, authInfo.expirationTime);
 
-            // Upsert record in Salesforce
+            // Upsert record in Envoy
             console.log('Correctly authorized, Storying tokens in Envoy');
             /*
             await upsert(

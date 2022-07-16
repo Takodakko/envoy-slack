@@ -7,10 +7,10 @@ const inviteSubmitted = async function({ack, client, view, payload, body, logger
   await ack();
   const envoy = Envoy.getInstance();
   const user = body.user.id;
-//   const locationData = await envoy.API.locations();
+
 const locationData = context.locations;
   const rawTime = view.state.values.arrival_time.time.selected_option.value;
-  // console.log(rawTime, 'the raw time value selected');
+  
   const timeSelected = view.state.values.arrival_time.time.selected_option.value;
   const dateSelected = view.state.values.arrival_date.date.selected_date;
   const locationSelected = view.state.values.location.location_selected.selected_option ? view.state.values.location.location_selected.selected_option.value : null;

@@ -1,54 +1,8 @@
-// const { Request, Response } = require("express");
-// const { App, LogLevel } = require('@slack/bolt');
+
 const { WebClient } = require('@slack/web-api');
-// const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
-// const { registerListeners } = require('./apps/envoy/listeners');
-// const persistedClient = require('./apps/envoy/store/bolt-web-client');
 
-// const slackApp = new App({
-//   signingSecret: process.env.SLACK_SIGNING_SECRET,
-//   token: process.env.SLACK_BOT_TOKEN,
-//   clientId: process.env.SLACK_CLIENT_ID,
-//   clientSecret: process.env.SLACK_CLIENT_SECRET,
-//   logLevel: LogLevel.DEBUG,
-// });
-
-// registerListeners(slackApp);
-
-// const envoyInfoMiddleware = attachEnvoyInfoOuter();
-// slackApp.use(envoyInfoMiddleware);
-
-// // persistedClient.client = slackApp.client;
-
-
-
-// async function boltHandler(req, res, next) {
-//   let ackCalled = false;
-//   console.log(req, 'req');
-//   const event = {
-//     body: req.body,
-//     ack: (res) => {
-//       if (ackCalled) {
-//         return;
-//       }
-
-//       // if (res.statusCode[0] !== 2) {
-//         if (res instanceof Error) {
-//         return res.status(500).send();
-//       } else if (!res) {
-//         res.send('')
-//       } else {
-//         res.send(res);
-//       }
-
-//       ackCalled = true;
-//     }
-//   };
-
-//   await slackApp.processEvent(event);
-//   await next();
-// }
+/**Create clients to attach to req objects in Express Receiver. One has user token for those scopes, one has bot token for those scopes. */
 const webClientUser = new WebClient(process.env.SLACK_USER_TOKEN);
 const webClientBot = new WebClient(process.env.SLACK_BOT_TOKEN);
-// module.exports = { boltHandler };
+
 module.exports = { webClientUser, webClientBot };
