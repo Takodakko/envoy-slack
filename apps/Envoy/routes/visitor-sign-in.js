@@ -32,6 +32,8 @@ const visitorSignInHandler = async (req, res) => {
         const channels = await webClientBot.users.conversations();
         
         const payload = req.body.payload;
+        console.log(payload, 'payload for visitor sign in');
+        console.log(payload.relationships['platform-jobs'], 'payload.relationships.platform-jobs for visitor sign in');
         const visitorName = payload.attributes['full-name'];
         const userData = payload.attributes['user-data'];
         const visitorEntryBlocks = visitorEntryBuilder(visitorName, userData, photoToUse, locationName);

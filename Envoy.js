@@ -49,6 +49,10 @@ async function getAccessToken() {
         'reservations.write',
         'work-schedules.read',
         'work-schedules.write',
+        'sign-in-fields.read',
+        'sign-in-fields.write',
+        'sign-in-field-pages.read',
+        'badges.read'
       ].join();
     const options = {
         'method': 'POST',
@@ -94,6 +98,15 @@ class Envoy {
         // next();
         return Envoy.instance;
     }
+    // static getSignInFieldsSpecial(flowId) {
+    //     const { included } = request({
+    //       url: `https://app.envoy.com/api/v3/flows/${flowId}/sign-in-field-page`,
+    //       qs: {
+    //         include: 'sign-in-fields',
+    //       },
+    //     });
+    //     return included;
+    //   }
 }
 
 /*
