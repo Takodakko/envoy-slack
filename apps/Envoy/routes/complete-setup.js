@@ -1,5 +1,5 @@
 
-const validateOut = async (req, res) => {
+const setupComplete = async (req, res) => {
     
     //Slack tokens are available in req.envoy.payload after oauthing with slack from envoy
         //This is due to envoy adding the payload after a hitting the validation url
@@ -13,13 +13,13 @@ const validateOut = async (req, res) => {
     res.status(200).send({})
 }
 
-const validate = {  
-    path: '/validate',
+const completeSetup = {  
+    path: '/complete-setup',
     method: ['POST'],
-    handler: validateOut
+    handler: setupComplete
 };
 
-module.exports = { validate };
+module.exports = { completeSetup };
 
 /* req.webClientUser =
 WebClient {
