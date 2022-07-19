@@ -42,7 +42,7 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
     value: locations.id
     }]
   }
-  
+  // Below flowsSelection is for displaying visitor type options once user has chosen a location.
   let flowsSelection = [];
   if (flows.length === 0) {
     flowsSelection = [{
@@ -67,7 +67,7 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
       });
       flowsSelection = flowsSelection.flat();
   }
-
+  // Below fieldsSelection is for creating custom inputs based on the flow for that type once the user has chosen a visitor type.
   let fieldsSelection = [];
   if (fields.length === 0) {
     fieldsSelection = null;
@@ -97,6 +97,7 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
         fieldsSelection.push(textField);
       }
       if (fieldsObject.kind === 'single-selection' && fieldsObject.options.length > 0) {
+        // if (fieldsObject.kind === 'single-selection') {
         const selectableOptions = fieldsObject.options.map((option) => {
           optionObject = {
             text: {
@@ -109,11 +110,14 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
           return optionObject;;
         })
         const singleSelectField = {
-          type: 'actions',
+          type: 'input',
           block_id: fieldsObject.name,
-          // optional: !fieldsObject.required,
-          elements: [
-            {
+          label: {
+            text: fieldsObject.name,
+            type: 'plain_text'
+          },
+          optional: !fieldsObject.required,
+          element: {
               action_id: fieldsObject.id,
               type: 'static_select',
               placeholder: {
@@ -122,12 +126,74 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
                 emoji: true,
               },
               options: selectableOptions, 
-           },
-          ]
+          }
         }
         fieldsSelection.push(singleSelectField);
       }
-      
+      // Discovered that host options are not being sent.  Look into later.  Temporary fix(?) below.
+      if (fieldsObject.kind === 'single-selection' && fieldsObject.options.length === 0 && fieldsObject.identifier === 'host') {
+        const hostField = {
+          type: 'input',
+          block_id: fieldsObject.name,
+          optional: !fieldsObject.required,
+          label: {
+            type: 'plain_text',
+            text: fieldsObject.name,
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: fieldsObject.id,
+            multiline: false,
+            placeholder: {
+              type: "plain_text",
+              text: fieldsObject.name,
+            },
+          }
+        };
+        fieldsSelection.push(hostField);
+      }
+      if (fieldsObject.kind === 'phone') {
+        const phoneField = {
+          type: 'input',
+          block_id: fieldsObject.name,
+          optional: !fieldsObject.required,
+          label: {
+            type: 'plain_text',
+            text: fieldsObject.name,
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: fieldsObject.id,
+            multiline: false,
+            placeholder: {
+              type: "plain_text",
+              text: fieldsObject.name,
+            },
+          }
+        };
+        fieldsSelection.push(phoneField);
+      }
+      if (fieldsObject.kind === 'email') {
+        const emailField = {
+          type: 'input',
+          block_id: fieldsObject.name,
+          optional: !fieldsObject.required,
+          label: {
+            type: 'plain_text',
+            text: fieldsObject.name,
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: fieldsObject.id,
+            multiline: false,
+            placeholder: {
+              type: "plain_text",
+              text: fieldsObject.name,
+            },
+          }
+        };
+        fieldsSelection.push(emailField);
+      }
     
   });
   
@@ -180,95 +246,95 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
           }
         ]
       },
-      {
-        type: 'input',
-        block_id: 'guest_full_name',
-        label: {
-          type: 'plain_text',
-          text: 'Full name of guest'
-        },
-        element: {
-          type: 'plain_text_input',
-          action_id: 'guest_full_name',
-          multiline: false,
-          placeholder: {
-            type: 'plain_text',
-            text: "Enter your guest's name"
-        },
-        }
-      },
-      {
-        type: 'input',
-        optional: true,
-        block_id: 'guest_email',
-        label: {
-          type: 'plain_text',
-          text: 'Email of guest'
-        },
-        element: {
-          type: 'plain_text_input',
-          action_id: 'guest_email',
-          multiline: false,
-          placeholder: {
-            type: 'plain_text',
-            text: "Enter your guest's email"
-        },
-        }
-      },
-      {
-        type: "input",
-        optional: true,
-        block_id: 'send_email',
-        label: {
-            type: "plain_text",
-            text: "Send guest an email?",
-            emoji: true
-        },
-        element: {
-         type: 'static_select',
-         action_id: 'send_email',
-         placeholder: {
-           type: 'plain_text',
-           text: 'Email guest?',
-           emoji: true,
-         },
-         options: [
-          {
-						text: {
-							type: "plain_text",
-							text: "yes",
-							emoji: true
-						},
-						value: "0"
-					},
-					{
-						text: {
-							type: "plain_text",
-							text: "no",
-							emoji: true
-						},
-						value: "1"
-					}
-         ],
-        },   
-     },
-      {
-            type: 'input',
-            block_id: 'host_name',
-            optional: true,
-            label: {
-                type: 'plain_text',
-                text: `Host Name`
-            },
-            element: {
-                type: 'plain_text_input',
-                action_id: 'host_name',
-            placeholder: {
-                type: 'plain_text',
-                text: "Enter the host's name"
-            }
-        }
-      },
+      // {
+      //   type: 'input',
+      //   block_id: 'guest_full_name',
+      //   label: {
+      //     type: 'plain_text',
+      //     text: 'Full name of guest'
+      //   },
+      //   element: {
+      //     type: 'plain_text_input',
+      //     action_id: 'guest_full_name',
+      //     multiline: false,
+      //     placeholder: {
+      //       type: 'plain_text',
+      //       text: "Enter your guest's name"
+      //   },
+      //   }
+      // },
+    //   {
+    //     type: 'input',
+    //     optional: true,
+    //     block_id: 'guest_email',
+    //     label: {
+    //       type: 'plain_text',
+    //       text: 'Email of guest'
+    //     },
+    //     element: {
+    //       type: 'plain_text_input',
+    //       action_id: 'guest_email',
+    //       multiline: false,
+    //       placeholder: {
+    //         type: 'plain_text',
+    //         text: "Enter your guest's email"
+    //     },
+    //     }
+    //   },
+    //   {
+    //     type: "input",
+    //     optional: true,
+    //     block_id: 'send_email',
+    //     label: {
+    //         type: "plain_text",
+    //         text: "Send guest an email?",
+    //         emoji: true
+    //     },
+    //     element: {
+    //      type: 'static_select',
+    //      action_id: 'send_email',
+    //      placeholder: {
+    //        type: 'plain_text',
+    //        text: 'Email guest?',
+    //        emoji: true,
+    //      },
+    //      options: [
+    //       {
+		// 				text: {
+		// 					type: "plain_text",
+		// 					text: "yes",
+		// 					emoji: true
+		// 				},
+		// 				value: "0"
+		// 			},
+		// 			{
+		// 				text: {
+		// 					type: "plain_text",
+		// 					text: "no",
+		// 					emoji: true
+		// 				},
+		// 				value: "1"
+		// 			}
+    //      ],
+    //     },   
+    //  },
+      // {
+      //       type: 'input',
+      //       block_id: 'host_name',
+      //       optional: true,
+      //       label: {
+      //           type: 'plain_text',
+      //           text: `Host Name`
+      //       },
+      //       element: {
+      //           type: 'plain_text_input',
+      //           action_id: 'host_name',
+      //       placeholder: {
+      //           type: 'plain_text',
+      //           text: "Enter the host's name"
+      //       }
+      //   }
+      // },
       {
         type: 'input',
         block_id: 'arrival_date',
@@ -296,24 +362,24 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
               text: 'Arrival Time',
             },
         },
-        {
-          type: 'input',
-          optional: true,
-          block_id: 'notes',
-          label: {
-            type: 'plain_text',
-            text: 'Other notes'
-          },
-          element: {
-            type: 'plain_text_input',
-            action_id: 'notes',
-            multiline: true,
-            placeholder: {
-              type: 'plain_text',
-              text: "Enter other notes here"
-          },
-          }
-        },
+        // {
+        //   type: 'input',
+        //   optional: true,
+        //   block_id: 'notes',
+        //   label: {
+        //     type: 'plain_text',
+        //     text: 'Other notes'
+        //   },
+        //   element: {
+        //     type: 'plain_text_input',
+        //     action_id: 'notes',
+        //     multiline: true,
+        //     placeholder: {
+        //       type: 'plain_text',
+        //       text: "Enter other notes here"
+        //   },
+        //   }
+        // },
     ],
     submit: {
       type: 'plain_text',
@@ -329,6 +395,25 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
   if (fieldsSelection) {
     modal.blocks.push(...fieldsSelection);
   }
+  const notesSection = {
+    type: 'input',
+    optional: true,
+    block_id: 'notes',
+    label: {
+      type: 'plain_text',
+      text: 'Other notes'
+    },
+    element: {
+      type: 'plain_text_input',
+      action_id: 'notes',
+      multiline: true,
+      placeholder: {
+        type: 'plain_text',
+        text: "Enter other notes here"
+    },
+    }
+  };
+  modal.blocks.push(notesSection);
   
   return modal;
 };
