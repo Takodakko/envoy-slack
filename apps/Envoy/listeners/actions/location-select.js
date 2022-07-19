@@ -31,9 +31,9 @@ const locationSelect = async function({ack, body, context, client}) {
   // console.log(page, 'page');
 
   // Added in custom API to make this work. Took it from the previous version of this code. It's under this getSignInFields method.
-  const whatThis = await envoy.API.getSignInFields('346982');
-  console.log(whatThis, 'whatThis');
-  // console.log(flow.relationships['sign-in-field-page'], 'sign in page');
+  // const whatThis = await envoy.API.getSignInFields('346982');
+  // console.log(whatThis, 'whatThis');
+  
   const locations = locationsMeta.map((locationObject) => {
     return {locationName: locationObject.attributes.name, locationId: locationObject.id};
   });
@@ -67,13 +67,3 @@ const locationSelect = async function({ack, body, context, client}) {
 };
 
 module.exports = { locationSelect };
-
-// async getSignInFields(flowId) {
-//   const { included } = await this.request({
-//     url: `/api/v3/flows/${flowId}/sign-in-field-page`,
-//     qs: {
-//       include: 'sign-in-fields',
-//     },
-//   });
-//   return included;
-// }

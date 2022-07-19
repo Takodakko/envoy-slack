@@ -19,7 +19,7 @@ while (start.isBefore(end)) {
 /**
  * Creates the JSON blocks for the invitation modal.
  */
-const createInviteBuilder = function(locations, flows = []) {
+const createInviteBuilder = function(locations, flows = [], fields = []) {
   let locationSelections;
   if (Array.isArray(locations)) {
     locationSelections = locations.map((locationObject) => {
@@ -67,7 +67,72 @@ const createInviteBuilder = function(locations, flows = []) {
       });
       flowsSelection = flowsSelection.flat();
   }
+
+  let fieldsSelection = [];
+  if (fields.length === 0) {
+    fieldsSelection = null;
+  } else {
+    fields.sort((a, b) => (a.position < b.position) ? -1 : 1);
+    fields.forEach((fieldsObject) => {
+      console.log(fieldsObject, 'fieldsObject');
+      if (fieldsObject.kind === 'text') {
+        const textField = {
+          type: 'input',
+          block_id: fieldsObject.name,
+          optional: !fieldsObject.required,
+          label: {
+            type: 'plain_text',
+            text: fieldsObject.name,
+          },
+          element: {
+            type: 'plain_text_input',
+            action_id: fieldsObject.id,
+            multiline: false,
+            placeholder: {
+              type: "plain_text",
+              text: fieldsObject.name,
+            },
+          }
+        };
+        fieldsSelection.push(textField);
+      }
+      if (fieldsObject.kind === 'single-selection' && fieldsObject.options.length > 0) {
+        const selectableOptions = fieldsObject.options.map((option) => {
+          optionObject = {
+            text: {
+            type: "plain_text",
+            text: option.value,
+            emoji: true
+        },
+          value: option.id.toString()
+      }
+          return optionObject;;
+        })
+        const singleSelectField = {
+          type: 'actions',
+          block_id: fieldsObject.name,
+          // optional: !fieldsObject.required,
+          elements: [
+            {
+              action_id: fieldsObject.id,
+              type: 'static_select',
+              placeholder: {
+                type: 'plain_text',
+                text: fieldsObject.name,
+                emoji: true,
+              },
+              options: selectableOptions, 
+           },
+          ]
+        }
+        fieldsSelection.push(singleSelectField);
+      }
+      
+    
+  });
   
+  }
+  console.log(fieldsSelection, 'fieldsSelection');
   const modal = {
     type: 'modal',
     callback_id: 'invite_modal',
@@ -100,22 +165,20 @@ const createInviteBuilder = function(locations, flows = []) {
         ]
       },
       {
-        type: 'input',
-        block_id: 'guest_type',
-        label: {
-          type: 'plain_text',
-          text: 'Choose a visitor type'
-        },
-        element: {
-          type: 'static_select',
-          placeholder: {
+        type: 'actions',
+        block_id: 'visitor_type',
+        elements: [
+          {
+            action_id: 'visitor_type_selected',
+            type: 'static_select',
+            placeholder: {
             type: 'plain_text',
             text: 'Visitor Type',
             emoji: true
-          },
+            },
           options: flowsSelection,
-          action_id: 'visitor_type'
-        }
+          }
+        ]
       },
       {
         type: 'input',
@@ -263,6 +326,10 @@ const createInviteBuilder = function(locations, flows = []) {
       emoji: true,
     },
   }
+  if (fieldsSelection) {
+    modal.blocks.push(...fieldsSelection);
+  }
+  
   return modal;
 };
 
