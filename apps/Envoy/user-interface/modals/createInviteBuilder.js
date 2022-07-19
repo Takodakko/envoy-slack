@@ -74,30 +74,31 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
   } else {
     fields.sort((a, b) => (a.position < b.position) ? -1 : 1);
     fields.forEach((fieldsObject) => {
-      console.log(fieldsObject, 'fieldsObject');
+      
+      // Creates text boxes for text input flow fields. Name is for the visitor name, so we want to identify it uniquely from other fields.
       if (fieldsObject.kind === 'text') {
         const textField = {
           type: 'input',
-          block_id: fieldsObject.name,
+          block_id: fieldsObject.identifier === 'name' ? 'visitor_name' : 'dynamic-' + fieldsObject.name,
           optional: !fieldsObject.required,
           label: {
             type: 'plain_text',
-            text: fieldsObject.name,
+            text: fieldsObject.identifier === 'name' ? 'Visitor Name' : fieldsObject.name,
           },
           element: {
             type: 'plain_text_input',
-            action_id: fieldsObject.id,
+            action_id: fieldsObject.identifier === 'name' ? 'visitor_name' : 'dynamic-' + fieldsObject.name,
             multiline: false,
             placeholder: {
               type: "plain_text",
-              text: fieldsObject.name,
+              text: fieldsObject.identifier === 'name' ? 'Visitor Name' : fieldsObject.name,
             },
           }
         };
         fieldsSelection.push(textField);
       }
       if (fieldsObject.kind === 'single-selection' && fieldsObject.options.length > 0) {
-        // if (fieldsObject.kind === 'single-selection') {
+        // If option property in final JSON block has zero length, causes an error, so we want to avoid displaying dropdowns with no options, hence the length check.
         const selectableOptions = fieldsObject.options.map((option) => {
           optionObject = {
             text: {
@@ -111,14 +112,15 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
         })
         const singleSelectField = {
           type: 'input',
-          block_id: fieldsObject.name,
+          // The host field is a single-selection, but we can expect to find it in pretty much any flow. If the single-selection is not host, then it is a custom field.
+          block_id: fieldsObject.identifier === 'host' ? 'host_name' : 'dynamic-' + fieldsObject.name,
           label: {
             text: fieldsObject.name,
             type: 'plain_text'
           },
           optional: !fieldsObject.required,
           element: {
-              action_id: fieldsObject.id,
+              action_id: fieldsObject.identifier === 'host' ? 'host_name' : 'dynamic-' + fieldsObject.name,
               type: 'static_select',
               placeholder: {
                 type: 'plain_text',
@@ -130,11 +132,11 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
         }
         fieldsSelection.push(singleSelectField);
       }
-      // Discovered that host options are not being sent.  Look into later.  Temporary fix(?) below.
+      // Discovered that host options are not being sent from Envoy.  Look into later.  Temporary fix(?) below.
       if (fieldsObject.kind === 'single-selection' && fieldsObject.options.length === 0 && fieldsObject.identifier === 'host') {
         const hostField = {
           type: 'input',
-          block_id: fieldsObject.name,
+          block_id: 'host_name',
           optional: !fieldsObject.required,
           label: {
             type: 'plain_text',
@@ -142,7 +144,7 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
           },
           element: {
             type: 'plain_text_input',
-            action_id: fieldsObject.id,
+            action_id: 'host_name',
             multiline: false,
             placeholder: {
               type: "plain_text",
@@ -152,47 +154,92 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
         };
         fieldsSelection.push(hostField);
       }
+      // Phone is a specific field in Envoy visitor flow.
       if (fieldsObject.kind === 'phone') {
+        // For phone and email, Envoy labels them "Your Phone/Your Email" since these are viewed by guests signing in. 
+        // However, since this modal is likely to be used by the host, we want to cut of "your" and replace it with "visitor" for clarity.
+        const placeHolderText = 'Visitor' + fieldsObject.name.slice(4);
         const phoneField = {
           type: 'input',
-          block_id: fieldsObject.name,
+          block_id: 'visitor_phone',
           optional: !fieldsObject.required,
           label: {
             type: 'plain_text',
-            text: fieldsObject.name,
+            text: placeHolderText,
           },
           element: {
             type: 'plain_text_input',
-            action_id: fieldsObject.id,
+            action_id: 'visitor_phone',
             multiline: false,
             placeholder: {
               type: "plain_text",
-              text: fieldsObject.name,
+              text: placeHolderText,
             },
           }
         };
         fieldsSelection.push(phoneField);
       }
+      // Email also is a specific field in Envoy visitor flow.
       if (fieldsObject.kind === 'email') {
+        const placeHolderText = 'Visitor' + fieldsObject.name.slice(4);
         const emailField = {
           type: 'input',
-          block_id: fieldsObject.name,
+          block_id: 'visitor_email',
           optional: !fieldsObject.required,
           label: {
             type: 'plain_text',
-            text: fieldsObject.name,
+            text: placeHolderText,
           },
           element: {
             type: 'plain_text_input',
-            action_id: fieldsObject.id,
+            action_id: 'visitor_email',
             multiline: false,
             placeholder: {
               type: "plain_text",
-              text: fieldsObject.name,
+              text: placeHolderText,
             },
           }
         };
         fieldsSelection.push(emailField);
+        // Send email is a specific property in the payload we send to Envoy, so we want to create it here and label it to keep track of it more easily.
+        const sendEmail = {
+        type: "input",
+        optional: true,
+        block_id: 'send_email',
+        label: {
+            type: "plain_text",
+            text: "Send guest an email?",
+            emoji: true
+        },
+        element: {
+         type: 'static_select',
+         action_id: 'send_email',
+         placeholder: {
+           type: 'plain_text',
+           text: 'Email guest?',
+           emoji: true,
+         },
+         options: [
+          {
+						text: {
+							type: "plain_text",
+							text: "yes",
+							emoji: true
+						},
+						value: "0"
+					},
+					{
+						text: {
+							type: "plain_text",
+							text: "no",
+							emoji: true
+						},
+						value: "1"
+					}
+         ],
+        },   
+     };
+     fieldsSelection.push(sendEmail);
       }
     
   });
