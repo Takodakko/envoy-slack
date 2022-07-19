@@ -1,11 +1,11 @@
 const Envoy = require('../../../../Envoy');
 const { redisClient } = require('../../util/redisClient');
 require('dotenv').config();
-const { encrypt } = require('../../util/encrypt');
+const { decrypt } = require('../../util/encrypt');
 /**  
  * Builds JSON block UI for home tab.
  */
-const appHomeScreen = async function (locations, slackEmail) {
+const appHomeScreen = async function (locations, encryptedSlackEmail) {
   let today = new Date();
   let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
   const homeView = {
@@ -32,7 +32,7 @@ const appHomeScreen = async function (locations, slackEmail) {
             },
             "value": "authorize-btn",
             "action_id": "authorize-btn",
-            "url": `${process.env.NGROK_URL}/oauthstart/${encrypt(slackEmail)}`
+            "url": `${process.env.NGROK_URL}/oauthstart/${encryptedSlackEmail}`
           }
         ]
       },
@@ -135,7 +135,7 @@ const appHomeScreen = async function (locations, slackEmail) {
   */
   function hExistsPromise() {
     return new Promise((resolve, reject) => {
-      redisClient.HEXISTS(slackEmail, 'refreshToken', (err, res) => {
+      redisClient.HEXISTS(decrypt(encryptedSlackEmail), 'refreshToken', (err, res) => {
         if (err) reject(err);
         else resolve(res);
       });

@@ -26,7 +26,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload }) 
         /* the user that opened your app's app home */
         user_id: payload.user,
         /* the view object that appears in the app home*/
-        view: await appHomeScreen(locations, userInfo.user.profile.email)
+        view: await appHomeScreen(locations, encryptedEmail)
       });
   }
   catch (error) {
