@@ -49,6 +49,10 @@ async function getAccessToken() {
         'reservations.write',
         'work-schedules.read',
         'work-schedules.write',
+        'sign-in-fields.read',
+        'sign-in-fields.write',
+        'sign-in-field-pages.read',
+        'badges.read'
       ].join();
     const options = {
         'method': 'POST',
@@ -67,10 +71,11 @@ async function getAccessToken() {
 
     request(options, function (error, response) {
         if (error) throw new Error(error);
+        console.log(JSON.parse(response.body))
         accessToken = JSON.parse(response.body).access_token;
         refreshToken = JSON.parse(response.body).refresh_token;
-        //console.log('access token: ', accessToken);
-        //console.log('refresh token: ', refreshToken); 
+        // console.log('access token: ', accessToken);
+        // console.log('refresh token: ', refreshToken); 
     });
 }
 getAccessToken();

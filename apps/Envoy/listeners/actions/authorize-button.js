@@ -4,7 +4,6 @@
 
 const authorizeButton = async function({ack, context}) {
   await ack();
-  console.log(context, 'authorizing...');
 };
 
 module.exports = { authorizeButton };

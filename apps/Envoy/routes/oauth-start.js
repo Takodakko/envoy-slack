@@ -3,7 +3,7 @@
 const startOAuthProcess = async (req, res) => {
     try {
         // Store slackUserId in session
-        req.session.slackEmail = req.params.slackUserId;
+        req.session.slackUserEmail = req.params.slackUserEmail;
 
         // Send success message
         console.log('redirecting to: ' + _buildOAuthURL());
@@ -25,7 +25,7 @@ const _buildOAuthURL = () => {
 };
 
 const oauthStart = {
-    path: '/oauthstart/:slackUserId',
+    path: '/oauthstart/:slackUserEmail',
     method: ['GET'],
     handler: startOAuthProcess
 };

@@ -5,6 +5,11 @@ const { createInviteBuilder } = require('../../user-interface/modals/createInvit
 
 const locationSelect = async function({ack, body, context, client}) {
   await ack();
+  console.log("\n")
+  console.log(context.locations)
+  console.log("\n")
+  console.log(context)
+  console.log("\n")
   const viewId = body.view.id;
   const viewHash = body.view.hash;
   const locationsMeta = context.locations;

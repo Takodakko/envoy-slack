@@ -1,5 +1,5 @@
 const Envoy = require('../../../../Envoy');
-const { redisClient } = require('../../util/redisClient');
+const { redisClient } = require('../../util/RedisClient');
 require('dotenv').config();
 
 /**  
@@ -140,7 +140,8 @@ const appHomeScreen = async function (locations, slackEmail) {
   }
   
   let sessionExists = await hExistsPromise(); 
-  if (sessionExists) homeView.blocks = homeView.blocks.slice(2);
+  if (sessionExists) console.log("AUTH FOUND | HIDE BUTTON") // homeView.blocks = homeView.blocks.slice(2);
+
   return homeView;
 };
 

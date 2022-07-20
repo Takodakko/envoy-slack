@@ -4,9 +4,8 @@ const path = require('path');
 const persistedClient = require('../store/bolt-web-client.js');
 const request = require('request');
 require('dotenv').config();
-const { authWithEnvoy } = require('../middleware/envoy-auth');
-const { redisClient } = require('../util/redisClient')
-const { encryptToken, decrypToken } = require('../util/encrypt');
+const { redisClient } = require('../util/RedisClient')
+const { encryptToken, decrypToken } = require('../util/crypto');
 /*
 const { upsert } = require('../salesforce/dml/slack-authentication');
 const { authWithSalesforce } = require('../middleware/salesforce-auth');
@@ -16,13 +15,13 @@ const {
 */
 
 const fetchOAuthToken = async (req, res) => {
-    console.log('Executing user to user OAuth callback');
-    console.log(req.session);
+    // console.log('Executing user to user OAuth callback');
+    // console.log(req.session);
     try {
         // Retrieve slackEmail from session
-        const slackEmail = req.session.slackEmail;
+        const slackUserEmail = req.session.slackUserEmail;
 
-        if (slackEmail) {
+        if (slackUserEmail) {
             // Parse Authorization Code
             let code = url.parse(req.url, true).query.code;
 
@@ -35,34 +34,24 @@ const fetchOAuthToken = async (req, res) => {
 
             //store to db and expires at refresh token expire time.
             console.log("storing tokens to db")
-            redisClient.hSet(slackEmail,
+            redisClient.hSet(slackUserEmail,
                 'accessToken', encryptToken(authInfo.accessToken),
                 'refreshToken', encryptToken(authInfo.refreshToken),
                 'refreshTokenExp', authInfo.expirationTime,
             )
-            redisClient.expireAt(slackEmail, authInfo.expirationTime);
+            redisClient.expireAt(slackUserEmail, authInfo.expirationTime);
+
+            console.log(await redisClient.hGet(slackUserEmail, 'accessToken'))
 
             // Upsert record in Envoy
             console.log('Correctly authorized, Storying tokens in Envoy');
-            /*
-            await upsert(
-                authInfo.connection,
-                slackEmail,
-                authInfo.salesforceUserId
-            );
-            */
-            
-            
-            // Force execution of auth middleware so that user to user auth
-            // flow is executed and we obtain the user context
-
 
             // Do this?  Use session object?
-            const context = await authWithEnvoy({
-                slackEmail: slackEmail,
-                authInfo: authInfo
-            });
-            console.log(context, 'context in oauth-callback');
+            // const context = await authWithEnvoy({
+            //     slackEmail: slackEmail,
+            //     authInfo: authInfo
+            // });
+            // console.log(context, 'context in oauth-callback');
 
             // Show travel requests in app home
             // await myTravelRequestsCallback(
@@ -72,7 +61,7 @@ const fetchOAuthToken = async (req, res) => {
             // );
             
 
-            console.log(req.session)
+            //console.log(req.session)
 
             // Send success message
             res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -118,7 +107,6 @@ const _requestAccessAndRefreshTokens = async (code) => {
 	return new Promise((resolve, reject) => {
 		request(options, async (error, response) => {
 			if (error) throw new Error(error);
-			console.log("RES", JSON.parse(response.body));
 			let accessToken = JSON.parse(response.body).access_token;
 			let refreshToken = JSON.parse(response.body).refresh_token;
 
@@ -126,8 +114,8 @@ const _requestAccessAndRefreshTokens = async (code) => {
             let now = new Date();
             let expirationDate = new Date(now.getTime() + ((JSON.parse(response.body).expires_in)*1000));
             let expirationTime = expirationDate.getTime();
-            console.log("expiration date", expirationDate);
-            console.log("expiration time", expirationTime);
+            // console.log("expiration date", expirationDate);
+            // console.log("expiration time", expirationTime);
 
 			resolve({ accessToken, refreshToken, expirationTime });
 		});
