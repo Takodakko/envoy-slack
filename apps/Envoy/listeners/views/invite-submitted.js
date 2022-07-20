@@ -1,4 +1,4 @@
-const timeAdjuster = require('../../../../timeAdjuster');
+const timeAdjuster = require('../../util/timeAdjuster');
 const Envoy = require('../../../../Envoy');
 /**  
  * Event to run when invite modal is submitted.  .view listens for modal view requests. 

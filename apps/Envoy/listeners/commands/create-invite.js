@@ -25,7 +25,7 @@ const { createInviteBuilder } = require('../../user-interface/modals/createInvit
       /* the view object that makes the modal */
       view: modal
     });
-    console.log(response);
+    //console.log(response);
   }
   catch (error) {
     console.error(error);

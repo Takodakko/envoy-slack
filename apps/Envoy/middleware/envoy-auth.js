@@ -5,6 +5,7 @@ const tokenCache = new NodeCache({ stdTTL: 600 });
 // Cache to Store connection object per user
 const connectionCache = new NodeCache({ stdTTL: 600 });
 
+// @DELETE the whole thing
 const authWithEnvoy = async ({
     payload,
     context = {},
