@@ -1,4 +1,3 @@
-/**Respond to Slack's request to verfiy URL with challenge */
 
 const verifyUrlForSlackHandler = function(req, res) {
 //   console.log(req.body, 'req.body');
@@ -10,7 +9,7 @@ const verifyUrlForSlackHandler = function(req, res) {
   }
   
 };
-
+/**Respond to Slack's request to verfiy URL with challenge */
 const verifyUrlForSlack = {
     path: '/slack/events',
     method: ['POST'],

@@ -1,7 +1,11 @@
 const { visitorEntryBuilder } = require('../user-interface/block-messages/visitorEntryBuilder');
-/** Notify user on Slack of visitor arrival via Envoy check in */
+
 const visitorSignInHandler = async (req, res) => {
     try {
+        // console.log(req.body, 'req.body');
+        // console.log(req.envoy, 'req.envoy');
+        // console.log(req.body.payload.attributes['user-data'], 'user-data');
+        // console.log(req.body.payload.attributes['approval-status'], 'approval-status');
         const webClientBot = req.webClientBot;
         const webClientUser = req.webClientUser;
         let userEmail = req.body.payload.attributes['host-email'];
@@ -17,7 +21,7 @@ const visitorSignInHandler = async (req, res) => {
         } else {
             photoToUse = smallPhoto;
         }
-
+        
         // userChannel is the id of the host, based on the email address in the data from Envoy. This will post in the Envoy app channel for this particular user. 
         // If there is no email in the data from Envoy, then this step will be skipped and notifications will only appear in channels the bot has been invited to.
         let userChannel = null;
@@ -32,11 +36,12 @@ const visitorSignInHandler = async (req, res) => {
         const channels = await webClientBot.users.conversations();
         
         const payload = req.body.payload;
-        console.log(payload, 'payload for visitor sign in');
-        console.log(payload.relationships['platform-jobs'], 'payload.relationships.platform-jobs for visitor sign in');
+        // console.log(payload, 'payload for visitor sign in');
+        const isDelivery = payload.attributes['is-delivery'];
+        // console.log(payload.relationships['platform-jobs'], 'payload.relationships.platform-jobs for visitor sign in');
         const visitorName = payload.attributes['full-name'];
         const userData = payload.attributes['user-data'];
-        const visitorEntryBlocks = visitorEntryBuilder(visitorName, userData, photoToUse, locationName);
+        const visitorEntryBlocks = visitorEntryBuilder(visitorName, userData, photoToUse, locationName, isDelivery);
         if (userChannel !== null) {
             webClientBot.chat.postMessage({
             channel: userChannel,
@@ -58,7 +63,7 @@ const visitorSignInHandler = async (req, res) => {
         res.end('Visitor arrival notification failed', 'utf-8');
     }
 };
-
+/** Notify user on Slack of visitor arrival via Envoy check in */
 const visitorSignIn = {
     path: `/visitor-sign-in`,
     method: ['POST'],
