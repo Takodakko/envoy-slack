@@ -7,7 +7,7 @@ const visitorEntryBuilder = function(visitorName, userData, photoToUse, location
         type: 'section',
         text: {
             type: 'plain_text',
-            text: !isDelivery ? `${visitorName} is here to see you at ${locationName}! Come say Hi! :wave:` : `You have a package at ${locationName}!`,
+            text: !isDelivery ? `${visitorName} is here to see you at ${locationName}! Come say Hi! :wave:` : `You have a delivery at ${locationName}!`,
             emoji: true
         }
     }

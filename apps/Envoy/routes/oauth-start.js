@@ -18,7 +18,7 @@ const startOAuthProcess = async (req, res) => {
 
 // Returns OAuth URL to start Web based OAuth 2.0 flow
 const _buildOAuthURL = () => {
-    let auth_url = `${process.env.ENVOY_LOGIN_URL}/a/auth/v0/authorize`;
+    let auth_url = `${process.env.ENVOY_BASE_URL}/a/auth/v0/authorize`;
     auth_url += `?response_type=code&client_id=${process.env.ENVOY_CLIENT_ID}`;
     auth_url += `&redirect_uri=${process.env.NGROK_URL}/oauthcallback&scope=locations.read+token.refresh`;
     return auth_url;
