@@ -3,7 +3,20 @@ const Envoy = require('../../../../Envoy');
 /**  
  * Event to run when invite modal is submitted.  .view listens for modal view requests. 
  */
-const inviteSubmitted = async function({ack, client, view, payload, body, logger, context}) {
+const inviteSubmitted = async function({ack, client, view, payload, body, context}) {
+  // First check if email is properly formatted--or close enough--to avoid causing issues when sending data to Envoy. 
+  // First check is because visitor email could be optional.
+  if (view.state.values.visitor_email.visitor_email.value) { 
+  if (!view.state.values.visitor_email.visitor_email.value.includes('@') || !view.state.values.visitor_email.visitor_email.value.includes('.')) {
+    const emailError = {
+      response_action: 'errors',
+      errors: {
+        visitor_email: 'Enter a proper email address'
+      }
+    };
+    await ack(emailError);
+  }
+}
   await ack();
   const envoy = Envoy.getInstance();
   const user = body.user.id;
@@ -28,28 +41,38 @@ const inviteSubmitted = async function({ack, client, view, payload, body, logger
   // These are technically dynamically generated, but we can predict that they will be in most (all?) flows.
   const guestName = view.state.values.visitor_name.visitor_name.value;
   const guestEmail = view.state.values.visitor_email.visitor_email.value;
+  
   const sendEmail = view.state.values.send_email.send_email.value === '0' ? true : false;
   // Unlike the ones above, guestPhone will go into the customFields array. 
   // It's defined here though because, due to formatting, it will look different than other custom fields.
-  const guestPhone = view.state.values.visitor_phone.visitor_phone.value;
+  const guestPhone = view.state.values.visitor_phone ? view.state.values.visitor_phone.visitor_phone.value : null;
 
 
   // Fields that are dynamically generated based on the flow chosen.
-  const customFields = [{field: 'Your Phone Number', value: guestPhone}];
+  const customFields = [];
+  if (guestPhone) {
+    customFields.push({field: 'Your Phone Number', value: guestPhone});
+  }
   const ListOfViewDataToSubmit = Object.keys(view.state.values);
   // console.log(view.state.values, 'view.state.values');
   // console.log(ListOfViewDataToSubmit, 'ListOfViewDataToSubmit');
   ListOfViewDataToSubmit.forEach((item) => {
     // console.log(item, 'item');
     // console.log(view.state.values[item][item], 'view.state.values[item][item]');
-    
+    if (item === 'host_name') {
+      const itemObject = {
+        field: 'Host',
+        value: view.state.values.host_name.host_name.value ? view.state.values.host_name.host_name.value : ''
+      }
+      customFields.push(itemObject);
+    }
     if (item.includes('dynamic-')) {
-      let valueToSend = null;
+      let valueToSend = '';
     if (view.state.values[item][item].type === 'static_select') {
-      valueToSend = view.state.values[item][item].selected_option ? view.state.values[item][item].selected_option.text.text : null
+      valueToSend = view.state.values[item][item].selected_option ? view.state.values[item][item].selected_option.text.text : '';
     }
     if (view.state.values[item][item].type === 'plain_text_input') {
-      valueToSend = view.state.values[item][item].value
+      valueToSend = view.state.values[item][item].value ? view.state.values[item][item].value : '';
     }
       const itemModified = item.slice(8);
       const itemObject = {

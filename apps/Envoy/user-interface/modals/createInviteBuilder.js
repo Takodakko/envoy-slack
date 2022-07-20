@@ -1,5 +1,5 @@
 const moment = require('moment');
-
+const Envoy = require('../../../../Envoy');
 /* Use moment to create array of times for time selection dropdown */
 const start = moment().startOf('day');
 const end = start.clone().endOf('day');
@@ -21,6 +21,7 @@ while (start.isBefore(end)) {
  */
 const createInviteBuilder = function(locations, flows = [], fields = []) {
   let locationSelections;
+  // console.log(fields, 'fields in Builder');
   if (Array.isArray(locations)) {
     locationSelections = locations.map((locationObject) => {
       return ({
@@ -72,6 +73,15 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
   if (fields.length === 0) {
     fieldsSelection = null;
   } else {
+    // const envoy = Envoy.getInstance();
+    // let employees = [];
+    // envoy.locationEmployees()
+    // .then((data) => {
+    //   employees = data;
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // })
     fields.sort((a, b) => (a.position < b.position) ? -1 : 1);
     fields.forEach((fieldsObject) => {
       
@@ -133,7 +143,8 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
         fieldsSelection.push(singleSelectField);
       }
       // Discovered that host options are not being sent from Envoy.  Look into later.  Temporary fix(?) below.
-      if (fieldsObject.kind === 'single-selection' && fieldsObject.options.length === 0 && fieldsObject.identifier === 'host') {
+      // if (fieldsObject.kind === 'single-selection' && fieldsObject.options.length === 0 && fieldsObject.identifier === 'host') {
+        if (fieldsObject.kind === 'single-selection' && fieldsObject.identifier === 'host') {
         const hostField = {
           type: 'input',
           block_id: 'host_name',
@@ -245,7 +256,7 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
   });
   
   }
-  console.log(fieldsSelection, 'fieldsSelection');
+  // console.log(fieldsSelection, 'fieldsSelection');
   const modal = {
     type: 'modal',
     callback_id: 'invite_modal',

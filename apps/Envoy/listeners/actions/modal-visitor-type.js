@@ -31,7 +31,7 @@ const modalVisitorType = async function({ack, body, context, client}) {
   });
     // Added in custom API to make this work. Took it from the previous version of this code. It's under this getSignInFields method.
   const fieldsMeta = await envoy.API.getSignInFields(selectedFlowId);
-  console.log(fieldsMeta, 'fieldsMeta');
+  // console.log(fieldsMeta, 'fieldsMeta');
   const fields = fieldsMeta.map((field) => {
     const fieldObject = {
       id: field.id,
