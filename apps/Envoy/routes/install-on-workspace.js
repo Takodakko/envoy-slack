@@ -1,5 +1,5 @@
 // const moment = require('moment');
-/** Change user status on Slack to in-office when they sign in on Envoy */
+/** unused now */
 const installOnWorkspaceHandler = async (req, res) => {
     try {
         // console.log(req.webClient, 'req.webClient');

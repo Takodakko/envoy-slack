@@ -4,8 +4,6 @@ const { createInviteBuilder } = require('../../user-interface/modals/createInvit
  */
  const createInvite = async function({ack, client, payload, context}) {
     await ack();
-    console.log(payload, 'payload');
-    // const locationMeta = await envoy.API.locations();
     const locationMeta = context.locations;
     const locations = locationMeta.map((locationObject) => {
       return {locationName: locationObject.attributes.name, locationId: locationObject.id};
@@ -27,7 +25,7 @@ const { createInviteBuilder } = require('../../user-interface/modals/createInvit
       /* the view object that makes the modal */
       view: modal
     });
-    console.log(response);
+    //console.log(response);
   }
   catch (error) {
     console.error(error);

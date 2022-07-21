@@ -1,58 +1,99 @@
 const Envoy = require('../../../../Envoy');
-const { redisClient } = require('../../util/redisClient');
+const { redisClient } = require('../../util/RedisClient');
+const { encrypt } = require('../../util/crypto')
 require('dotenv').config();
-const { decrypt } = require('../../util/encrypt');
+
+
 /**  
  * Builds JSON block UI for home tab.
  */
-const appHomeScreen = async function (locations, encryptedSlackEmail) {
-  let today = new Date();
-  let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+const appHomeScreen = function (locations, slackEmail, isAuthed) {
+  // let today = new Date();
+  // let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  if (!isAuthed) {
+    const homeView = {
+      type: "home",
+      callback_id: 'home_view',
+      blocks: [
+        {
+          "type": "header",
+          "text": {
+            "type": "plain_text",
+            "text": "Please log in with Envoy to use this app",
+            "emoji": true
+          }
+        },
+        {
+          "type": "actions",
+          "elements": [
+            {
+              "type": "button",
+              "text": {
+                "type": "plain_text",
+                "text": "Authorize",
+                "emoji": true
+              },
+              "value": "authorize-btn",
+              "action_id": "authorize-btn",
+              "url": `${process.env.NGROK_URL}/oauthstart/${encrypt(slackEmail)}`
+            }
+          ]
+        }
+      ]
+    };
+    return homeView;
+  } 
   const homeView = {
     type: "home",
     callback_id: 'home_view',
     blocks: [
-      {
-        "type": "header",
-        "text": {
-          "type": "plain_text",
-          "text": "Authorize with Envoy",
-          "emoji": true
-        }
-      },
-      {
-        "type": "actions",
-        "elements": [
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Authorize",
-              "emoji": true
-            },
-            "value": "authorize-btn",
-            "action_id": "authorize-btn",
-            "url": `${process.env.NGROK_URL}/oauthstart/${encryptedSlackEmail}`
-          }
-        ]
-      },
+      // {
+      //   "type": "header",
+      //   "text": {
+      //     "type": "plain_text",
+      //     "text": "Authorize with Envoy",
+      //     "emoji": true
+      //   }
+      // },
+      // {
+      //   "type": "actions",
+      //   "elements": [
+      //     {
+      //       "type": "button",
+      //       "text": {
+      //         "type": "plain_text",
+      //         "text": "Authorize",
+      //         "emoji": true
+      //       },
+      //       "value": "authorize-btn",
+      //       "action_id": "authorize-btn",
+      //       "url": `${process.env.NGROK_URL}/oauthstart/${slackEmail}`
+      //     }
+      //   ]
+      // },
       {
         type: "header",
         text: {
           type: "plain_text",
           text: "Envoy Slack Integration"
-        }
+        },
       },
+      // {
+      //   type: "image",
+      //     image_url: 'https://avatars.slack-edge.com/2022-07-15/3806730494979_9b81e3c92d914952757d_96.png',
+      //     image_url: `${process.env.NGROK_URL}/static/EnvoyBig.png`,
+      //   alt_text: "Envoy logo"
+      // },
       {
         type: "section",
         block_id: "welcome_section",
         text: {
           type: "plain_text",
-          text: "Welcome to the Envoy App!"
+          text: "Welcome to the Envoy Slack App!"
         },
         accessory: {
           type: "image",
-          image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
+          image_url: `${process.env.NGROK_URL}/static/EnvoyBig.png`,
           alt_text: "Envoy Logo"
         },
       },
@@ -64,7 +105,7 @@ const appHomeScreen = async function (locations, encryptedSlackEmail) {
         block_id: "open_message",
         text: {
           type: 'plain_text',
-          text: "Hello! I'm the Envoy Bot. I'm here to notify you of relevant events in Envoy.",
+          text: "I'm here to notify you of relevant events in Envoy, such as when a visitor checks in!",
           emoji: true,
         },
       },
@@ -76,7 +117,7 @@ const appHomeScreen = async function (locations, encryptedSlackEmail) {
         block_id: "slash_commands",
         text: {
           type: 'mrkdwn',
-          text: "One way you can interact with me is by sending slash commands such as */envoy-invite*.",
+          text: "One way you can interact with me is by typing slash commands such as */envoy-invite*.",
         },
       },
       {
@@ -91,9 +132,15 @@ const appHomeScreen = async function (locations, encryptedSlackEmail) {
         },
       },
       {
-        type: "image",
-        image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Red_square.svg/640px-Red_square.svg.png",
-        alt_text: "inspiration"
+        type: "divider"
+      },
+      {
+        type: 'section',
+        block_id: "button_explanation",
+        text: {
+          type: 'mrkdwn',
+          text: "Click the 'Make Invite' button below to create an Envoy workplace invitation for a visitor.",
+        },
       },
       {
         type: "actions",
@@ -128,22 +175,19 @@ const appHomeScreen = async function (locations, encryptedSlackEmail) {
     }
   )
   
-  /* 
-    Note hexists returns 1 for field found, and 0 otherwise. 
-    In non-legacy mode for Redis, the functions are promise based. However we can only use legacy mode with Redis-Connect which instead uses callbacks.
-    The workaround is to wrap this in a promise in order to use await.
-  */
-  function hExistsPromise() {
-    return new Promise((resolve, reject) => {
-      redisClient.HEXISTS(decrypt(encryptedSlackEmail), 'refreshToken', (err, res) => {
-        if (err) reject(err);
-        else resolve(res);
-      });
-    });
-  }
+  // Note hexists returns 1 for field found, and 0 otherwise. 
+  // function hExistsPromise() {
+  //   return new Promise((resolve, reject) => {
+  //     redisClient.HEXISTS(slackEmail, 'refreshToken', (err, res) => {
+  //       if (err) reject(err);
+  //       else resolve(res);
+  //     });
+  //   });
+  // }
   
-  let sessionExists = await hExistsPromise(); 
-  if (sessionExists) homeView.blocks = homeView.blocks.slice(2);
+  // let sessionExists = await hExistsPromise(); 
+  // if (sessionExists) console.log("AUTH FOUND | HIDE BUTTON") // homeView.blocks = homeView.blocks.slice(2);
+
   return homeView;
 };
 

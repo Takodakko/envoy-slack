@@ -1,12 +1,9 @@
 const { createInviteBuilder } = require('../../user-interface/modals/createInviteBuilder');
-// const Envoy = require('../../../../Envoy');
 /**  
  * Event to run when invite button on home is clicked.  .action listens for UI interactions like button clicks. 
  */
 const createInvite = async function({ack, payload, client, body, context}) {
   await ack();
-//   const envoy = Envoy.getInstance();
-  // console.log(payload, 'payload');
   const triggerId = body.trigger_id;
   const locationsMeta = context.locations;
   const locations = locationsMeta.map((locationObject) => {
