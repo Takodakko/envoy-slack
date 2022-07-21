@@ -6,38 +6,70 @@ require('dotenv').config();
 /**  
  * Builds JSON block UI for home tab.
  */
-const appHomeScreen = async function (locations, slackEmail) {
-  let today = new Date();
-  let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-
+const appHomeScreen = function (locations, slackEmail, isAuthed) {
+  // let today = new Date();
+  // let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  if (!isAuthed) {
+    const homeView = {
+      type: "home",
+      callback_id: 'home_view',
+      blocks: [
+        {
+          "type": "header",
+          "text": {
+            "type": "plain_text",
+            "text": "Please log in with Envoy to use this app",
+            "emoji": true
+          }
+        },
+        {
+          "type": "actions",
+          "elements": [
+            {
+              "type": "button",
+              "text": {
+                "type": "plain_text",
+                "text": "Authorize",
+                "emoji": true
+              },
+              "value": "authorize-btn",
+              "action_id": "authorize-btn",
+              "url": `${process.env.NGROK_URL}/oauthstart/${slackEmail}`
+            }
+          ]
+        }
+      ]
+    };
+    return homeView;
+  } 
   const homeView = {
     type: "home",
     callback_id: 'home_view',
     blocks: [
-      {
-        "type": "header",
-        "text": {
-          "type": "plain_text",
-          "text": "Authorize with Envoy",
-          "emoji": true
-        }
-      },
-      {
-        "type": "actions",
-        "elements": [
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Authorize",
-              "emoji": true
-            },
-            "value": "authorize-btn",
-            "action_id": "authorize-btn",
-            "url": `${process.env.NGROK_URL}/oauthstart/${slackEmail}`
-          }
-        ]
-      },
+      // {
+      //   "type": "header",
+      //   "text": {
+      //     "type": "plain_text",
+      //     "text": "Authorize with Envoy",
+      //     "emoji": true
+      //   }
+      // },
+      // {
+      //   "type": "actions",
+      //   "elements": [
+      //     {
+      //       "type": "button",
+      //       "text": {
+      //         "type": "plain_text",
+      //         "text": "Authorize",
+      //         "emoji": true
+      //       },
+      //       "value": "authorize-btn",
+      //       "action_id": "authorize-btn",
+      //       "url": `${process.env.NGROK_URL}/oauthstart/${slackEmail}`
+      //     }
+      //   ]
+      // },
       {
         type: "header",
         text: {
@@ -143,17 +175,17 @@ const appHomeScreen = async function (locations, slackEmail) {
   )
   
   // Note hexists returns 1 for field found, and 0 otherwise. 
-  function hExistsPromise() {
-    return new Promise((resolve, reject) => {
-      redisClient.HEXISTS(slackEmail, 'refreshToken', (err, res) => {
-        if (err) reject(err);
-        else resolve(res);
-      });
-    });
-  }
+  // function hExistsPromise() {
+  //   return new Promise((resolve, reject) => {
+  //     redisClient.HEXISTS(slackEmail, 'refreshToken', (err, res) => {
+  //       if (err) reject(err);
+  //       else resolve(res);
+  //     });
+  //   });
+  // }
   
-  let sessionExists = await hExistsPromise(); 
-  if (sessionExists) console.log("AUTH FOUND | HIDE BUTTON") // homeView.blocks = homeView.blocks.slice(2);
+  // let sessionExists = await hExistsPromise(); 
+  // if (sessionExists) console.log("AUTH FOUND | HIDE BUTTON") // homeView.blocks = homeView.blocks.slice(2);
 
   return homeView;
 };

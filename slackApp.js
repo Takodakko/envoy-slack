@@ -95,7 +95,7 @@ registerCustomRoutes().forEach((route) => {
 registerListeners(slackApp);
 
 const envoyInfoMiddleware = attachEnvoyInfoOuter();
-slackApp.use(envoyInfoMiddleware);
+// slackApp.use(envoyInfoMiddleware);
 
 
 
