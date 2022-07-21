@@ -1,65 +1,74 @@
 require('dotenv').config();
 
 const saveCredentials = async (req, res) => {
-     console.log(req.envoy.body.payload.authed_user)
+    const adminToken = req.envoy.body.payload.authed_user ? req.envoy.body.payload.authed_user.access_token : null;
+    const botToken = req.envoy.body.payload.access_token;
+    const teamId = req.envoy.body.payload.team ? req.envoy.body.payload.team.id : null;
+    const enterpriseId = req.envoy.body.payload.enterprise ? req.envoy.body.payload.enterprise.id : null;
+     console.log(req.envoy.body.payload.authed_user, 'authed user');
+     console.log(adminToken, 'adminToken');
+     console.log(botToken, 'bot access token');
+     console.log(req.envoy.body.payload.bot_user_id, 'bot user id');
+     console.log(teamId, 'team id');
+     console.log(enterpriseId, 'enterprise');
     // console.log("\n")
     // console.log(req.envoy.body.meta)
     // console.log("\n")
-
+    
     /**
      * @TODO
      * Fix double POST req from Envoy to make cleaner code here
      */
     //Check for 2nd POST without payload from slack
-    // if(Object.keys(req.envoy.payload).length !== 0){
-    //     const {
-    //         installStorage
-    //     } = req.envoy;
+    if(Object.keys(req.envoy.payload).length !== 0){
+        const {
+            installStorage
+        } = req.envoy;
         
-    //     const {
-    //         authed_user: authed_user,
-    //         scope: scope,
-    //         access_token:access_token,
-    //         enterprise: enterprise,
-    //         is_enterprise_install: is_enterprise_install,
-    //         team: team
-    //     } = req.envoy.body.payload;
+        const {
+            authed_user: authed_user,
+            scope: scope,
+            access_token:access_token,
+            enterprise: enterprise,
+            is_enterprise_install: is_enterprise_install,
+            team: team
+        } = req.envoy.body.payload;
 
-    //     const botCredentials = {
-    //         authed_user: authed_user,
-    //         bot_access_token: access_token,
-    //         bot_scope: scope
-    //     };
+        const botCredentials = {
+            authed_user: authed_user,
+            bot_access_token: access_token,
+            bot_scope: scope
+        };
 
-    //     console.log(authed_user)
+        console.log(authed_user, 'authed_user line 43');
         
-    //     let teamIdsToAdminTokens = await installStorage.get('teamIdsToAdminTokens');
-    //     console.log(teamIdsToAdminTokens)
-    //     if(!teamIdsToAdminTokens){
-    //         teamIdsToAdminTokens = {};
-    //     }
+        let teamIdsToAdminTokens = await installStorage.get('teamIdsToAdminTokens');
+        console.log(teamIdsToAdminTokens, 'teamIdsToAdminTokens');
+        if(!teamIdsToAdminTokens){
+            teamIdsToAdminTokens = {};
+        }
         
-    //     if (!is_enterprise_install && team) {
-    //         teamIdsToAdminTokens[team.id] = access_token;
-    //     }
-    //     await installStorage.set('teamIdstoAdminTokens', teamIdsToAdminTokens)
-    //     //console.log(teamIdsToAdminTokens)
-    //     console.log(await installStorage.get('teamIdstoAdminTokens'))
+        if (!is_enterprise_install && team) {
+            teamIdsToAdminTokens[team.id] = access_token;
+        }
+        await installStorage.set('teamIdstoAdminTokens', teamIdsToAdminTokens)
+        //console.log(teamIdsToAdminTokens)
+        console.log(await installStorage.get('teamIdstoAdminTokens'), 'checking teamIdstoAdminTokens')
 
-    //     res.status(200).send({
-    //         TEAM_IDS: Object.keys(teamIdsToAdminTokens),
-    //         ENTERPRISE_ID: (is_enterprise_install && enterprise) ? enterprise.id : undefined,
-    //         botCredentials: botCredentials,
-    //         authed_user: authed_user
-    //     });
-    // } else {
-    //     console.log("asd");
-    //     res.status(200);
-    // }
+        res.status(200).send({
+            TEAM_IDS: Object.keys(teamIdsToAdminTokens),
+            ENTERPRISE_ID: (is_enterprise_install && enterprise) ? enterprise.id : undefined,
+            botCredentials: botCredentials,
+            authed_user: authed_user
+        });
+    } else {
+        console.log("round two");
+        res.status(200);
+    }
 
     
-            console.log("asd");
-            res.status(200);
+            // console.log("asd");
+            // res.status(200);
         
 }
 

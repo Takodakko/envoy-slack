@@ -56,7 +56,7 @@ const visitorSignInHandler = async (req, res) => {
                   blocks: visitorEntryBlocks
                 })
         })
-        res.status(200).send('visitor arrival notification made');
+        res.status(200).send({message: 'visitor arrival notification made'});
     } catch (e) {
         console.error(e);
         res.writeHead(500);
