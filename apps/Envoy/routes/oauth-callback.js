@@ -28,8 +28,8 @@ const fetchOAuthToken = async (req, res) => {
 
             // Request Access and Refresh tokens
             const authInfo = await _requestAccessAndRefreshTokens(code);
-            console.log("AUTH INFO: ")
-            console.log(authInfo)
+            // console.log("AUTH INFO: ")
+            // console.log(authInfo)
 
             req.session.authInfo = authInfo
 
@@ -38,9 +38,10 @@ const fetchOAuthToken = async (req, res) => {
             redisClient.hSet(slackEmail,
                 'accessToken', encrypt(authInfo.accessToken),
                 'refreshToken', encrypt(authInfo.refreshToken),
-                'refreshTokenExp', authInfo.expirationTime,
+                'accessTokenExp', authInfo.accessExpTime,
+                'refreshTokenExp', authInfo.refreshExpTime,
             )
-            redisClient.expireAt(slackEmail, authInfo.expirationTime);
+            redisClient.expireAt(slackEmail, authInfo.refreshExpTime);
 
             // Upsert record in Salesforce
             console.log('Correctly authorized, Storying tokens in Envoy');
@@ -118,18 +119,21 @@ const _requestAccessAndRefreshTokens = async (code) => {
 	return new Promise((resolve, reject) => {
 		request(options, async (error, response) => {
 			if (error) throw new Error(error);
-			console.log("RES", JSON.parse(response.body));
-			let accessToken = JSON.parse(response.body).access_token;
-			let refreshToken = JSON.parse(response.body).refresh_token;
+            let body = JSON.parse(response.body);
+			console.log("RES", body);
+			let accessToken = body.access_token;
+			let refreshToken = body.refresh_token;
 
             //calc expiration date
             let now = new Date();
-            let expirationDate = new Date(now.getTime() + ((JSON.parse(response.body).expires_in)*1000));
-            let expirationTime = expirationDate.getTime();
-            console.log("expiration date", expirationDate);
-            console.log("expiration time", expirationTime);
+            // let expirationDate = new Date(now.getTime() + ((JSON.parse(response.body).expires_in)*1000));
+            // let expirationTime = expirationDate.getTime();
+            let refreshExpTime = Date.now() + body.refresh_token_expires_in * 1000;
+            let accessExpTime = Date.now() + body.expires_in * 1000;
+            // console.log("expiration date", expirationDate);
+            // console.log("expiration time", expirationTime);
 
-			resolve({ accessToken, refreshToken, expirationTime });
+			resolve({ accessToken, refreshToken, refreshExpTime, accessExpTime });
 		});
 	});
 };
