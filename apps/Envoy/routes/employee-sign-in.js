@@ -1,5 +1,5 @@
 const moment = require('moment');
-/** Change user status on Slack to in-office when they sign in on Envoy */
+
 const employeeSignInHandler = async (req, res) => {
     try {
         // This functionality REQUIRES a user token (not a bot token) for the appropriate scope (user.profile:write)
@@ -29,7 +29,7 @@ const employeeSignInHandler = async (req, res) => {
         res.end('Failed to update status', 'utf-8');
     }
 };
-
+/** Change user status on Slack to in-office when they sign in on Envoy */
 const employeeSignIn = {
     path: `/employee-sign-in`,
     method: ['POST'],

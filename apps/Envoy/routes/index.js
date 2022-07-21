@@ -15,6 +15,8 @@ const { slackCredentials } = require('./envoy-setup/slack-credentials');
 // const { installOnWorkspace } = require('./install-on-workspace');
 const { verifyUrlForSlack } = require('./verify-url-for-slack');
 // const { redirect } = require('./redirect');
+const { employeeUpcoming } = require('./employee-upcoming');
+const { upcomingVisit } = require('./upcoming-visit');
 
 /** Registers routes for express router for incoming data from Envoy */
 const registerCustomRoutes = () => {
@@ -34,6 +36,8 @@ const registerCustomRoutes = () => {
     routes.push(authorize);
     routes.push(verifyUrlForSlack);
     // routes.push(redirect);
+    routes.push(employeeUpcoming);
+    routes.push(upcomingVisit);
     return routes;
 };
 

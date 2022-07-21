@@ -7,6 +7,11 @@ const { registerCustomRoutes } = require('./apps/envoy/routes');
 const persistedClient = require('./apps/envoy/store/bolt-web-client');
 const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
 // const { createServer } = require('http');
+// const { webClientUser, webClientBot } = require('./SlackHelper');
+const path = require('path');
+
+
+// const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 const { webClientUser, webClientBot } = require('./zArchive/SlackHelper');
 
 // @DELETE
@@ -60,6 +65,12 @@ receiver.router.use((req, res, next) => {
   req.webClientBot = webClientBot;
   next();
 })
+// Manual implementation of app.use(express.static) to load image files, like the one on the app home page.
+receiver.router.get('/static/*', (req, res) => {
+  const fp = path.join(__dirname, req.path);
+  res.contentType('image/jpeg');
+  res.sendFile(fp);
+})
 // receiver.router.use(express.json());
 // // receiver.router.post('/slack/events', boltHandler);
 
@@ -84,7 +95,7 @@ registerCustomRoutes().forEach((route) => {
 registerListeners(slackApp);
 
 const envoyInfoMiddleware = attachEnvoyInfoOuter();
-slackApp.use(envoyInfoMiddleware);
+// slackApp.use(envoyInfoMiddleware);
 
 
 
