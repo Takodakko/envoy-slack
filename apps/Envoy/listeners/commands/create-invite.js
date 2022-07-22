@@ -1,4 +1,4 @@
-const { createInviteBuilder } = require('../../user-interface/modals/createInviteBuilder');
+const { createInviteBuilder } = require('../../user-interface/modals');
 /**  
  * Slash command to open invite modal.  .command listens for slash commands entered into the message bar. 
  */

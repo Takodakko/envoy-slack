@@ -42,7 +42,7 @@ const visitorSignInHandler = async (req, res) => {
         const visitorName = payload.attributes['full-name'];
         const userData = payload.attributes['user-data'];
         const visitorEntryBlocks = visitorEntryBuilder(visitorName, userData, photoToUse, locationName, isDelivery);
-        if (userChannel !== null) {
+        if (userChannel) {
             webClientBot.chat.postMessage({
             channel: userChannel,
               text: `${visitorName} has arrived.`,

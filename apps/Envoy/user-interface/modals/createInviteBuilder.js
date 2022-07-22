@@ -304,95 +304,6 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
           }
         ]
       },
-      // {
-      //   type: 'input',
-      //   block_id: 'guest_full_name',
-      //   label: {
-      //     type: 'plain_text',
-      //     text: 'Full name of guest'
-      //   },
-      //   element: {
-      //     type: 'plain_text_input',
-      //     action_id: 'guest_full_name',
-      //     multiline: false,
-      //     placeholder: {
-      //       type: 'plain_text',
-      //       text: "Enter your guest's name"
-      //   },
-      //   }
-      // },
-    //   {
-    //     type: 'input',
-    //     optional: true,
-    //     block_id: 'guest_email',
-    //     label: {
-    //       type: 'plain_text',
-    //       text: 'Email of guest'
-    //     },
-    //     element: {
-    //       type: 'plain_text_input',
-    //       action_id: 'guest_email',
-    //       multiline: false,
-    //       placeholder: {
-    //         type: 'plain_text',
-    //         text: "Enter your guest's email"
-    //     },
-    //     }
-    //   },
-    //   {
-    //     type: "input",
-    //     optional: true,
-    //     block_id: 'send_email',
-    //     label: {
-    //         type: "plain_text",
-    //         text: "Send guest an email?",
-    //         emoji: true
-    //     },
-    //     element: {
-    //      type: 'static_select',
-    //      action_id: 'send_email',
-    //      placeholder: {
-    //        type: 'plain_text',
-    //        text: 'Email guest?',
-    //        emoji: true,
-    //      },
-    //      options: [
-    //       {
-		// 				text: {
-		// 					type: "plain_text",
-		// 					text: "yes",
-		// 					emoji: true
-		// 				},
-		// 				value: "0"
-		// 			},
-		// 			{
-		// 				text: {
-		// 					type: "plain_text",
-		// 					text: "no",
-		// 					emoji: true
-		// 				},
-		// 				value: "1"
-		// 			}
-    //      ],
-    //     },   
-    //  },
-      // {
-      //       type: 'input',
-      //       block_id: 'host_name',
-      //       optional: true,
-      //       label: {
-      //           type: 'plain_text',
-      //           text: `Host Name`
-      //       },
-      //       element: {
-      //           type: 'plain_text_input',
-      //           action_id: 'host_name',
-      //       placeholder: {
-      //           type: 'plain_text',
-      //           text: "Enter the host's name"
-      //       }
-      //   }
-      // },
       {
         type: 'input',
         block_id: 'arrival_date',
@@ -420,24 +331,6 @@ const createInviteBuilder = function(locations, flows = [], fields = []) {
               text: 'Arrival Time',
             },
         },
-        // {
-        //   type: 'input',
-        //   optional: true,
-        //   block_id: 'notes',
-        //   label: {
-        //     type: 'plain_text',
-        //     text: 'Other notes'
-        //   },
-        //   element: {
-        //     type: 'plain_text_input',
-        //     action_id: 'notes',
-        //     multiline: true,
-        //     placeholder: {
-        //       type: 'plain_text',
-        //       text: "Enter other notes here"
-        //   },
-        //   }
-        // },
     ],
     submit: {
       type: 'plain_text',
