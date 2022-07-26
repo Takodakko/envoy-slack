@@ -3,7 +3,7 @@ const { decrypt } = require('../util/crypto')
 const startOAuthProcess = async (req, res) => {
     try {
         // Store slackEmail in session.
-        req.session.slackEmail = decrypt(req.params.encryptedSlackEmail);
+        req.session.slackUserEmail = decrypt(req.params.encryptedSlackEmail);
         // Send success message
         console.log('redirecting to: ' + _buildOAuthURL());
         res.redirect(307, _buildOAuthURL()); // Using 307 response code to prevent browser from caching the redirection

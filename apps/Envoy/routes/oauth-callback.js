@@ -34,13 +34,13 @@ const fetchOAuthToken = async (req, res) => {
 
             //store to db and expires at refresh token expire time.
             console.log("storing tokens to db")
-            redisClient.hSet(slackEmail,
+            redisClient.hSet(slackUserEmail,
                 'accessToken', encrypt(authInfo.accessToken),
                 'refreshToken', encrypt(authInfo.refreshToken),
                 'accessTokenExp', authInfo.accessExpTime,
                 'refreshTokenExp', authInfo.refreshExpTime,
             )
-            redisClient.expireAt(slackEmail, authInfo.refreshExpTime);
+            redisClient.expireAt(slackUserEmail, authInfo.refreshExpTime);
 
             console.log(await redisClient.hGet(slackUserEmail, 'accessToken'))
 
