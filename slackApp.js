@@ -57,13 +57,16 @@ const slackApp = new App(
       function hGetPromise() {
         return new Promise((resolve, reject) => {
           redisClient.hGetAll(teamId, (err, res) => {
+            let tokenIdx = res.indexOf('botToken') + 1;
+            let botUserIdx = res.indexOf('bot_user_id') + 1;
             if (err) reject(err);
             else {
               const bot = {
-                botToken: res[9],
+                botToken: res[tokenIdx],
                 // botId: team.botId,
-                botUserId: res[11],
+                botUserId: res[botUserIdx],
               };
+              console.log(bot);
               resolve(bot);
             }
           });
@@ -71,13 +74,12 @@ const slackApp = new App(
       }
       try {
         return await hGetPromise();
-
       } catch (err) {
         throw new Error('No matching authorizations');
       }
     },
     logLevel: LogLevel.DEBUG,
-    receiver,
+    // receiver,
     customRoutes: [
       {
         path: '/install-confirm',
@@ -85,7 +87,7 @@ const slackApp = new App(
         handler: async (req, res) => {
           try {
             let begin = req.url.indexOf("code") + 5;
-            let end = req.url.indexOf("&")
+            let end = req.url.indexOf("&");
             const code = req.url.slice(begin, end);
             const form = new FormData();
             form.append('code', code);
@@ -112,7 +114,9 @@ const slackApp = new App(
                 'bot_user_id', install.bot_user_id,
                 'botToken', install.access_token,
               );
-              res.send();
+              res.end();
+            } else {
+              // Handle enterprise install.
             }
           } catch (e) {
             console.error(e);
