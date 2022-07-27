@@ -4,6 +4,11 @@ const { App, ExpressReceiver, LogLevel } = require('@slack/bolt');
 require('dotenv').config();
 const { registerListeners } = require('./apps/envoy/listeners');
 const { registerCustomRoutes } = require('./apps/envoy/routes');
+const persistedClient = require('./apps/envoy/store/bolt-web-client');
+const path = require('path');
+
+
+// const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 const { webClientUser, webClientBot } = require('./zArchive/SlackHelper');
 const { authWithEnvoy } = require('./apps/Envoy/middleware/envoy-auth')
 const RedisStore = require('connect-redis')(session);
@@ -49,6 +54,14 @@ receiver.router.use((req, res, next) => {
   req.webClientBot = webClientBot;
   next();
 })
+// Manual implementation of app.use(express.static) to load image files, like the one on the app home page.
+receiver.router.get('/static/*', (req, res) => {
+  const fp = path.join(__dirname, req.path);
+  res.contentType('image/jpeg');
+  res.sendFile(fp);
+})
+// receiver.router.use(express.json());
+// // receiver.router.post('/slack/events', boltHandler);
 
 // Defining ExpressReceiver custom routes
 receiver.router.use(express.json());

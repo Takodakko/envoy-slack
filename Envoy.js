@@ -99,6 +99,15 @@ class Envoy {
         // next();
         return Envoy.instance;
     }
+    // static getSignInFieldsSpecial(flowId) {
+    //     const { included } = request({
+    //       url: `https://app.envoy.com/api/v3/flows/${flowId}/sign-in-field-page`,
+    //       qs: {
+    //         include: 'sign-in-fields',
+    //       },
+    //     });
+    //     return included;
+    //   }
 }
 
 /*

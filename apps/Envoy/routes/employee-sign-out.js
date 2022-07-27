@@ -1,5 +1,5 @@
 
-/** Remove user status of working when they sign out from Envoy */
+
 const employeeSignOutHandler = async (req, res) => {
     try {
         let userEmail = req.body.payload.attributes.email;
@@ -30,7 +30,7 @@ const employeeSignOutHandler = async (req, res) => {
         res.end('Failed to update status', 'utf-8');
     }
 };
-
+/** Remove user status of working when they sign out from Envoy */
 const employeeSignOut = {
     path: `/employee-sign-out`,
     method: ['POST'],

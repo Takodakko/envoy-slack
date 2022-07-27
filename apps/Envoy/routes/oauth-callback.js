@@ -4,7 +4,7 @@ const path = require('path');
 const request = require('request');
 require('dotenv').config();
 const { redisClient } = require('../util/RedisClient');
-const { encryptToken, decrypToken } = require('../util/crypto');
+const { encryptToken, decryptToken } = require('../util/crypto');
 const persistedClient = require('../util/boltWebClient');
 const { authWithEnvoy } = require('../middleware/envoy-auth.js');
 const { appHomeOpenedCallback } = require('../listeners/events/app-home-opened.js');

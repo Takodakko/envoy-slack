@@ -1,13 +1,13 @@
 /**Build json blocks for visitor entry message */
 
-const visitorEntryBuilder = function(visitorName, userData, photoToUse, locationName) {
-  
+const visitorEntryBuilder = function(visitorName, userData, photoToUse, locationName, isDelivery) {
+  console.log(isDelivery, 'isDelivery in JSON');
   const entryBlocks = [
     {
         type: 'section',
         text: {
             type: 'plain_text',
-            text: `${visitorName} is here to see you at ${locationName}! Come say Hi! :wave:`,
+            text: !isDelivery ? `${visitorName} is here to see you at ${locationName}! Come say Hi! :wave:` : `You have a delivery at ${locationName}!`,
             emoji: true
         }
     }
