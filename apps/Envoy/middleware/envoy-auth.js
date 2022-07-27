@@ -7,7 +7,7 @@ const { redisClient,
     getRefreshToken,
     getAccessToken
  } = require('../util/RedisClient');
- const { encryptToken, decryptToken } = require('../util/crypto');
+ const { encrypt, decrypt } = require('../util/crypto');
  const axios = require('axios')
 
 const request = require("request");
@@ -51,7 +51,7 @@ const authWithEnvoy = async ({
             authInfo.accessTokenExp = await getAccessExp(slackUserEmail);
             if(authInfo.accessTokenExp <= Date.now()){
                 console.log("EXPIRED TOKS")
-                authInfo.refreshToken = decryptToken(await getRefreshToken(slackUserEmail));
+                authInfo.refreshToken = decrypt(await getRefreshToken(slackUserEmail));
                 console.log(authInfo.refreshToken)
                 const newAuth = await _refreshTokens(authInfo.refreshToken);
                 console.log(newAuth)
@@ -111,39 +111,5 @@ const _refreshTokens = async (
 		});
 	});
 }
-
-
-// const _refreshTokens = async (refreshToken) => {
-//     console.log(refreshToken)
-//     const response = await axios({
-//         method: 'POST',
-//         url: process.env.ENVOY_AUTH_URL,
-//         data: { 
-//             'grant_type': 'refresh_token',
-//             'refresh_token': refreshToken,
-//             'client_id': process.env.ENVOY_CLIENT_ID,
-//             'client_secret': process.env.ENVOY_CLIENT_SECRET,
-//         },
-//         headers: {
-//             'Content-Type': 'application/json'
-//         }
-//     }).then(res => {
-//         return res.data;
-//     }).catch(error => {
-//       return {
-//         status: error.response.status,
-//         error: error.response.data.error,
-//       }
-//     });
-//     if (response.accessToken) {
-//       return {
-//         accessToken: response.access_token,
-//         refreshToken: response.refresh_token,
-//         accessTokenExp: Date.now() + response.expires_in,
-//         refreshTokenExp: Date.now() + response.refresh_token_expires_in,
-//       }
-//     } else return response;
-//   }
-
 
 module.exports = { authWithEnvoy }

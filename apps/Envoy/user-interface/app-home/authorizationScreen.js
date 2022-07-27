@@ -1,3 +1,4 @@
+const { encrypt } = require('../../util/crypto');
 
 /**
  * @TODO
@@ -28,7 +29,7 @@ const authorizationScreen = (slackUserEmail, slackUserId) => {
                     },
                     "value": "authorize-btn",
                     "action_id": "authorize-btn",
-                    "url": `${process.env.NGROK_URL}/oauthstart/${slackUserEmail}&${slackUserId}`
+                    "url": `${process.env.NGROK_URL}/oauthstart/${encrypt(slackUserEmail)}&${encrypt(slackUserId)}` //encrypt these
                 }
                 ]
             }

@@ -1,6 +1,6 @@
 const { appHomeScreen } = require('../../user-interface/app-home/appHomeScreen');
 const { redisClient, getAccessToken } = require('../../util/RedisClient')
-const { decryptToken } = require('../../util/crypto');
+const { decrypt } = require('../../util/crypto');
 const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 const { authorizationScreen } = require('../../user-interface/app-home/authorizationScreen')
 
@@ -21,7 +21,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
     }
     if(context.hasAuthorized){
       const encryptedAccessToken = await getAccessToken(slackUserEmail)
-      const accessToken = decryptToken(encryptedAccessToken);  
+      const accessToken = decrypt(encryptedAccessToken);  
       const envoyApi = new EnvoyAPI(accessToken);
       const locations = await envoyApi.locations()
       //console.log(locations)

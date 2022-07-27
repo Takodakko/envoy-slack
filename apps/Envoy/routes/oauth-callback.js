@@ -4,7 +4,7 @@ const path = require('path');
 const request = require('request');
 require('dotenv').config();
 const { redisClient } = require('../util/RedisClient');
-const { encryptToken, decryptToken } = require('../util/crypto');
+const { encrypt, decrypt } = require('../util/crypto');
 const persistedClient = require('../util/boltWebClient');
 const { authWithEnvoy } = require('../middleware/envoy-auth.js');
 const { appHomeOpenedCallback } = require('../listeners/events/app-home-opened.js');
@@ -12,8 +12,8 @@ const { appHomeOpenedCallback } = require('../listeners/events/app-home-opened.j
 const fetchOAuthToken = async (req, res) => {
     try {
         // Retrieve slackEmail from session
-        const slackUserEmail = req.session.slackUserEmail;
-        const slackUserId = req.session.slackUserId
+        const slackUserEmail = decrypt(req.session.slackUserEmail);
+        const slackUserId = decrypt(req.session.slackUserId);
 
         if (slackUserEmail) {
             // Parse Authorization Code
@@ -25,8 +25,8 @@ const fetchOAuthToken = async (req, res) => {
             //store to db and expires at refresh token expire time.
             console.log("storing tokens to db")
             redisClient.hSet(slackUserEmail,
-                'accessToken', encryptToken(authInfo.accessToken),
-                'refreshToken', encryptToken(authInfo.refreshToken),
+                'accessToken', encrypt(authInfo.accessToken),
+                'refreshToken', encrypt(authInfo.refreshToken),
                 'refreshTokenExp', Date.now() + authInfo.refreshExpTime,
                 'accessTokenExp', Date.now() + authInfo.accessExpTime
             )

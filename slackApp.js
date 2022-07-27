@@ -14,7 +14,6 @@ const { authWithEnvoy } = require('./apps/Envoy/middleware/envoy-auth')
 const RedisStore = require('connect-redis')(session);
 let { redisClient } = require('./apps/Envoy/util/RedisClient');
 const { middleware, errorMiddleware } = require('@envoy/envoy-integrations-sdk');
-const persistedClient = require('./apps/Envoy/util/boltWebClient');
 
 // Create custom express app to be able to use express-session middleware
 const app = express();
