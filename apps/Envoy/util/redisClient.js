@@ -13,4 +13,75 @@ redisClient.connect().then(() => {
   console.log("Failed to connect to Redis\n" + err) 
 })
 
-module.exports = { redisClient };
+function refreshTokenExists(slackEmail) {
+  return new Promise((resolve, reject) => {
+    redisClient.HEXISTS(slackEmail, 'refreshToken', (err, res) => {
+      if (err) reject(err);
+      else resolve(res);
+    });
+  });
+}
+
+function accessTokenExists(slackEmail) {
+  return new Promise((resolve, reject) => {
+    redisClient.HEXISTS(slackEmail, 'accessToken', (err, res) => {
+      if (err) reject(err);
+      else resolve(res);
+    });
+  });
+}
+
+function getAll(slackEmail) {
+  return new Promise((resolve, reject) => {
+    redisClient.HGETALL(slackEmail, (err, res) => {
+      if (err) reject(err);
+      else resolve(res);
+    });
+  });
+}
+
+function getRefreshToken(slackEmail) {
+  return new Promise((resolve, reject) => {
+    redisClient.HGET(slackEmail, 'refreshToken', (err, res) => {
+      if (err) reject(err);
+      else resolve(res);
+    });
+  });
+}
+
+function getRefreshExp(slackEmail) {
+  return new Promise((resolve, reject) => {
+    redisClient.HGET(slackEmail, 'refreshTokenExp', (err, res) => {
+      if (err) reject(err);
+      else resolve(res);
+    });
+  });
+}
+
+function getAccessExp(slackEmail) {
+  return new Promise((resolve, reject) => {
+    redisClient.HGET(slackEmail, 'accessTokenExp', (err, res) => {
+      if (err) reject(err);
+      else resolve(res);
+    });
+  });
+}
+
+function getAccessToken(slackEmail) {
+  return new Promise((resolve, reject) => {
+    redisClient.HGET(slackEmail, 'accessToken', (err, res) => {
+      if (err) reject(err);
+      else resolve(res);
+    });
+  });
+}
+
+module.exports = { redisClient, 
+  refreshTokenExists, 
+  accessTokenExists,
+  getAll, 
+  getRefreshToken, 
+  getAccessToken, 
+  getRefreshExp,
+  getAccessExp 
+};

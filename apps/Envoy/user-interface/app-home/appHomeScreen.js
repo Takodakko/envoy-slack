@@ -14,30 +14,6 @@ const appHomeScreen = async function (locations, slackEmail) {
     callback_id: 'home_view',
     blocks: [
       {
-        "type": "header",
-        "text": {
-          "type": "plain_text",
-          "text": "Authorize with Envoy",
-          "emoji": true
-        }
-      },
-      {
-        "type": "actions",
-        "elements": [
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Authorize",
-              "emoji": true
-            },
-            "value": "authorize-btn",
-            "action_id": "authorize-btn",
-            "url": `${process.env.NGROK_URL}/oauthstart/${slackEmail}`
-          }
-        ]
-      },
-      {
         type: "header",
         text: {
           type: "plain_text",
@@ -128,20 +104,6 @@ const appHomeScreen = async function (locations, slackEmail) {
       },
     }
   )
-  
-  // Note hexists returns 1 for field found, and 0 otherwise. 
-  function hExistsPromise() {
-    return new Promise((resolve, reject) => {
-      redisClient.HEXISTS(slackEmail, 'refreshToken', (err, res) => {
-        if (err) reject(err);
-        else resolve(res);
-      });
-    });
-  }
-  
-  let sessionExists = await hExistsPromise(); 
-  if (sessionExists) console.log("AUTH FOUND | HIDE BUTTON") // homeView.blocks = homeView.blocks.slice(2);
-
   return homeView;
 };
 

@@ -1,48 +1,52 @@
 const { appHomeScreen } = require('../../user-interface/app-home/appHomeScreen');
-const { redisClient } = require('../../util/RedisClient')
+const { redisClient, getAccessToken } = require('../../util/RedisClient')
 const { decryptToken } = require('../../util/crypto');
 const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
+const { authorizationScreen } = require('../../user-interface/app-home/authorizationScreen')
 
 /**  
  * Event to run when app is opened to home tab.  .action listens for UI interactions like button clicks. 
  */
-const appHomeOpenedCallback = async ({ client, event, body, context, payload }) => {    
-
-  const userInfo = await client.users.info({user: payload.user})
-  const slackUserEmail = userInfo.user.profile.email;
-  function hGetAccessTokenPromise() {
-    return new Promise((resolve, reject) => {
-      redisClient.hGet(slackUserEmail, 'accessToken', (err, res) => {
-        if (err) reject(err);
-        else resolve(res);
-      });
-    });
-  }
-  const encryptedAccessToken = await hGetAccessTokenPromise(slackUserEmail)
-  const accessToken = decryptToken(encryptedAccessToken);  
-  const envoyApi = new EnvoyAPI(accessToken);
-
-  // const locations = context.locations; 
-  const locations = await envoyApi.locations()
-  console.log(locations) 
-  //console.log(locations)
-
+const appHomeOpenedCallback = async ({ client, event, body, context, payload, slackUserEmail, slackUserId, persistedClient }) => {
   try {
-      const userInfo = await client.users.info({
-        user: payload.user
-      });
-
-      /* view.publish is the method that your app uses to push a view to the Home tab */
+    let userId = payload?.user || null
+    console.log("APP HOME EMAIL: " + slackUserEmail)
+    if(!slackUserEmail){
+      const userInfo = await client.users.info({user: payload.user});
+      slackUserEmail = userInfo.user.profile.email;
+      console.log("EXTRACTED EMAIL: " + slackUserEmail)
+    }
+    if(!userId){
+      userId = slackUserId;
+    }
+    if(context.hasAuthorized){
+      const encryptedAccessToken = await getAccessToken(slackUserEmail)
+      const accessToken = decryptToken(encryptedAccessToken);  
+      const envoyApi = new EnvoyAPI(accessToken);
+      const locations = await envoyApi.locations()
+      //console.log(locations)
+      // if(!client){
+      //   client = persistedClient.client
+      // }
+      console.log(userId)
       const result = await client.views.publish({
-        /* the user that opened your app's app home */
-        user_id: payload.user,
-        /* the view object that appears in the app home*/
-        view: await appHomeScreen(locations, slackUserEmail)
-      });
+        user_id: userId, //payload.user
+        view: await (appHomeScreen(locations, slackUserEmail))
+      })
+    } else {
+        await _publishAuthScreen(client, slackUserEmail, payload.user);
+    }
   }
   catch (error) {
       console.error(error);
   }
-  };
+};
+
+const _publishAuthScreen = async (client, slackUserEmail, slackUserId) => {
+  const result = await client.views.publish({
+      user_id: slackUserId,
+      view: await authorizationScreen(slackUserEmail, slackUserId)
+  });
+};
 
   module.exports = { appHomeOpenedCallback };
