@@ -1,6 +1,6 @@
 const { appHomeScreen } = require('../../user-interface/app-home/appHomeScreen');
 const { redisClient } = require('../../util/RedisClient')
-const { decryptToken } = require('../../util/crypto');
+const { decrypt } = require('../../util/crypto');
 const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 const Envoy = require('../../../../Envoy');
 
@@ -51,8 +51,10 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload }) 
     });
   }
   const encryptedAccessToken = await hGetAccessTokenPromise(slackUserEmail)
-  const accessToken = decryptToken(encryptedAccessToken);  
-  // console.log(accessToken, 'accessToken');
+
+  const accessToken = decrypt(encryptedAccessToken);  
+  console.log(accessToken, 'accessToken');
+
   
   // const envoyApi = new EnvoyAPI(accessToken);
   const envoyApi = Envoy.getInstance().API;

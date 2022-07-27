@@ -1,5 +1,8 @@
-// const Envoy = require('../../../../Envoy');
-// const { redisClient } = require('../../util/RedisClient');
+
+const Envoy = require('../../../../Envoy');
+const { redisClient } = require('../../util/RedisClient');
+const { encrypt } = require('../../util/crypto')
+
 require('dotenv').config();
 
 
@@ -34,7 +37,7 @@ const appHomeScreen = function (locations, slackEmail, isAuthed) {
               },
               "value": "authorize-btn",
               "action_id": "authorize-btn",
-              "url": `${process.env.NGROK_URL}/oauthstart/${slackEmail}`
+              "url": `${process.env.NGROK_URL}/oauthstart/${encrypt(slackEmail)}`
             }
           ]
         }
