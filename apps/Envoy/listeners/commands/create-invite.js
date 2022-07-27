@@ -1,4 +1,4 @@
-const { createInviteBuilder } = require('../../user-interface/modals/createInviteBuilder');
+const { createInviteBuilder } = require('../../user-interface/modals');
 /**  
  * Slash command to open invite modal.  .command listens for slash commands entered into the message bar. 
  */
@@ -25,7 +25,7 @@ const { createInviteBuilder } = require('../../user-interface/modals/createInvit
       /* the view object that makes the modal */
       view: modal
     });
-    console.log(response);
+    //console.log(response);
   }
   catch (error) {
     console.error(error);

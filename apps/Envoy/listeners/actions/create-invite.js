@@ -1,4 +1,4 @@
-const { createInviteBuilder } = require('../../user-interface/modals/createInviteBuilder');
+const { createInviteBuilder } = require('../../user-interface/modals');
 /**  
  * Event to run when invite button on home is clicked.  .action listens for UI interactions like button clicks. 
  */
