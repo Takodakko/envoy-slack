@@ -51,11 +51,13 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload }) 
     });
   }
   const encryptedAccessToken = await hGetAccessTokenPromise(slackUserEmail)
+
   const accessToken = decrypt(encryptedAccessToken);  
   console.log(accessToken, 'accessToken');
+
   
-  const envoyApi = new EnvoyAPI(accessToken);
-  // const envoyApi = Envoy.getInstance().API;
+  // const envoyApi = new EnvoyAPI(accessToken);
+  const envoyApi = Envoy.getInstance().API;
 
   // const locations = context.locations; 
   const locations = await envoyApi.locations()

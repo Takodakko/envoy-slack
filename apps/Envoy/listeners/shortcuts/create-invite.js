@@ -1,4 +1,4 @@
-const { createInviteBuilder } = require('../../user-interface/modals/createInviteBuilder');
+const { createInviteBuilder } = require('../../user-interface/modals');
 /**  
  * Shortcut option to open invite modal.  .shortcut listens for global/message shortcuts (found in the + menu near the message bar). 
  */
