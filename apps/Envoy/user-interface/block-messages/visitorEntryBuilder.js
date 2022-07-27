@@ -1,7 +1,7 @@
 /**Build json blocks for visitor entry message */
 
 const visitorEntryBuilder = function(visitorName, userData, photoToUse, locationName, isDelivery) {
-  
+  console.log(isDelivery, 'isDelivery in JSON');
   const entryBlocks = [
     {
         type: 'section',

@@ -1,6 +1,8 @@
 
 const tokenOut = async (req, res) => {
-    res.send(200, {});
+    console.log(req.body, 'req.body in /token');
+    // console.log(res, 'res in /token');
+    res.status(200).send({});
 }
 
 const token = {
