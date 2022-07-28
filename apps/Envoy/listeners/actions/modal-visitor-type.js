@@ -1,14 +1,15 @@
 const Envoy = require('../../../../Envoy');
 const { createInviteBuilder } = require('../../user-interface/modals/createInviteBuilder');
-
-/** Acknowledges visitor type chosen */
+const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
+/** Acknowledges visitor type chosen and gets appropriate fields to populate the modal */
 
 const modalVisitorType = async function({ack, body, context, client}) {
     await ack();
     const viewId = body.view.id;
     const viewHash = body.view.hash;
     const locationsMeta = context.locations;
-    const envoy = Envoy.getInstance();
+    // const envoy = Envoy.getInstance().API;
+    const envoy = new EnvoyAPI(context.authInfo.accessToken);
     const locations = locationsMeta.map((locationObject) => {
       return {locationName: locationObject.attributes.name, locationId: locationObject.id};
     });
@@ -30,7 +31,7 @@ const modalVisitorType = async function({ack, body, context, client}) {
       })
   });
     // Added in custom API to make this work. Took it from the previous version of this code. It's under this getSignInFields method.
-  const fieldsMeta = await envoy.API.getSignInFields(selectedFlowId);
+  const fieldsMeta = await envoy.getSignInFields(selectedFlowId);
   // console.log(fieldsMeta, 'fieldsMeta');
   const fields = fieldsMeta.map((field) => {
     const fieldObject = {

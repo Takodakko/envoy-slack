@@ -1,22 +1,24 @@
 const { createInviteBuilder } = require('../../user-interface/modals/createInviteBuilder');
-const Envoy = require('../../../../Envoy');
+// const Envoy = require('../../../../Envoy');
+// const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 /**
  * populates visitor type dropdown based on user clicking on location dropdown in invitations modal
  */
 
 const locationSelect = async function({ack, body, context, client}) {
   await ack();
-  console.log("\n")
-  console.log(context.locations)
-  console.log("\n")
-  console.log(context)
-  console.log("\n")
+  // console.log("\n")
+  // console.log(context.locations)
+  // console.log("\n")
+  // console.log(context)
+  // console.log("\n")
   const viewId = body.view.id;
   const viewHash = body.view.hash;
   const locationsMeta = context.locations;
   // console.log(locationsMeta, 'locationsMeta');
   // console.log(context.flows[1].flows, 'context.flows');
-  const envoy = Envoy.getInstance();
+  // const envoy = Envoy.getInstance();
+  // const envoy = new EnvoyAPI(context.authInfo.accessToken);
   // const aFlow = await envoy.API.flows('170529');
   // console.log(aFlow, 'aFlow');
   // console.log(aFlow[0].relationships['sign-in-field-page'], 'signin field page');

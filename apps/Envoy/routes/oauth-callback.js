@@ -8,9 +8,26 @@ const { encrypt, decrypt } = require('../util/crypto');
 const persistedClient = require('../util/boltWebClient');
 const { authWithEnvoy } = require('../middleware/envoy-auth.js');
 const { appHomeOpenedCallback } = require('../listeners/events/app-home-opened.js');
-
+const TOKEN_SCOPE = [
+    'token.refresh', 
+    'locations.read', 
+    'companies.read',
+    'flows.read',
+    'invites.read',
+    'invites.write',
+    'employees.read',
+    'reservations.read',
+    'reservations.write',
+    'work-schedules.read',
+    'work-schedules.write',
+    'sign-in-fields.read',
+    'sign-in-fields.write',
+    'sign-in-field-pages.read',
+    'badges.read'
+  ].join();
 const fetchOAuthToken = async (req, res) => {
     try {
+        
         // Retrieve slackEmail from session
         const slackUserEmail = decrypt(req.session.slackUserEmail);
         const slackUserId = decrypt(req.session.slackUserId);
@@ -80,7 +97,8 @@ const _requestAccessAndRefreshTokens = async (code) => {
 		grant_type: "authorization_code",
 		code: code,
 		client_id: process.env.ENVOY_CLIENT_ID,
-		client_secret: process.env.ENVOY_CLIENT_SECRET
+		client_secret: process.env.ENVOY_CLIENT_SECRET,
+        'scope': TOKEN_SCOPE,
 	});
 
 	let options = {

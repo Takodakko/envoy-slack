@@ -28,12 +28,12 @@ const authWithEnvoy = async ({
         // For all events Slack returns the users Email as user.profile.email
         if (payload?.user?.profile?.email) {
             slackUserEmail = payload.user.email;
-            console.log("payload-user-profile-email")
+            console.log(slackUserEmail, "payload-user-profile-email")
         } else if (payload?.user) {
             // For Home Event payload.user gives the Id
             const userInfo = await client.users.info({user: payload.user})
             slackUserEmail = userInfo.user.profile.email;
-            console.log("payload-user")
+            console.log(slackUserEmail, "payload-user")
         } else if (body?.user?.id) {
             // For Views Listener Event, we retrieve it from the Body
             const userInfo = await client.users.info({user: body.user.id})
@@ -54,11 +54,14 @@ const authWithEnvoy = async ({
                 authInfo.refreshToken = decrypt(await getRefreshToken(slackUserEmail));
                 console.log(authInfo.refreshToken)
                 const newAuth = await _refreshTokens(authInfo.refreshToken);
+                
                 console.log(newAuth)
                 console.log("REFRESHED")
             }
-            console.log("AUTHED")
+            authInfo.accessToken = decrypt(await getAccessToken(slackUserEmail));
+            console.log(authInfo.accessToken, "AUTHED")
             context.hasAuthorized = true;
+            context.authInfo = authInfo;
         } else {
             console.log("NOT AUTHED")
             context.hasAuthorized = false;

@@ -1,5 +1,6 @@
 const timeAdjuster = require('../../util/timeAdjuster');
-const Envoy = require('../../../../Envoy');
+// const Envoy = require('../../../../Envoy');
+const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 /**  
  * Event to run when invite modal is submitted.  .view listens for modal view requests. 
  */
@@ -18,7 +19,8 @@ const inviteSubmitted = async function({ack, client, view, payload, body, contex
   }
 }
   await ack();
-  const envoy = Envoy.getInstance();
+  // const envoy = Envoy.getInstance();
+  const envoy = new EnvoyAPI(context.authInfo.accessToken);
   const user = body.user.id;
   // Location, flow, time, notes, and date will always be predictably available in these formats since they are not dynamically generated in the modal.
   const locationData = context.locations;
@@ -104,7 +106,7 @@ const inviteSubmitted = async function({ack, client, view, payload, body, contex
     }
   };
   try {
-    const invitation = await envoy.API.createInviteV1(envoyInviteObject);
+    const invitation = await envoy.createInviteV1(envoyInviteObject);
     const inviteID = invitation.id;
     await client.chat.postMessage({
       text: `Your invitation for ${invitation.invitee.name} at ${rawTime} has been submitted as invitation # ${inviteID}!`,

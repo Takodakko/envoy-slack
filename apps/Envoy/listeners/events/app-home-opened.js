@@ -21,8 +21,10 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
       userId = slackUserId;
     }
     if(context.hasAuthorized){
-      const encryptedAccessToken = await getAccessToken(slackUserEmail)
-      const accessToken = decrypt(encryptedAccessToken);  
+      // const encryptedAccessToken = await getAccessToken(slackUserEmail)
+      // const accessToken = decrypt(encryptedAccessToken);
+      const accessToken = context.authInfo.accessToken;
+      // console.log(accessToken, 'accessToken in app-home-opened');
       const envoyApi = new EnvoyAPI(accessToken);
       const locations = await envoyApi.locations()
       //console.log(locations)
@@ -32,7 +34,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
       console.log(userId)
       await client.views.publish({
         user_id: userId, //payload.user
-        view: await (appHomeScreen(locations))
+        view: appHomeScreen(locations)
       })
     } else {
         await _publishAuthScreen(client, slackUserEmail, payload.user);
