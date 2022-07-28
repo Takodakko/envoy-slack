@@ -9,6 +9,7 @@ const { authorizationScreen } = require('../../user-interface/app-home/authoriza
  */
 const appHomeOpenedCallback = async ({ client, event, body, context, payload, slackUserEmail, slackUserId, persistedClient }) => {
   try {
+    
     let userId = payload?.user || null
     console.log("APP HOME EMAIL: " + slackUserEmail)
     if(!slackUserEmail){
@@ -29,9 +30,9 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
       //   client = persistedClient.client
       // }
       console.log(userId)
-      const result = await client.views.publish({
+      await client.views.publish({
         user_id: userId, //payload.user
-        view: await (appHomeScreen(locations, slackUserEmail))
+        view: await (appHomeScreen(locations))
       })
     } else {
         await _publishAuthScreen(client, slackUserEmail, payload.user);
@@ -43,7 +44,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
 };
 
 const _publishAuthScreen = async (client, slackUserEmail, slackUserId) => {
-  const result = await client.views.publish({
+      await client.views.publish({
       user_id: slackUserId,
       view: await authorizationScreen(slackUserEmail, slackUserId)
   });
