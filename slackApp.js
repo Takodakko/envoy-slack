@@ -5,23 +5,12 @@ require('dotenv').config();
 const { registerListeners } = require('./apps/envoy/listeners');
 const { registerCustomRoutes } = require('./apps/envoy/routes');
 const persistedClient = require('./apps/envoy/store/bolt-web-client');
-const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
-// const { createServer } = require('http');
-// const { webClientUser, webClientBot } = require('./SlackHelper');
 const path = require('path');
 
 
 // const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
 const { webClientUser, webClientBot } = require('./zArchive/SlackHelper');
-
-// @DELETE
-//const { authWithEnvoy } = require('./apps/envoy/middleware/envoy-auth');
-// const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
-// const request = require('request');  //Change to Axios
-const axios = require('axios');
-// const Envoy = require('./Envoy');
-// const getAccessToken = require('./getAccessToken');
-// //const envoy-auth = require('./apps/Envoy/middleware/envoy-auth')
+const { authWithEnvoy } = require('./apps/Envoy/middleware/envoy-auth')
 const RedisStore = require('connect-redis')(session);
 let { redisClient } = require('./apps/Envoy/util/RedisClient');
 const { middleware, errorMiddleware } = require('@envoy/envoy-integrations-sdk');
@@ -83,7 +72,6 @@ const slackApp = new App(
 );
 
 receiver.router.use(middleware(), errorMiddleware())
-
 // @DELETE
 // Attach Slack WebClient instance to req for use in handling Envoy events that don't go through Slack listeners
 receiver.router.use((req, res, next) => {
@@ -107,22 +95,15 @@ registerCustomRoutes().forEach((route) => {
   receiver.router[method](route.path, route.handler);
 });
 
-// @DELETE
+
 // Use global middleware to fetch Envoy Authentication details
-// slackApp.use(authWithEnvoy);
+slackApp.use(authWithEnvoy);
 
-// @DELETE
 // Register Listeners
-// console.log(slackApp.listeners);
-// Assign Slack WebClient
-// persistedClient.client = slackApp.client;
-// const envoy = Envoy.getInstance();
-
 registerListeners(slackApp);
 
-const envoyInfoMiddleware = attachEnvoyInfoOuter();
-slackApp.use(envoyInfoMiddleware);
-
+// Assign Slack WebClient
+persistedClient.client = slackApp.client;
 
 
 // Asynchronous function to start the app
