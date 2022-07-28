@@ -1,4 +1,4 @@
-const { encrypt } = require('../../util/crypto');
+const { encrypt, decrypt } = require('../../util/crypto');
 
 /**
  * @TODO
@@ -29,7 +29,7 @@ const authorizationScreen = (slackUserEmail, slackUserId) => {
                     },
                     "value": "authorize-btn",
                     "action_id": "authorize-btn",
-                    "url": `${process.env.NGROK_URL}/oauthstart/${encrypt(slackUserEmail)}&${encrypt(slackUserId)}` //encrypt these
+                    "url": `${process.env.NGROK_URL}/oauthstart/${slackUserEmail}&${slackUserId}` //encrypt these
                 }
                 ]
             }
@@ -39,3 +39,5 @@ const authorizationScreen = (slackUserEmail, slackUserId) => {
 }
 
 module.exports = { authorizationScreen }
+
+// https://miguel-envoy.ngrok.io/oauthstart/4726b2ec173bef09a25b85412ff1e817f7930cd9cc5385147157e4bda85927ac&50c94c655d9c81359f7f12c8eb00234b1817ec04b503e6b60cbfff

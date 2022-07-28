@@ -1,7 +1,8 @@
 
 const Envoy = require('../../../../Envoy');
 const { redisClient } = require('../../util/RedisClient');
-const { encrypt } = require('../../util/crypto')
+const { encrypt } = require('../../util/crypto');
+const { contextBuiltinKeys } = require('@slack/bolt');
 
 require('dotenv').config();
 
@@ -9,42 +10,9 @@ require('dotenv').config();
 /**  
  * Builds JSON block UI for home tab.
  */
-const appHomeScreen = function (locations, slackEmail, isAuthed) {
+const appHomeScreen = function (locations, slackEmail) {
   // let today = new Date();
   // let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-  if (!isAuthed) {
-    const homeView = {
-      type: "home",
-      callback_id: 'home_view',
-      blocks: [
-        {
-          "type": "header",
-          "text": {
-            "type": "plain_text",
-            "text": "Please log in with Envoy to use this app",
-            "emoji": true
-          }
-        },
-        {
-          "type": "actions",
-          "elements": [
-            {
-              "type": "button",
-              "text": {
-                "type": "plain_text",
-                "text": "Authorize",
-                "emoji": true
-              },
-              "value": "authorize-btn",
-              "action_id": "authorize-btn",
-              "url": `${process.env.NGROK_URL}/oauthstart/${encrypt(slackEmail)}`
-            }
-          ]
-        }
-      ]
-    };
-    return homeView;
-  } 
   const homeView = {
     type: "home",
     callback_id: 'home_view',
@@ -56,12 +24,6 @@ const appHomeScreen = function (locations, slackEmail, isAuthed) {
           text: "Envoy Slack Integration"
         },
       },
-      // {
-      //   type: "image",
-      //     image_url: 'https://avatars.slack-edge.com/2022-07-15/3806730494979_9b81e3c92d914952757d_96.png',
-      //     image_url: `${process.env.NGROK_URL}/static/EnvoyBig.png`,
-      //   alt_text: "Envoy logo"
-      // },
       {
         type: "section",
         block_id: "welcome_section",

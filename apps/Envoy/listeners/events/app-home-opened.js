@@ -1,6 +1,6 @@
 const { appHomeScreen } = require('../../user-interface/app-home/appHomeScreen');
 const { redisClient, getAccessToken } = require('../../util/RedisClient')
-const { decrypt } = require('../../util/crypto');
+const { encrypt, decrypt } = require('../../util/crypto');
 const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 const { authorizationScreen } = require('../../user-interface/app-home/authorizationScreen')
 
@@ -9,12 +9,16 @@ const { authorizationScreen } = require('../../user-interface/app-home/authoriza
  */
 const appHomeOpenedCallback = async ({ client, event, body, context, payload, slackUserEmail, slackUserId, persistedClient }) => {
   try {
+    // console.log("CONTEXT HAS AUTHINFO = ");
+    // console.log(context.authInfo);
+    // console.log("CONTEXT hasAuth = ");
+    // console.log(context.hasAuthorized);
     let userId = payload?.user || null
-    console.log("APP HOME EMAIL: " + slackUserEmail)
+    // console.log("APP HOME EMAIL: " + slackUserEmail)
     if(!slackUserEmail){
       const userInfo = await client.users.info({user: payload.user});
       slackUserEmail = userInfo.user.profile.email;
-      console.log("EXTRACTED EMAIL: " + slackUserEmail)
+      // console.log("EXTRACTED EMAIL: " + slackUserEmail)
     }
     if(!userId){
       userId = slackUserId;
@@ -24,11 +28,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
       const accessToken = decrypt(encryptedAccessToken);  
       const envoyApi = new EnvoyAPI(accessToken);
       const locations = await envoyApi.locations()
-      //console.log(locations)
-      // if(!client){
-      //   client = persistedClient.client
-      // }
-      console.log(userId)
+      // console.log(userId)
       const result = await client.views.publish({
         user_id: userId, //payload.user
         view: await (appHomeScreen(locations, slackUserEmail))
@@ -45,7 +45,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
 const _publishAuthScreen = async (client, slackUserEmail, slackUserId) => {
   const result = await client.views.publish({
       user_id: slackUserId,
-      view: await authorizationScreen(slackUserEmail, slackUserId)
+      view: await authorizationScreen(encrypt(slackUserEmail), encrypt(slackUserId))
   });
 };
 
