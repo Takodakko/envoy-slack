@@ -55,7 +55,6 @@ const slackApp = new App(
                 // botId: team.botId,
                 botUserId: res[botUserIdx],
               };
-
               resolve(bot);
             }
           });
@@ -71,7 +70,7 @@ const slackApp = new App(
     receiver,
   }
 );
-
+ 
 receiver.router.use(middleware(), errorMiddleware())
 // @DELETE
 // Attach Slack WebClient instance to req for use in handling Envoy events that don't go through Slack listeners
