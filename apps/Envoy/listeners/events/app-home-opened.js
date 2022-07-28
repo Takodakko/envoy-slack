@@ -13,6 +13,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
     // console.log(context.authInfo);
     // console.log("CONTEXT hasAuth = ");
     // console.log(context.hasAuthorized);
+    
     let userId = payload?.user || null
     // console.log("APP HOME EMAIL: " + slackUserEmail)
     if(!slackUserEmail){
@@ -28,10 +29,14 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
       const accessToken = decrypt(encryptedAccessToken);  
       const envoyApi = new EnvoyAPI(accessToken);
       const locations = await envoyApi.locations()
+      //console.log(locations)
+      // if(!client){
+      //   client = persistedClient.client
+      // }
       // console.log(userId)
-      const result = await client.views.publish({
+      await client.views.publish({
         user_id: userId, //payload.user
-        view: await (appHomeScreen(locations, slackUserEmail))
+        view: await (appHomeScreen(locations))
       })
     } else {
         await _publishAuthScreen(client, slackUserEmail, payload.user);
@@ -43,7 +48,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
 };
 
 const _publishAuthScreen = async (client, slackUserEmail, slackUserId) => {
-  const result = await client.views.publish({
+      await client.views.publish({
       user_id: slackUserId,
       view: await authorizationScreen(encrypt(slackUserEmail), encrypt(slackUserId))
   });
