@@ -1,11 +1,11 @@
-const { decrypt } = require('../util/crypto')
+const { decrypt, encrypt } = require('../util/crypto')
 // Defining this route as a ExpressReceiver route as we need a param passed in
+
 const startOAuthProcess = async (req, res) => {
     try {
         // Store slackUserId in session
         req.session.slackUserEmail = req.params.slackUserEmail;
         req.session.slackUserId = req.params.slackUserId;
-
         // Send success message
         console.log('redirecting to: ' + _buildOAuthURL());
         res.redirect(307, _buildOAuthURL()); // Using 307 response code to prevent browser from caching the redirection
