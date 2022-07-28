@@ -9,11 +9,12 @@ const path = require('path');
 
 
 // const { EnvoyAPI, middleware, errorMiddleware, asyncHandler, EnvoyResponseError } = require('@envoy/envoy-integrations-sdk');
-const { webClientUser, webClientBot } = require('./zArchive/SlackHelper');
+const { makeWebClients } = require('./zArchive/SlackHelper');
 const { authWithEnvoy } = require('./apps/Envoy/middleware/envoy-auth')
 const RedisStore = require('connect-redis')(session);
 let { redisClient } = require('./apps/Envoy/util/RedisClient');
 const { middleware, errorMiddleware } = require('@envoy/envoy-integrations-sdk');
+const attachEnvoyInfoOuter = require('./attachEnvoyInfo');
 
 // Create custom express app to be able to use express-session middleware
 const app = express();
@@ -74,11 +75,13 @@ const slackApp = new App(
 receiver.router.use(middleware(), errorMiddleware())
 // @DELETE
 // Attach Slack WebClient instance to req for use in handling Envoy events that don't go through Slack listeners
-receiver.router.use((req, res, next) => {
-  req.webClientUser = webClientUser;
-  req.webClientBot = webClientBot;
-  next();
-})
+const webClientMaker = makeWebClients();
+// receiver.router.use((req, res, next) => {
+//   req.webClientUser = webClientUser;
+//   req.webClientBot = webClientBot;
+//   next();
+// })
+receiver.router.use(webClientMaker);
 // Manual implementation of app.use(express.static) to load image files, like the one on the app home page.
 receiver.router.get('/static/*', (req, res) => {
   const fp = path.join(__dirname, req.path);
@@ -98,7 +101,8 @@ registerCustomRoutes().forEach((route) => {
 
 // Use global middleware to fetch Envoy Authentication details
 slackApp.use(authWithEnvoy);
-
+const locationAndFlow = attachEnvoyInfoOuter();
+slackApp.use(locationAndFlow);
 // Register Listeners
 registerListeners(slackApp);
 

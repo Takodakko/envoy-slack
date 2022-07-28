@@ -1,7 +1,7 @@
 
-const Envoy = require('../../../../Envoy');
-const { redisClient } = require('../../util/RedisClient');
-const { encrypt } = require('../../util/crypto')
+// const Envoy = require('../../../../Envoy');
+// const { redisClient } = require('../../util/RedisClient');
+// const { encrypt } = require('../../util/crypto')
 
 require('dotenv').config();
 
@@ -9,42 +9,8 @@ require('dotenv').config();
 /**  
  * Builds JSON block UI for home tab.
  */
-const appHomeScreen = function (locations, slackEmail, isAuthed) {
-  // let today = new Date();
-  // let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-  if (!isAuthed) {
-    const homeView = {
-      type: "home",
-      callback_id: 'home_view',
-      blocks: [
-        {
-          "type": "header",
-          "text": {
-            "type": "plain_text",
-            "text": "Please log in with Envoy to use this app",
-            "emoji": true
-          }
-        },
-        {
-          "type": "actions",
-          "elements": [
-            {
-              "type": "button",
-              "text": {
-                "type": "plain_text",
-                "text": "Authorize",
-                "emoji": true
-              },
-              "value": "authorize-btn",
-              "action_id": "authorize-btn",
-              "url": `${process.env.NGROK_URL}/oauthstart/${encrypt(slackEmail)}`
-            }
-          ]
-        }
-      ]
-    };
-    return homeView;
-  } 
+const appHomeScreen = function (locations) {
+   
   const homeView = {
     type: "home",
     callback_id: 'home_view',
@@ -117,7 +83,7 @@ const appHomeScreen = function (locations, slackEmail, isAuthed) {
         block_id: "button_explanation",
         text: {
           type: 'mrkdwn',
-          text: "Click the 'Make Invite' button below to create an Envoy workplace invitation for a visitor.",
+          text: "Click the *Make Invite* button below to create an Envoy workplace invitation for a visitor.",
         },
       },
       {
@@ -132,6 +98,32 @@ const appHomeScreen = function (locations, slackEmail, isAuthed) {
             },
             value: "button_invite",
             action_id: "button_invite"
+          }
+        ]
+      },
+      {
+        type: "divider"
+      },
+      {
+        type: 'section',
+        block_id: "register_button_explanation",
+        text: {
+          type: 'mrkdwn',
+          text: "Click the *Register* button below to register for the office via Envoy.",
+        },
+      },
+      {
+        type: "actions",
+        elements: [
+          {
+            type: "button",
+            text: {
+              type: "plain_text",
+              text: "Register",
+              emoji: true
+            },
+            value: "button_register",
+            action_id: "button_register"
           }
         ]
       }
