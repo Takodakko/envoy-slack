@@ -19,7 +19,7 @@ const fetchOAuthToken = async (req, res) => {
         if (slackUserEmail) {
             // Parse Authorization Code
             let code = url.parse(req.url, true).query.code;
-
+            console.log(code, 'code');
             // Request Access and Refresh tokens
             const authInfo = await _requestAccessAndRefreshTokens(code);
 
@@ -95,8 +95,9 @@ const _requestAccessAndRefreshTokens = async (code) => {
 	return new Promise((resolve, reject) => {
 		request(options, async (error, response) => {
 			if (error) throw new Error(error);
-			let body = JSON.parse(response.body);
-            // // console.log(JSON.parse(response.body))
+			// console.log(response.body, 'body');
+            let body = JSON.parse(response.body);
+            
 			let accessToken = body.access_token;
 			let refreshToken = body.refresh_token;
             let refreshExpTime = Date.now() + body.refresh_token_expires_in;

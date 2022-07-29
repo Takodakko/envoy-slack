@@ -47,14 +47,16 @@ const authWithEnvoy = async ({
         // User authorized and tokens are cached
         if (await accessTokenExists(slackUserEmail)) {
             // console.log('Tokens are cached');
+            console.log(slackUserEmail, 'slackUserEmail');
             authInfo.accessExpTime = await getAccessExp(slackUserEmail);
+            console.log(authInfo.accessExpTime, 'authInfo.accessExpTime');
             if(authInfo.accessExpTime <= Date.now()){
                 // console.log("EXPIRED TOKS")
                 authInfo.refreshToken = decrypt(await getRefreshToken(slackUserEmail));
-                // console.log(authInfo.refreshToken)
+                console.log(authInfo.refreshToken, 'authInfo.refreshToken');
                 authInfo = await _refreshTokens(authInfo.refreshToken);
-                // console.log("AUTHINFO = ")
-                // console.log(authInfo)
+                console.log("AUTHINFO = ")
+                console.log(authInfo)
                 redisClient.hSet(slackUserEmail,
                     'accessToken', encrypt(authInfo.accessToken),
                     'refreshToken', encrypt(authInfo.refreshToken),
@@ -66,10 +68,10 @@ const authWithEnvoy = async ({
                 // console.log("NEW EXPIRE DATE IS " + authInfo.refreshExpTime)
             }  
             authInfo = {
-                accessToken: await getAccessToken(slackUserEmail),
-                refreshToken: await getRefreshToken(slackUserEmail),
+                accessToken: decrypt(await getAccessToken(slackUserEmail)),
+                refreshToken: decrypt(await getRefreshToken(slackUserEmail)),
             }
-            // // // console.log("AUTHED")
+            console.log("AUTHED", authInfo);
             context.authInfo = authInfo;  
             context.hasAuthorized = true;
         } else {
@@ -106,7 +108,7 @@ const _refreshTokens = async (
 	});
 
 	let options = {
-		url: `${process.env.ENVOY_AUTH_URL}/oauth2/token`,
+		url: `${process.env.ENVOY_AUTH_URL}`,
 		method: "POST",
 		headers: headers,
 		body: dataString,
