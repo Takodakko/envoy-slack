@@ -86,7 +86,8 @@ const _requestAccessAndRefreshTokens = async (code) => {
 	});
 
 	let options = {
-		url: `${process.env.ENVOY_AUTH_URL}/oauth2/token`,
+		// url: `${process.env.ENVOY_AUTH_URL}/oauth2/token`,
+        url: `${process.env.ENVOY_BASE_URL}/a/auth/v0/token`,
 		method: "POST",
 		headers: headers,
 		body: dataString,
