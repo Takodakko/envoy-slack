@@ -21,21 +21,37 @@ const authWithEnvoy = async ({
     slackUserEmail
 } = {}) => {
     // console.log('Executing Envoy auth middleware');
-    // console.log(slackUserEmail)
+    console.log(body, 'body');
     if (!slackUserEmail) {
         // console.log("NO EMAIL")
         // For all events Slack returns the users Email as user.profile.email
         if (payload?.user?.profile?.email) {
             slackUserEmail = payload.user.email;
             // console.log("payload-user-profile-email")
-        } else if (payload?.user) {
+        } else if (payload?.user && typeof payload.user === 'string') {
             // For Home Event payload.user gives the Id
+            console.log(payload.user, "payload.user in payload-user is a string case");
             const userInfo = await client.users.info({user: payload.user})
             slackUserEmail = userInfo.user.profile.email;
-            // console.log("payload-user")
-        } else if (body?.user?.id) {
+            
+        }else if (payload?.user?.id) {
+            // For SHORTCUTS payload.user.id gives the Id
+            console.log(payload.user, "payload.user in payload-user is an object case");
+            const userInfo = await client.users.info({user: payload.user.id})
+            slackUserEmail = userInfo.user.profile.email;
+            
+        }
+         else if (body?.user?.id) {
             // For Views Listener Event, we retrieve it from the Body
+            console.log(body.user.id, 'body.user.id');
             const userInfo = await client.users.info({user: body.user.id})
+            // console.log(userInfo.user.profile.email)
+            slackUserEmail = userInfo.user.profile.email;
+            // console.log("body-user")
+        } else if (body?.user_id) {
+            // For SLASH COMMANDS, we retrieve it from the Body
+            console.log(body.user_id, 'body.user.id');
+            const userInfo = await client.users.info({user: body.user_id})
             // console.log(userInfo.user.profile.email)
             slackUserEmail = userInfo.user.profile.email;
             // console.log("body-user")

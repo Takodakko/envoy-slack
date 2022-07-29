@@ -43,6 +43,7 @@ const slackApp = new App(
     clientSecret: process.env.SLACK_CLIENT_SECRET,
     authorize: async ({ teamId, enterpriseId }) => {
       // Fetch team info from database
+      console.log(teamId, 'teamId');
       function hGetPromise() {
         return new Promise((resolve, reject) => {
           redisClient.hGetAll(teamId, (err, res) => {
@@ -100,8 +101,8 @@ registerCustomRoutes().forEach((route) => {
 
 // Use global middleware to fetch Envoy Authentication details
 slackApp.use(authWithEnvoy);
-// const locationAndFlow = attachEnvoyInfoOuter();
-// slackApp.use(locationAndFlow);
+const locationAndFlow = attachEnvoyInfoOuter();
+slackApp.use(locationAndFlow);
 // Register Listeners
 registerListeners(slackApp);
 

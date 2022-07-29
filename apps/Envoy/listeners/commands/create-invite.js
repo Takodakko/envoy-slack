@@ -17,7 +17,7 @@ const { createInviteBuilder } = require('../../user-interface/modals');
             user: userId
         })
     
-    const response = await client.views.open({
+    await client.views.open({
       /* the user who opened the modal */
       user_id: payload.user,
       /* the event that opened the modal is stored on both payload and body for a slash command */
