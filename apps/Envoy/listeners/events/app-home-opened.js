@@ -21,14 +21,12 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
       slackUserEmail = userInfo.user.profile.email;
       // console.log("EXTRACTED EMAIL: " + slackUserEmail)
     }
-    if(!userId){
+    if (!userId) {
       userId = slackUserId;
     }
-    if(context.hasAuthorized){
-      // const encryptedAccessToken = await getAccessToken(slackUserEmail)
-      // const accessToken = decrypt(encryptedAccessToken);
-      const accessToken = context.authInfo.accessToken;
-      // console.log(accessToken, 'accessToken in app-home-opened');
+    if (context.hasAuthorized) {
+      const encryptedAccessToken = await getAccessToken(slackUserEmail)
+      const accessToken = decrypt(encryptedAccessToken);
       const envoyApi = new EnvoyAPI(accessToken);
       const locations = await envoyApi.locations()
       //console.log(locations)
@@ -41,12 +39,13 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
         view: appHomeScreen(locations)
       })
     } else {
-        await _publishAuthScreen(client, slackUserEmail, payload.user);
+      await _publishAuthScreen(client, slackUserEmail, payload.user);
     }
   }
   catch (error) {
-      console.error(error);
+    console.error(error);
   }
+
 };
 
 const _publishAuthScreen = async (client, slackUserEmail, slackUserId) => {
@@ -56,4 +55,4 @@ const _publishAuthScreen = async (client, slackUserEmail, slackUserId) => {
   });
 };
 
-  module.exports = { appHomeOpenedCallback };
+module.exports = { appHomeOpenedCallback };
