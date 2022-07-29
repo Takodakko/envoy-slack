@@ -51,6 +51,7 @@ const authWithEnvoy = async ({
             authInfo.accessTokenExp = await getAccessExp(slackUserEmail);
             if(authInfo.accessTokenExp <= Date.now()){
                 console.log("EXPIRED TOKS")
+                console.log(authInfo.accessTokenExp, 'authInfo.accessTokenExp');
                 authInfo.refreshToken = decrypt(await getRefreshToken(slackUserEmail));
                 console.log(authInfo.refreshToken)
                 const newAuth = await _refreshTokens(authInfo.refreshToken);
@@ -62,6 +63,7 @@ const authWithEnvoy = async ({
             console.log(authInfo.accessToken, "AUTHED")
             context.hasAuthorized = true;
             context.authInfo = authInfo;
+            
         } else {
             console.log("NOT AUTHED")
             context.hasAuthorized = false;

@@ -6,7 +6,10 @@ const attachEnvoyInfoOuter = function() {
     const locations = [];
     const flowsAndLocations = [];
     const attachEnvoyInfoInner = async function({context, next}) {
-        
+        if (context.hasAuthorized === false) {
+            next();
+            return;
+        }
         // const envoy = Envoy.getInstance().API;
         const envoy = new EnvoyAPI(context.authInfo.accessToken);
         // console.log(context.authInfo.accessToken, 'accessToken');
