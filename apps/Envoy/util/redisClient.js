@@ -51,7 +51,7 @@ function getRefreshToken(slackEmail) {
 
 function getRefreshExp(slackEmail) {
   return new Promise((resolve, reject) => {
-    redisClient.HGET(slackEmail, 'refreshTokenExp', (err, res) => {
+    redisClient.HGET(slackEmail, 'refreshExpTime', (err, res) => {
       if (err) reject(err);
       else resolve(res);
     });
@@ -60,7 +60,7 @@ function getRefreshExp(slackEmail) {
 
 function getAccessExp(slackEmail) {
   return new Promise((resolve, reject) => {
-    redisClient.HGET(slackEmail, 'accessTokenExp', (err, res) => {
+    redisClient.HGET(slackEmail, 'accessExpTime', (err, res) => {
       if (err) reject(err);
       else resolve(res);
     });

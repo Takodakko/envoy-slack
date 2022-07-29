@@ -1,10 +1,4 @@
-
-// const Envoy = require('../../../../Envoy');
-// const { redisClient } = require('../../util/RedisClient');
-// const { encrypt } = require('../../util/crypto')
-
 require('dotenv').config();
-
 
 /**  
  * Builds JSON block UI for home tab.
@@ -22,12 +16,6 @@ const appHomeScreen = function (locations) {
           text: "Envoy Slack Integration"
         },
       },
-      // {
-      //   type: "image",
-      //     image_url: 'https://avatars.slack-edge.com/2022-07-15/3806730494979_9b81e3c92d914952757d_96.png',
-      //     image_url: `${process.env.NGROK_URL}/static/EnvoyBig.png`,
-      //   alt_text: "Envoy logo"
-      // },
       {
         type: "section",
         block_id: "welcome_section",
