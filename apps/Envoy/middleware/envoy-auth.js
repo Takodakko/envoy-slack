@@ -8,7 +8,6 @@ const { redisClient,
     getAccessToken
  } = require('../util/RedisClient');
  const { encrypt, decrypt } = require('../util/crypto');
- const axios = require('axios')
 
 const request = require("request");
 require('dotenv').config();
@@ -21,55 +20,70 @@ const authWithEnvoy = async ({
     body,
     slackUserEmail
 } = {}) => {
-    console.log('Executing Envoy auth middleware');
-    console.log(slackUserEmail)
+    // console.log('Executing Envoy auth middleware');
+    // console.log(slackUserEmail)
     if (!slackUserEmail) {
-        console.log("NO EMAIL")
+        // console.log("NO EMAIL")
         // For all events Slack returns the users Email as user.profile.email
         if (payload?.user?.profile?.email) {
             slackUserEmail = payload.user.email;
-            console.log("payload-user-profile-email")
+            // console.log("payload-user-profile-email")
         } else if (payload?.user) {
             // For Home Event payload.user gives the Id
             const userInfo = await client.users.info({user: payload.user})
             slackUserEmail = userInfo.user.profile.email;
-            console.log("payload-user")
+            // console.log("payload-user")
         } else if (body?.user?.id) {
             // For Views Listener Event, we retrieve it from the Body
             const userInfo = await client.users.info({user: body.user.id})
-            console.log(userInfo.user.profile.email)
+            // console.log(userInfo.user.profile.email)
             slackUserEmail = userInfo.user.profile.email;
-            console.log("body-user")
+            // console.log("body-user")
         }
     }
-    console.log(slackUserEmail)
+    // console.log(slackUserEmail)
     try {
         let authInfo = {};
         // User authorized and tokens are cached
         if (await accessTokenExists(slackUserEmail)) {
-            console.log('Tokens are cached');
-            authInfo.accessTokenExp = await getAccessExp(slackUserEmail);
-            if(authInfo.accessTokenExp <= Date.now()){
-                console.log("EXPIRED TOKS")
+            // console.log('Tokens are cached');
+            authInfo.accessExpTime = await getAccessExp(slackUserEmail);
+            if(authInfo.accessExpTime <= Date.now()){
+                // console.log("EXPIRED TOKS")
                 authInfo.refreshToken = decrypt(await getRefreshToken(slackUserEmail));
-                console.log(authInfo.refreshToken)
-                const newAuth = await _refreshTokens(authInfo.refreshToken);
-                console.log(newAuth)
-                console.log("REFRESHED")
+                // console.log(authInfo.refreshToken)
+                authInfo = await _refreshTokens(authInfo.refreshToken);
+                // console.log("AUTHINFO = ")
+                // console.log(authInfo)
+                redisClient.hSet(slackUserEmail,
+                    'accessToken', encrypt(authInfo.accessToken),
+                    'refreshToken', encrypt(authInfo.refreshToken),
+                    'refreshExpTime', authInfo.refreshExpTime,
+                    'accessExpTime', authInfo.accessExpTime
+                )
+                redisClient.expireAt(slackUserEmail, authInfo.refreshExpTime);
+                // console.log("REFRESHED")
+                // console.log("NEW EXPIRE DATE IS " + authInfo.refreshExpTime)
+            }  
+            authInfo = {
+                accessToken: await getAccessToken(slackUserEmail),
+                refreshToken: await getRefreshToken(slackUserEmail),
             }
-            console.log("AUTHED")
+            // // // console.log("AUTHED")
+            context.authInfo = authInfo;  
             context.hasAuthorized = true;
         } else {
-            console.log("NOT AUTHED")
+            // console.log("NOT AUTHED")
             context.hasAuthorized = false;
         }
+        context.authInfo = authInfo;
     } catch (e) {
         console.error(e);
         throw new Error(e.message);
     }
     if (next) {
         // Middleware has been invoked regularly
-        console.log("NEXT")
+        // console.log("NEXT")
         await next();
     }
     return context;
@@ -92,7 +106,7 @@ const _refreshTokens = async (
 	});
 
 	let options = {
-		url: "https://api.envoy.com/oauth2/token",
+		url: `${process.env.ENVOY_AUTH_URL}/oauth2/token`,
 		method: "POST",
 		headers: headers,
 		body: dataString,
@@ -101,13 +115,12 @@ const _refreshTokens = async (
     return new Promise((resolve, reject) => {
 		request(options, async (error, response) => {
 			if (error) throw new Error(error);
-			console.log("RES", JSON.parse(response.body));
-			let accessToken = JSON.parse(response.body).access_token;
-			let refreshToken = JSON.parse(response.body).refresh_token;
-
-            let accessTokenExp = Date.now() + JSON.parse(response.body).expires_in;
-            let refreshTokenExp = Date.now() + JSON.parse(response.body).refresh_token_expires_in;
-			resolve({ accessToken, refreshToken, accessTokenExp, refreshTokenExp });
+            let body = JSON.parse(response.body);
+			let accessToken = body.access_token;
+			let refreshToken = body.refresh_token;
+            let refreshExpTime = Date.now() + body.refresh_token_expires_in;
+            let accessExpTime = Date.now() + body.expires_in;
+			resolve({ accessToken, refreshToken, refreshExpTime, accessExpTime });
 		});
 	});
 }

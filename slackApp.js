@@ -100,8 +100,8 @@ registerCustomRoutes().forEach((route) => {
 
 // Use global middleware to fetch Envoy Authentication details
 slackApp.use(authWithEnvoy);
-const locationAndFlow = attachEnvoyInfoOuter();
-slackApp.use(locationAndFlow);
+// const locationAndFlow = attachEnvoyInfoOuter();
+// slackApp.use(locationAndFlow);
 // Register Listeners
 registerListeners(slackApp);
 

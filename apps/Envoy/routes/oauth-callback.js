@@ -14,7 +14,8 @@ const fetchOAuthToken = async (req, res) => {
         // Retrieve slackEmail from session
         const slackUserEmail = decrypt(req.session.slackUserEmail);
         const slackUserId = decrypt(req.session.slackUserId);
-
+        /*please*/ // console.log("DECRYPTED EMAIL: " + slackUserEmail)
+        /*please*/ // console.log("DECRYPTED ID: " + slackUserId)
         if (slackUserEmail) {
             // Parse Authorization Code
             let code = url.parse(req.url, true).query.code;
@@ -23,19 +24,20 @@ const fetchOAuthToken = async (req, res) => {
             const authInfo = await _requestAccessAndRefreshTokens(code);
 
             //store to db and expires at refresh token expire time.
-            console.log("storing tokens to db")
+            // console.log("storing tokens to db")
             redisClient.hSet(slackUserEmail,
                 'accessToken', encrypt(authInfo.accessToken),
                 'refreshToken', encrypt(authInfo.refreshToken),
-                'refreshTokenExp', Date.now() + authInfo.refreshExpTime,
-                'accessTokenExp', Date.now() + authInfo.accessExpTime
+                'refreshExpTime', authInfo.refreshExpTime,
+                'accessExpTime', authInfo.accessExpTime
             )
-            redisClient.expireAt(slackUserEmail, Date.now() + authInfo.refreshExpTime);
+            redisClient.expireAt(slackUserEmail, authInfo.refreshExpTime);
+            // console.log(authInfo.refreshExpTime)
 
             // Force execution of auth middleware so that user to user auth
             // flow is executed and we obtain the user context")
-            console.log("FORCE MID")
-            console.log(slackUserEmail)
+            // console.log("FORCE MID")
+            // console.log(slackUserEmail)
             const context = await authWithEnvoy({
                 slackUserEmail: slackUserEmail
             });
@@ -84,7 +86,7 @@ const _requestAccessAndRefreshTokens = async (code) => {
 	});
 
 	let options = {
-		url: `${process.env.ENVOY_BASE_URL}/a/auth/v0/token`,
+		url: `${process.env.ENVOY_AUTH_URL}/oauth2/token`,
 		method: "POST",
 		headers: headers,
 		body: dataString,
@@ -94,10 +96,11 @@ const _requestAccessAndRefreshTokens = async (code) => {
 		request(options, async (error, response) => {
 			if (error) throw new Error(error);
 			let body = JSON.parse(response.body);
+            // // console.log(JSON.parse(response.body))
 			let accessToken = body.access_token;
 			let refreshToken = body.refresh_token;
-            let refreshExpTime = Date.now() + body.refresh_token_expires_in * 1000;
-            let accessExpTime = Date.now() + body.expires_in * 1000;
+            let refreshExpTime = Date.now() + body.refresh_token_expires_in;
+            let accessExpTime = Date.now() + body.expires_in;
 			resolve({ accessToken, refreshToken, refreshExpTime, accessExpTime });
 		});
 	});
