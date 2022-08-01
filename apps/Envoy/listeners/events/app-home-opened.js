@@ -36,7 +36,7 @@ const appHomeOpenedCallback = async ({ client, event, body, context, payload, sl
       // console.log(userId)
       await client.views.publish({
         user_id: userId, //payload.user
-        view: await (appHomeScreen(locations))
+        view: appHomeScreen(locations)
       })
     } else {
       await _publishAuthScreen(client, slackUserEmail, payload.user);

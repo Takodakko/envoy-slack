@@ -8,9 +8,26 @@ const { encrypt, decrypt } = require('../util/crypto');
 const persistedClient = require('../util/boltWebClient');
 const { authWithEnvoy } = require('../middleware/envoy-auth.js');
 const { appHomeOpenedCallback } = require('../listeners/events/app-home-opened.js');
-
+// const TOKEN_SCOPE = [
+//     'token.refresh', 
+//     'locations.read', 
+//     'companies.read',
+//     'flows.read',
+//     'invites.read',
+//     'invites.write',
+//     'employees.read',
+//     'reservations.read',
+//     'reservations.write',
+//     'work-schedules.read',
+//     'work-schedules.write',
+//     'sign-in-fields.read',
+//     'sign-in-fields.write',
+//     'sign-in-field-pages.read',
+//     'badges.read'
+//   ].join();
 const fetchOAuthToken = async (req, res) => {
     try {
+        
         // Retrieve slackEmail from session
         const slackUserEmail = decrypt(req.session.slackUserEmail);
         const slackUserId = decrypt(req.session.slackUserId);
@@ -19,7 +36,7 @@ const fetchOAuthToken = async (req, res) => {
         if (slackUserEmail) {
             // Parse Authorization Code
             let code = url.parse(req.url, true).query.code;
-
+            console.log(code, 'code');
             // Request Access and Refresh tokens
             const authInfo = await _requestAccessAndRefreshTokens(code);
 
@@ -82,11 +99,13 @@ const _requestAccessAndRefreshTokens = async (code) => {
 		grant_type: "authorization_code",
 		code: code,
 		client_id: process.env.ENVOY_CLIENT_ID,
-		client_secret: process.env.ENVOY_CLIENT_SECRET
+		client_secret: process.env.ENVOY_CLIENT_SECRET,
+        // 'scope': TOKEN_SCOPE,
 	});
 
 	let options = {
-		url: `${process.env.ENVOY_AUTH_URL}/oauth2/token`,
+		url: `${process.env.ENVOY_AUTH_URL}`,
+        // url: `${process.env.ENVOY_BASE_URL}/a/auth/v0/token`,
 		method: "POST",
 		headers: headers,
 		body: dataString,
@@ -95,8 +114,9 @@ const _requestAccessAndRefreshTokens = async (code) => {
 	return new Promise((resolve, reject) => {
 		request(options, async (error, response) => {
 			if (error) throw new Error(error);
-			let body = JSON.parse(response.body);
-            // // console.log(JSON.parse(response.body))
+			// console.log(response.body, 'body');
+            let body = JSON.parse(response.body);
+            
 			let accessToken = body.access_token;
 			let refreshToken = body.refresh_token;
             let refreshExpTime = Date.now() + body.refresh_token_expires_in;

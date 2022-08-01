@@ -21,21 +21,37 @@ const authWithEnvoy = async ({
     slackUserEmail
 } = {}) => {
     // console.log('Executing Envoy auth middleware');
-    // console.log(slackUserEmail)
+    console.log(body, 'body');
     if (!slackUserEmail) {
         // console.log("NO EMAIL")
         // For all events Slack returns the users Email as user.profile.email
         if (payload?.user?.profile?.email) {
             slackUserEmail = payload.user.email;
             // console.log("payload-user-profile-email")
-        } else if (payload?.user) {
+        } else if (payload?.user && typeof payload.user === 'string') {
             // For Home Event payload.user gives the Id
+            console.log(payload.user, "payload.user in payload-user is a string case");
             const userInfo = await client.users.info({user: payload.user})
             slackUserEmail = userInfo.user.profile.email;
-            // console.log("payload-user")
-        } else if (body?.user?.id) {
+            
+        }else if (payload?.user?.id) {
+            // For SHORTCUTS payload.user.id gives the Id
+            console.log(payload.user, "payload.user in payload-user is an object case");
+            const userInfo = await client.users.info({user: payload.user.id})
+            slackUserEmail = userInfo.user.profile.email;
+            
+        }
+         else if (body?.user?.id) {
             // For Views Listener Event, we retrieve it from the Body
+            console.log(body.user.id, 'body.user.id');
             const userInfo = await client.users.info({user: body.user.id})
+            // console.log(userInfo.user.profile.email)
+            slackUserEmail = userInfo.user.profile.email;
+            // console.log("body-user")
+        } else if (body?.user_id) {
+            // For SLASH COMMANDS, we retrieve it from the Body
+            console.log(body.user_id, 'body.user.id');
+            const userInfo = await client.users.info({user: body.user_id})
             // console.log(userInfo.user.profile.email)
             slackUserEmail = userInfo.user.profile.email;
             // console.log("body-user")
@@ -47,14 +63,16 @@ const authWithEnvoy = async ({
         // User authorized and tokens are cached
         if (await accessTokenExists(slackUserEmail)) {
             // console.log('Tokens are cached');
+            console.log(slackUserEmail, 'slackUserEmail');
             authInfo.accessExpTime = await getAccessExp(slackUserEmail);
+            console.log(authInfo.accessExpTime, 'authInfo.accessExpTime');
             if(authInfo.accessExpTime <= Date.now()){
                 // console.log("EXPIRED TOKS")
                 authInfo.refreshToken = decrypt(await getRefreshToken(slackUserEmail));
-                // console.log(authInfo.refreshToken)
+                console.log(authInfo.refreshToken, 'authInfo.refreshToken');
                 authInfo = await _refreshTokens(authInfo.refreshToken);
-                // console.log("AUTHINFO = ")
-                // console.log(authInfo)
+                console.log("AUTHINFO = ")
+                console.log(authInfo)
                 redisClient.hSet(slackUserEmail,
                     'accessToken', encrypt(authInfo.accessToken),
                     'refreshToken', encrypt(authInfo.refreshToken),
@@ -66,12 +84,14 @@ const authWithEnvoy = async ({
                 // console.log("NEW EXPIRE DATE IS " + authInfo.refreshExpTime)
             }  
             authInfo = {
-                accessToken: await getAccessToken(slackUserEmail),
-                refreshToken: await getRefreshToken(slackUserEmail),
+                accessToken: decrypt(await getAccessToken(slackUserEmail)),
+                refreshToken: decrypt(await getRefreshToken(slackUserEmail)),
             }
-            // // // console.log("AUTHED")
+            console.log("AUTHED", authInfo);
             context.authInfo = authInfo;  
             context.hasAuthorized = true;
+            context.authInfo = authInfo;
+            
         } else {
             // console.log("NOT AUTHED")
             context.hasAuthorized = false;
@@ -106,7 +126,7 @@ const _refreshTokens = async (
 	});
 
 	let options = {
-		url: `${process.env.ENVOY_AUTH_URL}/oauth2/token`,
+		url: `${process.env.ENVOY_AUTH_URL}`,
 		method: "POST",
 		headers: headers,
 		body: dataString,

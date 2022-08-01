@@ -1,5 +1,5 @@
 
-const Envoy = require('../../../../Envoy');
+const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 
 /**  
 * Slash command to check out of the office via Envoy.
@@ -8,7 +8,7 @@ const Envoy = require('../../../../Envoy');
 const employeeCheckout = async function({ack, say, context, payload, client}) {
     try {
         ack();
-        const envoy = Envoy.getInstance();
+        const envoy = new EnvoyAPI(context.authInfo.accessToken);
         const userId = payload.user_id;
         const user = await client.users.profile.get({user: userId});
         const userEmail = user.profile.email;
@@ -17,9 +17,9 @@ const employeeCheckout = async function({ack, say, context, payload, client}) {
         // const yesterdayUnix = now - (24 * 60 * 60 * 1000);
         // const yesterday = new Date(yesterdayUnix).toISOString();
         // Get all workschedules under the assumption that only one should be checked in and not checked out yet. Safe assumption?
-        const envoyWorkSchedule = await envoy.API.workSchedules({userEmails: [userEmail]});
+        const envoyWorkSchedule = await envoy.workSchedules({userEmails: [userEmail]});
         // const envoyWorkSchedule = await envoy.API.workSchedules({userEmails: [userEmail], expectedArrivalAtBefore: today, expectedArrivalAtAfter: yesterday});
-        console.log(envoyWorkSchedule, 'envoyWorkSchedule');
+        // console.log(envoyWorkSchedule, 'envoyWorkSchedule');
         const workToday = envoyWorkSchedule.filter((work) => {
             // Check for work schedules where the user already checked in, but hasn't checked out.
             // if (work.status === 'APPROVED' && work.arrivedAt !== null && work.departedAt === null) {    <-- Had this originally, 
@@ -31,7 +31,7 @@ const employeeCheckout = async function({ack, say, context, payload, client}) {
         if (workToday.length > 0) {
             console.log(workToday, 'workToday');
             for (let i = 0; i < workToday.length; i++) {
-                await envoy.API.checkOutWork(workToday[i].id);
+                await envoy.checkOutWork(workToday[i].id);
             }
             await say(`You've checked out!`);
         } else {

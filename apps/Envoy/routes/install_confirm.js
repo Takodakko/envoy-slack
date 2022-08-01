@@ -4,6 +4,7 @@ let { redisClient } = require('../util/redisClient');
 
 const installConfirmHandler = async (req, res) => {
     try {
+        console.log('HI I AM INSTALL_CONFIRM');
         let begin = req.url.indexOf("code") + 5;
         let end = req.url.indexOf("&");
         const code = req.url.slice(begin, end);
