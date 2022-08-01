@@ -1,11 +1,13 @@
 const timeAdjuster = require('../../util/timeAdjuster');
-const Envoy = require('../../../../Envoy');
+// const Envoy = require('../../../../Envoy');
+const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 /**  
  * Event to run when register modal is submitted.  .view listens for modal view requests. 
  */
 const registerSubmitted = async function({ack, client, view, payload, body, context}) {
   ack();
-  const envoy = Envoy.getInstance().API;
+  // const envoy = Envoy.getInstance().API;
+  const envoy = new EnvoyAPI(context.authInfo.accessToken);
   const userEmail = payload.private_metadata;
   const user = body.user.id;
 //   console.log(userEmail, 'userEmail on submission');

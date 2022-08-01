@@ -1,84 +1,73 @@
 require('dotenv').config();
 const request = require('request');
 const { middleware, errorMiddleware, asyncHandler, EnvoyResponseError, EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
+//const { refreshTokenExists, accessTokenExists, getAll, getRefreshToken, getAccessToken, getRefreshExp, getAccessExp } = require('./apps/Envoy/util/redisClient');
+
 
 // let accessToken = '';
-// let envoyAPI = {};
-// const TOKEN_SCOPE = [
-//     'token.refresh', 
-//     'locations.read', 
-//     'companies.read',
-//     'flows.read',
-//     'invites.read',
-//     'invites.write',
-//     'employees.read',
-//     'reservations.read',
-//     'reservations.write',
-//     'work-schedules.read',
-//     'work-schedules.write',
-// ].join();
-
-// class Envoy {
-//     constructor(accessToken = process.env.ENVOY_API_PRIV_TOKEN, xEnvoyContext = {}) {
-//       this.accessToken = accessToken;
-//       this.request = request.defaults({
-//         headers: {
-//           Authorization: `Bearer ${accessToken}`,
-//           'Content-Type': 'application/vnd.api+json',
-//           Accept: 'application/vnd.api+json',
-//           'X-Envoy-Context': JSON.stringify(xEnvoyContext),
-//         },
-//         json: true,
-//         baseUrl: process.env.ENVOY_BASE_URL || 'https://app.envoy.com',
-//       });
-//     }
-// };
-let accessToken = '';
-let refreshToken = '';
-async function getAccessToken() {
+// let refreshToken = '';
+// async function getAccessToken() {
     
-    const TOKEN_SCOPE = [
-        'token.refresh', 
-        'locations.read', 
-        'companies.read',
-        'flows.read',
-        'invites.read',
-        'invites.write',
-        'employees.read',
-        'reservations.read',
-        'reservations.write',
-        'work-schedules.read',
-        'work-schedules.write',
-        'sign-in-fields.read',
-        'sign-in-fields.write',
-        'sign-in-field-pages.read',
-        'badges.read'
-      ].join();
-    const options = {
-        'method': 'POST',
-        'url': 'https://api.envoy.com/oauth2/token',
-        'headers': {
-            'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
-            json: true
-        },
-        formData: {
-            'username': process.env.API_USERNAME,
-            'password': process.env.API_USER_PASSWORD,
-            'scope': TOKEN_SCOPE,
-            'grant_type': 'password',
-        },
-    };
+//     const TOKEN_SCOPE = [
+//         'token.refresh', 
+//         'locations.read', 
+//         'companies.read',
+//         'flows.read',
+//         'invites.read',
+//         'invites.write',
+//         'employees.read',
+//         'reservations.read',
+//         'reservations.write',
+//         'work-schedules.read',
+//         'work-schedules.write',
+//         'sign-in-fields.read',
+//         'sign-in-fields.write',
+//         'sign-in-field-pages.read',
+//         'badges.read'
+//       ].join();
+//     const options = {
+//         'method': 'POST',
+//         'url': 'https://api.envoy.com/oauth2/token',
+//         'headers': {
+//             'Authorization': 'Basic ' + process.env.ENVOY_CLIENT_API_KEY,
+//             json: true
+//         },
+//         formData: {
+//             'username': process.env.API_USERNAME,
+//             'password': process.env.API_USER_PASSWORD,
+//             'scope': TOKEN_SCOPE,
+//             'grant_type': 'password',
+//         },
+//     };
 
-    request(options, function (error, response) {
-        if (error) throw new Error(error);
-        console.log(JSON.parse(response.body))
-        accessToken = JSON.parse(response.body).access_token;
-        refreshToken = JSON.parse(response.body).refresh_token;
-        // console.log('access token: ', accessToken);
-        // console.log('refresh token: ', refreshToken); 
-    });
-}
-getAccessToken();
+//     request(options, function (error, response) {
+//         if (error) throw new Error(error);
+//         console.log(JSON.parse(response.body), 'getAccessToken')
+//         accessToken = JSON.parse(response.body).access_token;
+//         refreshToken = JSON.parse(response.body).refresh_token;
+//         // console.log('access token: ', accessToken);
+//         // console.log('refresh token: ', refreshToken); 
+//     });
+// }
+// getAccessToken();
+
+
+// async function checkAndGetTokens(userEmail) {
+//   const currentTokenExp = await getAccessExp(userEmail);
+//   const currentRefreshExp = await getRefreshExp(userEmail);
+//   if (Date.now() - currentTokenExp > 0) {
+//     if (Date.now() - currentRefreshExp > 0) {
+//         console.log('uh-oh');
+//         return;
+//     } else {
+//         refreshToken = await getRefreshToken(userEmail);
+//     }
+//   } else {
+//     accessToken = await getAccessToken(userEmail);
+//   }
+// };
+
+
 class PrivateEnvoy {
     constructor() {
         // this.API = new EnvoyAPI(process.env.ENVOY_BEARER_TOKEN);

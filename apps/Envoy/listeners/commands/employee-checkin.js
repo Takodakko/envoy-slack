@@ -1,5 +1,6 @@
 
-const Envoy = require('../../../../Envoy');
+// const Envoy = require('../../../../Envoy');
+const { EnvoyAPI } = require('@envoy/envoy-integrations-sdk');
 
 /**  
 * Slash command to check in to the office via Envoy.
@@ -8,7 +9,7 @@ const Envoy = require('../../../../Envoy');
 const employeeCheckin = async function({ack, say, context, payload, client}) {
     try {
         ack();
-        const envoy = Envoy.getInstance();
+        const envoy = new EnvoyAPI(context.authInfo.accessToken);
         const userId = payload.user_id;
         const user = await client.users.profile.get({user: userId});
         const userEmail = user.profile.email;
@@ -20,8 +21,8 @@ const employeeCheckin = async function({ack, say, context, payload, client}) {
         const yesterdayUnix = now - (12 * 60 * 60 * 1000);
         const yesterday = new Date(yesterdayUnix).toISOString();
         // const envoyWorkSchedule = await envoy.API.workSchedules({userEmails: [userEmail], expectedArrivalAtBefore: today, expectedArrivalAtAfter: yesterday});
-        const envoyWorkSchedule = await envoy.API.workSchedules({userEmails: [userEmail]});
-        console.log(envoyWorkSchedule, 'envoyWorkSchedule');
+        const envoyWorkSchedule = await envoy.workSchedules({userEmails: [userEmail]});
+        // console.log(envoyWorkSchedule, 'envoyWorkSchedule');
         const workToday = envoyWorkSchedule.filter((work) => {
             // Check for registered and approved schedules where the user has not checked in yet.
             // Checking in when status is PENDING does seem to work, but it also throws an error.
@@ -32,7 +33,7 @@ const employeeCheckin = async function({ack, say, context, payload, client}) {
         if (workToday.length > 0) {
             // console.log(workToday, 'workToday');
             for (let i = 0; i < workToday.length; i++) {
-                await envoy.API.checkInWork(workToday[i].id);
+                await envoy.checkInWork(workToday[i].id);
             }
             await say(`You've checked in!`);
         } else {

@@ -10,7 +10,7 @@ const createInvite = async function({ack, client, payload, context}) {
     });
   const modal = createInviteBuilder(locations);
   try {
-    const response = await client.views.open({
+    await client.views.open({
       /* the user who opened the modal */
       user_id: payload.user,
       /* the event that opened the modal */
@@ -18,7 +18,7 @@ const createInvite = async function({ack, client, payload, context}) {
       /* the view object that makes the modal */
       view: modal
     });
-    console.log(response);
+    
   }
   catch (error) {
     console.error(error);
